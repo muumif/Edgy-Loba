@@ -2,24 +2,17 @@ const Discord = require('discord.js');
 const config = require('./config.json');
 const https = require('follow-redirects').https;
 const db = require('quick.db');
-
-
-
 const client = new Discord.Client();
 const prefix = config.prefix;
-
 
 client.once('ready', () => {
     console.log('Edgy Loba is now online!');
     client.user.setPresence({ activity: { name: '!hl || Checking the stats!' }, status: 'online' })
 })
 
-
-
 function inRange(x, min, max) {
     return ((x-min)*(x-max) <= 0);
 }
-
 
 client.on('message', message => {
 
@@ -33,17 +26,14 @@ client.on('message', message => {
         message.channel.send("```apache\n!link {username} || Link your discord account to apex\n!stats {username} || Check someone elses apex stats\n!clearnames | !cn || Clear the names database list(admin only)```")
     }
 
-
     if (command === 'link') {
         var messageAuthor = message.author.id;
         if(!args.length){
             return message.channel.send("```apache\nWrong format do it like this: \n!link {username}```");
         }
-        console.log(args[0]);
+        message.channel.send("```apache\nLinked username```");
         db.set(`${messageAuthor}`, { user: `${args[0]}`});
-
     }
-
 
     if (command === "stats")
     {
@@ -59,7 +49,6 @@ client.on('message', message => {
         var url = `https://public-api.tracker.gg/v2/apex/standard/profile/${platform}/${username}`;
         
         var name, RankedPoints, level, rank;
-
 
         https.get(url, {
             headers: {
