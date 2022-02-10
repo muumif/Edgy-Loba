@@ -27,7 +27,7 @@ client.on('message', message => {
         const embed = new Discord.MessageEmbed()
         .setTitle("Help/Commands")
         .setDescription("A list of commands for EdgyLoba!")
-        .setColor("#785B04")
+        .setColor("#e3a600")
         .addFields(
             {
                 name:"__!hl__",
@@ -57,32 +57,57 @@ client.on('message', message => {
                 inline: true
             }
         )
-        .setFooter("Edgy Loba")
+        .setFooter("Edgy Loba", "https://cdn.discordapp.com/avatars/719542118955090011/41d9ec9fcb2a5d9d4854ad702866c365.png");
         message.channel.send({embed});
     }
 
     if (command === 'link') {
         var messageAuthor = message.author.id;
         if(!args.length){
-            return message.channel.send("```apache\nWrong format do it like this: \n!link {username}```");
+            const embed = new Discord.MessageEmbed()
+            .setTitle("Wrong format!")
+            .setDescription("Correct way: **!link (apex username)**")
+            .setFooter("Edgy Loba", "https://cdn.discordapp.com/avatars/719542118955090011/41d9ec9fcb2a5d9d4854ad702866c365.png")
+            .setColor("#e3a600");
+            return message.channel.send({embed});
         }
         if(db.has(`${messageAuthor}`)){
-            return message.channel.send("```apache\nYou already have set an username. If you wish to unlink your username type !unlink```")
+            const embed = new Discord.MessageEmbed()
+            .setTitle("Username already linked!")
+            .setDescription("If you wish to unlink your username type **!unlink**")
+            .setFooter("Edgy Loba", "https://cdn.discordapp.com/avatars/719542118955090011/41d9ec9fcb2a5d9d4854ad702866c365.png")
+            .setColor("#e3a600");
+            return message.channel.send({embed});
         }
         db.set(`${messageAuthor}`, { user: `${args[0]}`});
-        return message.channel.send("```apache\nUsername linked!```");
+        const embed = new Discord.MessageEmbed()
+        .setTitle("Username successfully linked!")
+        .setDescription(`${messageAuthor} linked to **${args[0]}**`)
+        .setFooter("Edgy Loba", "https://cdn.discordapp.com/avatars/719542118955090011/41d9ec9fcb2a5d9d4854ad702866c365.png")
+        .setColor("#e3a600");
+        return message.channel.send({embed});
     }
 
     if (command === "unlink"){
         var messageAuthor = message.author.id;
 
         if(!db.has(`${messageAuthor}`)){
-            return message.channel.send("```apache\nYou dont have any linked usernames!```")
+            const embed = new Discord.MessageEmbed()
+            .setTitle("You don't have any linked usernames!")
+            .setDescription("You can set your username: **!link (apex username)**")
+            .setFooter("Edgy Loba", "https://cdn.discordapp.com/avatars/719542118955090011/41d9ec9fcb2a5d9d4854ad702866c365.png")
+            .setColor("#e3a600");
+            return message.channel.send({embed})
         }
         db.delete(`${messageAuthor}`);
-        return message.channel.send("```apache\nUsername has been unlinked!```")
+        const embed = new Discord.MessageEmbed()
+        .setTitle("Username has been unlinked!")
+        .setFooter("Edgy Loba", "https://cdn.discordapp.com/avatars/719542118955090011/41d9ec9fcb2a5d9d4854ad702866c365.png")
+        .setColor("#e3a600");
+        return message.channel.send({embed});
     }
 
+    // TODO: User fetch instead of https.get
     if (command === "stats")
     {
         let messageAuthor = message.author.id;
@@ -97,7 +122,7 @@ client.on('message', message => {
         var url = `https://public-api.tracker.gg/v2/apex/standard/profile/${platform}/${username}`;
         
         var name, RankedPoints, level, rank;
-
+        
         https.get(url, {
             headers: {
                 "TRN-Api-Key" : config.TRN_Token
@@ -118,7 +143,6 @@ client.on('message', message => {
                     level = json.data.segments[0].stats.level.value;
                     RankedPoints = json.data.segments[0].stats.rankScore.value;
                     
-
                     //#region ranks
                     //In range bronze
 
@@ -222,9 +246,29 @@ client.on('message', message => {
                         var rankedPointsDiff = RankedPoints - oldRankedPoints;
                         db.set(`${messageAuthor}.rankedPoints`, RankedPoints);
                     }else {db.set(`${messageAuthor}.rankedPoints`, RankedPoints);}
-                    var constructor = "```apache\nName: " + username + "\nLevel: " + level + "\nRank: " + rank + "\nRP: "+ RankedPoints + ` (${rankedPointsDiff})` + "```";
-                    message.channel.send(constructor);
 
+                    const embed = new Discord.MessageEmbed()
+                    .setTitle("Stats for " + username)
+                    .addFields(
+                        {
+                            name:"__Level__",
+                            value: level,
+                            inline: true
+                        },
+                        {
+                            name:"__Rank__",
+                            value: rank,
+                            inline: true
+                        },
+                        {
+                            name:"__RP__",
+                            value: RankedPoints + `(${rankedPointsDiff})`,
+                            inline: true
+                        }
+                    )      
+                    .setFooter("Edgy Loba", "https://cdn.discordapp.com/avatars/719542118955090011/41d9ec9fcb2a5d9d4854ad702866c365.png")
+                    .setColor("#e3a600");
+                    message.channel.send({embed});
 
                 }
                 catch (e) {
@@ -238,14 +282,7 @@ client.on('message', message => {
     }
 
     if (command === "top"){
-
-    }
-
-    if (command === "clearnames" || command === "cn")
-    {
-        if (!message.member.permissions.has("ADMINISTRATOR")) return message.reply("```apache\nYou dont have permission to use that command!```");
-        db.delete(db.all.toString());
-        return message.channel.send("```apache\nThe names list has been cleard```");
+        //TODO:
     }
 });
 
