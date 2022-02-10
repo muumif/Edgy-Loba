@@ -38,10 +38,10 @@ client.on('message', message => {
     if (command === "stats")
     {
         let messageAuthor = message.author.id;
-        var username = db.get(`${messageAuthor}.user`);
+        var username;
         if(args[0] != undefined){
             username = args[0];
-        }
+        }else{username = db.get(`${messageAuthor}.user`);}
         var platform = "origin";
         if(args[1] != undefined){
             platform = args[1];
@@ -66,7 +66,7 @@ client.on('message', message => {
         
                 try {             
                     json = JSON.parse(data);
-                    name = args[0];
+                    name = username;
                     level = json.data.segments[0].stats.level.value;
                     RankedPoints = json.data.segments[0].stats.rankScore.value;
                     
@@ -170,7 +170,7 @@ client.on('message', message => {
                     }
                     //#endregion
                     name = db.get(`${messageAuthor}.user`);
-                    var constructor = "```apache\nName: " + name + "\nLevel: " + level + "\nRank: " + rank + "\nRP: "+ RankedPoints + "```";
+                    var constructor = "```apache\nName: " + username + "\nLevel: " + level + "\nRank: " + rank + "\nRP: "+ RankedPoints + "```";
                     message.channel.send(constructor);
 
                 }
