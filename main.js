@@ -186,7 +186,7 @@ client.on('message', message => {
                         var oldRankedPoints = db.get(`${messageAuthor}.rankedPoints`);
                         var rankedPointsDiff = RankedPoints - oldRankedPoints;
                         db.set(`${messageAuthor}.rankedPoints`, RankedPoints);
-                    }
+                    }else {db.set(`${messageAuthor}.rankedPoints`, RankedPoints);}
                     var constructor = "```apache\nName: " + username + "\nLevel: " + level + "\nRank: " + rank + "\nRP: "+ RankedPoints + ` (${rankedPointsDiff})` + "```";
                     message.channel.send(constructor);
 
