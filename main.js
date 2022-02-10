@@ -31,8 +31,21 @@ client.on('message', message => {
         if(!args.length){
             return message.channel.send("```apache\nWrong format do it like this: \n!link {username}```");
         }
-        message.channel.send("```apache\nLinked username```");
+        if(db.has(`${messageAuthor}`)){
+            return message.channel.send("```apache\nYou already have set an username. If you wish to unlink your username type !unlink```")
+        }
         db.set(`${messageAuthor}`, { user: `${args[0]}`});
+        return message.channel.send("```apache\nUsername linked!```");
+    }
+
+    if (command === "unlink"){
+        var messageAuthor = message.author.id;
+
+        if(!db.has(`${messageAuthor}`)){
+            return message.channel.send("```apache\nYou dont have any linked usernames!```")
+        }
+        db.delete(`${messageAuthor}`);
+        return message.channel.send("```apache\nUsername has been unlinked!```")
     }
 
     if (command === "stats")
