@@ -23,7 +23,42 @@ client.on('message', message => {
     const command = args.shift().toLowerCase();
 
     if (command === "hl"){
-        message.channel.send("```apache\n!link {username} || Link your discord account to apex\n!stats {username} || Check someone elses apex stats\n!clearnames | !cn || Clear the names database list(admin only)```")
+
+        const embed = new Discord.MessageEmbed()
+        .setTitle("Help/Commands")
+        .setDescription("A list of commands for EdgyLoba!")
+        .setColor("#785B04")
+        .addFields(
+            {
+                name:"__!hl__",
+                value:"The help command\n***Usage: !hl***",
+                inline: true
+            },
+            {
+                name:"__!link__",
+                value:"Link your discord account to your apex one\n***Usage: !link (apex username)***",
+                inline: true
+            },
+            {
+                name:"__!unlink__",
+                value:"Unlink your discord account to your apex one\n***Usage: !unlink***",
+                inline: true
+            }
+        )
+        .addFields(
+            {
+                name:"__!stats__",
+                value:"Check your own or someone elses apex stats\n***Usage: !stats or !stats (apex username)***",
+                inline: true
+            },
+            {
+                name:"__!top__",
+                value:"Show the top 5 players for this server\n***Usage: !top***",
+                inline: true
+            }
+        )
+        .setFooter("Edgy Loba")
+        message.channel.send({embed});
     }
 
     if (command === 'link') {
@@ -210,7 +245,7 @@ client.on('message', message => {
     {
         if (!message.member.permissions.has("ADMINISTRATOR")) return message.reply("```apache\nYou dont have permission to use that command!```");
         db.delete(db.all.toString());
-        message.channel.send("```apache\nThe names list has been cleard```");
+        return message.channel.send("```apache\nThe names list has been cleard```");
     }
 });
 
