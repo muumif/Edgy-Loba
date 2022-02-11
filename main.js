@@ -26,38 +26,37 @@ client.on('message', message => {
 
         const embed = new Discord.MessageEmbed()
         .setTitle("Help/Commands")
-        .setDescription("A list of commands for EdgyLoba!")
+        .setDescription("A list of commands for Edgy Loba!")
         .setColor("#e3a600")
         .addFields(
             {
                 name:"__!hl__",
-                value:"The help command\n***Usage: !hl***",
+                value:"The help command.\n***Usage: !hl***",
                 inline: true
             },
             {
                 name:"__!link__",
-                value:"Link your discord account to your apex one\n***Usage: !link (apex username)***",
+                value:"Link your discord account to your Apex one.\n***Usage: !link (Apex username)***",
                 inline: true
             },
             {
                 name:"__!unlink__",
-                value:"Unlink your discord account to your apex one\n***Usage: !unlink***",
+                value:"Unlink your discord account from your Apex one.\n***Usage: !unlink***",
                 inline: true
             }
         )
         .addFields(
             {
                 name:"__!stats__",
-                value:"Check your own or someone elses apex stats\n***Usage: !stats or !stats (apex username)***",
+                value:"Check your own or someone elses Apex stats.\n***Usage: !stats or !stats (Apex username)***",
                 inline: true
             },
             {
                 name:"__!top__",
-                value:"Show the top 5 players for this server\n***Usage: !top***",
+                value:"Show the Apex leaderboard for this server.\n***Usage: !top***",
                 inline: true
             }
         )
-        .setFooter("Edgy Loba", "https://cdn.discordapp.com/avatars/719542118955090011/41d9ec9fcb2a5d9d4854ad702866c365.png");
         message.channel.send({embed});
     }
 
@@ -66,8 +65,7 @@ client.on('message', message => {
         if(!args.length){
             const embed = new Discord.MessageEmbed()
             .setTitle("Wrong format!")
-            .setDescription("Correct way: **!link (apex username)**")
-            .setFooter("Edgy Loba", "https://cdn.discordapp.com/avatars/719542118955090011/41d9ec9fcb2a5d9d4854ad702866c365.png")
+            .setDescription("Correct way: **!link (Apex username)**")
             .setColor("#e3a600");
             return message.channel.send({embed});
         }
@@ -75,7 +73,6 @@ client.on('message', message => {
             const embed = new Discord.MessageEmbed()
             .setTitle("Username already linked!")
             .setDescription("If you wish to unlink your username type **!unlink**")
-            .setFooter("Edgy Loba", "https://cdn.discordapp.com/avatars/719542118955090011/41d9ec9fcb2a5d9d4854ad702866c365.png")
             .setColor("#e3a600");
             return message.channel.send({embed});
         }
@@ -83,7 +80,6 @@ client.on('message', message => {
         const embed = new Discord.MessageEmbed()
         .setTitle("Username successfully linked!")
         .setDescription(`${messageAuthor} linked to **${args[0]}**`)
-        .setFooter("Edgy Loba", "https://cdn.discordapp.com/avatars/719542118955090011/41d9ec9fcb2a5d9d4854ad702866c365.png")
         .setColor("#e3a600");
         return message.channel.send({embed});
     }
@@ -94,7 +90,7 @@ client.on('message', message => {
         if(!db.has(`${messageAuthor}`)){
             const embed = new Discord.MessageEmbed()
             .setTitle("You don't have any linked usernames!")
-            .setDescription("You can set your username: **!link (apex username)**")
+            .setDescription("You can set your username: **!link (Apex username)**")
             .setFooter("Edgy Loba", "https://cdn.discordapp.com/avatars/719542118955090011/41d9ec9fcb2a5d9d4854ad702866c365.png")
             .setColor("#e3a600");
             return message.channel.send({embed})
@@ -102,7 +98,6 @@ client.on('message', message => {
         db.delete(`${messageAuthor}`);
         const embed = new Discord.MessageEmbed()
         .setTitle("Username has been unlinked!")
-        .setFooter("Edgy Loba", "https://cdn.discordapp.com/avatars/719542118955090011/41d9ec9fcb2a5d9d4854ad702866c365.png")
         .setColor("#e3a600");
         return message.channel.send({embed});
     }
@@ -246,7 +241,7 @@ client.on('message', message => {
                         var rankedPointsDiff = RankedPoints - oldRankedPoints;
                         db.set(`${messageAuthor}.rankedPoints`, RankedPoints);
                     }else {db.set(`${messageAuthor}.rankedPoints`, RankedPoints);}
-
+                    //TODO: Add + to rankedPointsDiff when it is in the positive
                     const embed = new Discord.MessageEmbed()
                     .setTitle("Stats for " + username)
                     .addFields(
@@ -266,7 +261,6 @@ client.on('message', message => {
                             inline: true
                         }
                     )      
-                    .setFooter("Edgy Loba", "https://cdn.discordapp.com/avatars/719542118955090011/41d9ec9fcb2a5d9d4854ad702866c365.png")
                     .setColor("#e3a600");
                     message.channel.send({embed});
 
@@ -282,7 +276,19 @@ client.on('message', message => {
     }
 
     if (command === "top"){
-        //TODO:
+        var sortedData = db.all().sort((a, b) => (a.data.rankedPoints < b.data.rankedPoints) ? 1 : -1)
+        const embed = new Discord.MessageEmbed()
+        .setTitle("Leaderboard")
+        .setColor("#e3a600");
+        for(var i = 0, count = 1; i < sortedData.length; i++){
+            embed.addField(
+                count + ". " +sortedData[i].data.user,
+                sortedData[i].data.rankedPoints + " RP",
+                false 
+            );
+            count++;
+        }
+        message.channel.send({embed});
     }
 });
 
