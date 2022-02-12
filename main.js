@@ -102,7 +102,6 @@ client.on('message', message => {
         return message.channel.send({embed});
     }
 
-    // TODO: User fetch instead of https.get
     if (command === "stats")
     {
         let messageAuthor = message.author.id;
@@ -236,12 +235,6 @@ client.on('message', message => {
                         rank = "Predator";
                     }
                     //#endregion
-                    if(db.has(`${messageAuthor}.rankedPoints`)){
-                        var oldRankedPoints = db.get(`${messageAuthor}.rankedPoints`);
-                        var rankedPointsDiff = RankedPoints - oldRankedPoints;
-                        db.set(`${messageAuthor}.rankedPoints`, RankedPoints);
-                    }else {db.set(`${messageAuthor}.rankedPoints`, RankedPoints);}
-                    //TODO: Add + to rankedPointsDiff when it is in the positive
                     const embed = new Discord.MessageEmbed()
                     .setTitle("Stats for " + username)
                     .addFields(
@@ -254,14 +247,26 @@ client.on('message', message => {
                             name:"__Rank__",
                             value: rank,
                             inline: true
-                        },
-                        {
-                            name:"__RP__",
-                            value: RankedPoints + `(${rankedPointsDiff})`,
-                            inline: true
                         }
                     )      
                     .setColor("#e3a600");
+                    if(db.has(`${messageAuthor}`) && args[0] == undefined){
+                        if(db.has(`${messageAuthor}.rankedPoints`)){
+                            var oldRankedPoints = db.get(`${messageAuthor}.rankedPoints`);
+                            var rankedPointsDiff = RankedPoints - oldRankedPoints;
+                            db.set(`${messageAuthor}.rankedPoints`, RankedPoints);
+                            embed.addFields(                        {
+                                name:"__RP__",
+                                value: RankedPoints + `(${rankedPointsDiff})`,
+                                inline: true
+                            });
+                        }else {db.set(`${messageAuthor}.rankedPoints`, RankedPoints);}
+                    }else{embed.addFields(                        {
+                        name:"__RP__",
+                        value: RankedPoints,
+                        inline: true
+                    })}
+
                     message.channel.send({embed});
 
                 }
