@@ -1,11 +1,8 @@
 const Discord = require('discord.js');
 const config = require('./config.json');
-const https = require('follow-redirects').https;
-const db = require('quick.db');
 const axios = require('axios');
 const firebase = require("firebase/app");
-const { set, getDatabase, ref, onValue, get, child, push, update, query, orderByChild } = require('firebase/database');
-const { errorPrefix } = require('@firebase/util');
+const { set, getDatabase, ref, get, child} = require('firebase/database');
 
 const client = new Discord.Client();
 const prefix = config.prefix;
