@@ -3,18 +3,76 @@ const config = require('./config.json');
 const https = require('follow-redirects').https;
 const db = require('quick.db');
 const axios = require('axios');
+const firebase = require("firebase/app");
+const { set, getDatabase, ref, onValue, get, child, push, update, query, orderByChild } = require('firebase/database');
+const { errorPrefix } = require('@firebase/util');
 
 const client = new Discord.Client();
 const prefix = config.prefix;
 
+const firebaseConfig = {
+    apiKey: config.firebase_apiKey,
+    authDomain: "edgyloba.firebaseapp.com",
+    databaseURL: "https://edgyloba-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "edgyloba",
+    storageBucket: "edgyloba.appspot.com",
+    messagingSenderId: config.firebase_messagingSenderId,
+    appId: config.firebase_appId
+}
+
+const app = firebase.initializeApp(firebaseConfig);
+
+function writeUserData(guildID, userID, name, currentRP, rankIMG, platform, level){
+    const database = getDatabase(app);
+    set(ref(database, "guilds/" + guildID + "/users/" + userID), {
+        username: name,
+        platform: platform,
+        level: level,
+        RP: currentRP,
+        img: rankIMG
+    });
+};
+
+function writeHistoryData(rp, userID, guildID){
+    const today = new Date();
+    const monthVal = today.getUTCMonth() + 1;   
+    const date = (today.getUTCDate()) + "-" + monthVal + "-" + today.getUTCFullYear();
+
+    const database = getDatabase(app);
+    set(child(ref(database), "guilds/" + guildID + "/history/" +  userID + "/" + date), {
+        date: date,
+        rp: rp
+    });
+};
+
+async function getHistoryData(guildID, userID, _callback){
+    const dbRef = ref(getDatabase(app));
+    const labels = [], dataArray = [];
+
+    await get(child(dbRef, "guilds/" + guildID + "/history/" + userID))
+    .then((snapshot) => {
+        if(snapshot.exists){
+            snapshot.forEach(function (data) {
+                labels.push(data.val().date);
+                dataArray.push(data.val().rp);
+            });
+        }
+    }).catch((error) => {
+        console.log(error);
+    })
+    
+    _callback(labels, dataArray);
+}
+
+function makeChart(_labels = [],_data = []){
+    const chart = `https://image-charts.com/chart.js/2.8.0?bkg=rgb(54,57,63)&c={type:'line',data:{labels:[${_labels.map(function(ele){return "'" + ele + "'"})}],datasets:[{backgroundColor:'rgba(44,47,51,0)',borderColor:'rgb(277,166,0)',data:[${_data}],label:'RP'}]},options:{scales:{yAxes:[{ticks:{stepSize: 100}}]}}}`;
+    return encodeURI(chart);
+};
+
 client.once('ready', () => {
     console.log('Edgy Loba is now online!');
-    client.user.setPresence({ activity: { name: '!hl || Checking the stats!' }, status: 'online' })
+    client.user.setPresence({ activity: { name: '>hl || Checking the stats!' }, status: 'online' });
 })
-
-function inRange(x, min, max) {
-    return ((x-min)*(x-max) <= 0);
-}
 
 client.on('message', async message => {
 
@@ -24,134 +82,198 @@ client.on('message', async message => {
     const args = message.content.slice(prefix.length).trim().split(/ +/g);
     const command = args.shift().toLowerCase();
 
-    if (command === "hl"){
-
+    if (command === "help"){
+        
         const embed = new Discord.MessageEmbed()
         .setTitle("Help/Commands")
-        .setDescription("A list of commands for Edgy Loba!")
         .setColor("#e3a600")
         .addFields(
             {
-                name:"__!hl__",
-                value:"The help command.\n***Usage: !hl***",
+                name: "__>link [Apex IGN] [PC/X1/PS4]__",
+                value: "Link your discord account to your Apex user. Doing this allows you to see history graphs collaborate in the leaderboard and much more.",
                 inline: true
             },
             {
-                name:"__!link__",
-                value:"Link your discord account to your Apex one.\n***Usage: !link (Apex username)***",
+                name: "__>unlink__",
+                value: "Unlink your discord account from you Apex user.",
                 inline: true
             },
             {
-                name:"__!unlink__",
-                value:"Unlink your discord account from your Apex one.\n***Usage: !unlink***",
+                name: "__>stats [Optional: Apex IGN] [Optional: PC/X1/PS4]__",
+                value: "Shows Apex stats. If you have a linked account you dont have to insert your Apex IGN to check your own stats.",
+                inline: true
+            }, 
+            {
+                name: "__>top__",
+                value: "Shows the current leaderboard for this server.",
+                inline: true
+            },
+            {
+                name: "__>map__",
+                value: "Shows the current and next maps for Apex, Battle Royale and Arenas mode also the time remaining till next map.",
+                inline: true
+            },
+            {
+                name: "__>status__",
+                value: "Shows the server status of Lobby/Matchmaking servers by region.",
                 inline: true
             }
-        )
-        .addFields(
-            {
-                name:"__!stats__",
-                value:"Check your own or someone elses Apex stats.\n***Usage: !stats or !stats (Apex username)***",
-                inline: true
-            },
-            {
-                name:"__!top__",
-                value:"Show the Apex leaderboard for this server.\n***Usage: !top***",
-                inline: true
-            }
-        )
+        );
+
         message.channel.send({embed});
     }
 
-    if (command == "link"){
-        if(db.has(`${message.author.id}`)){
-            const embed = new Discord.MessageEmbed()
-            .setTitle("Username already linked!")
-            .setDescription("If you wish to unlink your username type **!unlink**")
-            .setColor("#e3a600");
-            return message.channel.send({embed});
-        }
-        if(args[0] == undefined){
-            const embed = new Discord.MessageEmbed()
-            .setTitle("Wrong format!")
-            .setDescription("Correct way: **!link (Apex username) (pc/ps4/x1)**")
-            .setColor("#e3a600");
-            return message.channel.send({embed});
-        }
-        if(args[1] == undefined){
-            const embed = new Discord.MessageEmbed()
-            .setTitle("Wrong format!")
-            .setDescription(`Correct way: **!link ${args[0]} (pc/ps4/x1)**`)
-            .setColor("#e3a600");
-            return message.channel.send({embed});
-        }
-        var username = args[0];
-        var platform = args[1].toUpperCase();
-        setTimeout(async () => {
-            const URI = `https://api.mozambiquehe.re/bridge?version=5&platform=${platform}&player=${username}&auth=${config.ALS_Token}`;
-            const encodedURI = encodeURI(URI);
-            const response = await axios.get(encodedURI)
-            .then(function (response){
-            db.set(`${message.author.id}`, { username: `${args[0]}`, platform: `${args[1]}`});
-            const embed = new Discord.MessageEmbed()
-            .setTitle("Username successfully linked!")
-            .setDescription(`${message.author} linked to **${username} using ${platform}**`)
-            .setColor("#e3a600");
-              message.channel.send({embed});
-              message.channel.stopTyping();
-            })
-  
-            .catch(function(error){
-                if(error.response){
-                  message.channel.send("Error: " + error.response.data.Error)
-                  message.channel.stopTyping();
+    if (command === "link"){
+        const dbRef = ref(getDatabase(app));
+
+        await get(child(dbRef, "guilds/" + message.guild.id + "/users/" + message.author.id))
+        .then((snapshot) => {
+            if(snapshot.exists()){
+                return message.channel.send("Username already linked!"); // Todo embed
+            }else{
+                if(args[0] == undefined){
+                    const embed = new Discord.MessageEmbed()
+                    .setTitle("Wrong format!")
+                    .setDescription("Correct way: **!link (Apex username) (PC/PS4/X1)**")
+                    .setColor("#e3a600");
+                    return message.channel.send({embed});
                 }
-            });
-          }, 250);
+                if(args[1] == undefined){
+                    const embed = new Discord.MessageEmbed()
+                    .setTitle("Wrong format!")
+                    .setDescription(`Correct way: **!link ${args[0]} (PC/PS4/X1)**`)
+                    .setColor("#e3a600");
+                    return message.channel.send({embed});
+                }
+                var username = args[0];
+                var platform = args[1].toUpperCase();
+                setTimeout(async () => {
+                    const URI = `https://api.mozambiquehe.re/bridge?version=5&platform=${platform}&player=${username}&auth=${config.ALS_Token}`;
+                    const encodedURI = encodeURI(URI);
+                    await axios.get(encodedURI)
+                    .then(function (response){
+                    writeUserData(message.guild.id, message.author.id, response.data.global.name, response.data.global.rank.rankScore, response.data.global.rank.rankImg, platform, response.data.global.level);
+                    writeHistoryData(response.data.global.rank.rankScore, message.author.id, message.guild.id);
+                    const embed = new Discord.MessageEmbed()
+                    .setTitle("Username successfully linked!")
+                    .setDescription(`${message.author} linked to **${username} using ${platform}**`)
+                    .setColor("#e3a600");
+                      message.channel.send({embed});
+                      message.channel.stopTyping();
+                    })
+          
+                    .catch(function(error){
+                        if(error.response){
+                            message.channel.send(
+                                new Discord.MessageEmbed()
+                                .setTitle("Error")
+                                .setDescription(error.response.data.Error)
+                                .setColor("#e3a600")
+                            );
+                            message.channel.stopTyping();
+                        }
+                    });
+                  }, 250);
+            }
+        }).catch((error) => {
+            message.channel.send(error);
+        })    
     }
 
     if (command === "unlink"){
-        if(!db.has(`${message.author.id}`)){
-            const embed = new Discord.MessageEmbed()
-            .setTitle("You don't have any linked usernames!")
-            .setDescription("You can set your username: **!link (Apex username)**")
-            .setColor("#e3a600");
-            return message.channel.send({embed})
-        }
-        db.delete(`${message.author.id}`);
-        const embed = new Discord.MessageEmbed()
-        .setTitle("Username has been unlinked!")
-        .setColor("#e3a600");
-        return message.channel.send({embed});
+        const dbRef = ref(getDatabase(app));
+
+        await get(child(dbRef, "guilds/" + message.guild.id + "/users/" + message.author.id))
+        .then((snapshot) => {
+            if(snapshot.exists()){
+                set(ref(getDatabase(app), "guilds/" + message.guild.id + "/users/" + message.author.id), null);
+                const embed = new Discord.MessageEmbed()
+                .setTitle("Username has been unlinked!")
+                .setColor("#e3a600");
+                return message.channel.send({embed});
+            }else{
+                const embed = new Discord.MessageEmbed()
+                .setTitle("You don't have any linked usernames!")
+                .setDescription("You can link your username: **!link (Apex username) (PC/PS4/X1)**")
+                .setColor("#e3a600");
+                return message.channel.send({embed})
+            }
+        }).catch((error) => {
+            message.channel.send(
+                new Discord.MessageEmbed()
+                .setTitle("Error")
+                .setDescription(error.response.data.Error)
+                .setColor("#e3a600")
+            );
+            message.channel.stopTyping();
+        });
+
     }
 
-    if (command === "stats")
-    {
-        var username;
+    if (command === "stats"){
+
+        var IGN;
         var platform;
+        const dbRef = ref(getDatabase(app));
 
         if (args[0] == undefined){
-            if(!db.has(`${message.author.id}`)){
-                return message.channel.send("No username given or has been linked!"); // Todo embed
-            }
-            username = db.get(`${message.author.id}.username`);
-        }else(username = args[0])
+            await get(child(dbRef, "guilds/" + message.guild.id + "/users/" + message.author.id))
+            .then((snapshot) => {
+                if(!snapshot.exists()){
+                    const embed1 = new Discord.MessageEmbed()
+                    .setTitle("No username has been linked!")
+                    .setDescription("You can link your username: **!link (Apex username) (PC/PS4/X1)**")
+                    .setColor("#e3a600");
+                    return message.channel.send({embed1});
+                }else{
+                    var data = snapshot.val();
+                    IGN = data.username;
+                }
+            }).catch((error) => {
+                message.channel.send(
+                    new Discord.MessageEmbed()
+                    .setTitle("Error")
+                    .setDescription(error.response.data.Error)
+                    .setColor("#e3a600")
+                );
+                message.channel.stopTyping();
+            })
+        }else(IGN = args[0])
 
         if (args[1] == undefined){
-            if(!db.has(`${message.author.id}`)){
-                return message.channel.send("No platform give!"); // TOdo embed
-            }
-            platform = db.get(`${message.author.id}.platform`);
+            await get(child(dbRef, "guilds/" + message.guild.id + "/users/" + message.author.id))
+            .then((snapshot) => {
+                if(!snapshot.exists()){
+                    const embed2 = new Discord.MessageEmbed()
+                    .setTitle("No username has been linked")
+                    .setDescription(`You can link your username: **!link ${args[0]} (PC/PS4/X1)**`)
+                    .setColor("#e3a600");
+                    message.channel.send({embed2}); 
+                }else{
+                    var data = snapshot.val();
+                    platform = data.platform;
+                }
+            }).catch((error) => {
+                message.channel.send(
+                    new Discord.MessageEmbed()
+                    .setTitle("Error")
+                    .setDescription(error.response.data.Error)
+                    .setColor("#e3a600")
+                );
+                message.channel.stopTyping();
+            });
         }else{platform = args[1]};
 
         message.channel.startTyping();
 
         setTimeout(async () => {
-          const URI = `https://api.mozambiquehe.re/bridge?version=5&platform=${platform.toUpperCase()}&player=${username}&auth=${config.ALS_Token}`;
-          const encodedURI = encodeURI(URI);
-          const response = await axios.get(encodedURI)
+          const URI = `https://api.mozambiquehe.re/bridge?version=5&platform=${platform.toUpperCase()}&player=${IGN}&auth=${config.ALS_Token}`;
+          const encodedURI = encodeURI(URI);          
+          await axios.get(encodedURI)
           .then(function (response){
             const embed = new Discord.MessageEmbed()
             .setTitle("Stats for " + response.data.global.name)
+            .setAuthor("Platform: " + platform.toUpperCase())
             .setThumbnail(response.data.global.rank.rankImg)
             .addFields(
                 {
@@ -171,59 +293,116 @@ client.on('message', async message => {
                 }
             )
             .setColor("#e3a600");
-            message.channel.send({embed});
-            message.channel.stopTyping();
-            if(db.has(`${message.author.id}`)){
-                db.set(`${message.author.id}.RP`, `${response.data.global.rank.rankScore}`);
-            }
-          })
+            if(args[0] == undefined){
+                get(child(dbRef, "guilds/" + message.guild.id + "/users/" + message.author.id ))
+                .then((snapshot) => {
+                    if(snapshot.exists()){
+                        writeUserData(message.guild.id, message.author.id, response.data.global.name, response.data.global.rank.rankScore, response.data.global.rank.rankImg, platform, response.data.global.level);
+                        writeHistoryData(response.data.global.rank.rankScore, message.author.id, message.guild.id);
+                        getHistoryData(message.guild.id, message.author.id, function(_labels, _data){
+                            embed.setImage(makeChart(_labels,_data));
+                            embed.setDescription("Account linked to " + message.author.tag);
+                            message.channel.send({embed});
+                        });
+                    };
+                }).catch((error) => {
+                    message.channel.send(
+                        new Discord.MessageEmbed()
+                        .setTitle("Error")
+                        .setDescription(error)
+                        .setColor("#e3a600")
+                    );
+                    message.channel.stopTyping();
+                });
+            }else{message.channel.send({embed})};
 
-          .catch(function(error){
-              if(error.response){
-                message.channel.send("Error: " + error.response.data.Error)
+            message.channel.stopTyping();
+                
+            }).catch((error) => {
+                message.channel.send(
+                    new Discord.MessageEmbed()
+                    .setTitle("Error")
+                    .setDescription(error.response.data.Error)
+                    .setColor("#e3a600")
+                );
                 message.channel.stopTyping();
-              }
-          });
+            });
         }, 250);
     }
 
-    if(command === "top"){
-        message.channel.startTyping();
+    if(command === "top"){ //Todo chart with all values
+        const dbRef = ref(getDatabase(app));
 
-        for (let i = 0; i < db.all().length; i++) {
-            setTimeout(async () => {
-              const URI = `https://api.mozambiquehe.re/bridge?version=5&platform=${db.all()[i].data.platform.toUpperCase()}&player=${db.all()[i].data.username}&auth=${config.ALS_Token}`;
-              const encodedURI = encodeURI(URI);
-              const response = await axios.get(encodedURI)
-              .then(function (response){
-                db.set(`${db.all()[i].ID}.RP`, `${response.data.global.rank.rankScore}`);
-                message.channel.stopTyping();
-              })
-    
-              .catch(function(error){
-                  if(error.response){
-                    message.channel.send("Error: " + error.response.data.Error)
-                    message.channel.stopTyping();
-                  }
-              });
-            }, 250);
-        }
-
-        var sortedData = db.all().sort((a, b) => (a.data.RP < b.data.RP) ? 1 : -1)
         const embed = new Discord.MessageEmbed()
         .setTitle("Leaderboard")
         .setColor("#e3a600");
-        for(var i = 0, count = 1; i < sortedData.length; i++){
-            embed.addField(
-                count + ". " + sortedData[i].data.username,
-                sortedData[i].data.RP + " RP",
-                false 
-            );
+
+        var sortedArray = [];
+
+        message.channel.startTyping();
+
+        await get(child(dbRef, "guilds/" + message.guild.id + "/users"))
+        .then((snapshot) => {
+            if(snapshot.exists()){
+                snapshot.forEach(function(_child){
+                    sortedArray.push(_child.val());
+                });
+                sortedArray.sort((a,b) => {return b.RP - a.RP;})
+                message.channel.stopTyping();
+            }
+        }).catch((error) => {
+            message.channel.send(error);
+            message.channel.stopTyping();
+        });
+
+        for(i = 0, count = 1; i < sortedArray.length; i++){
+            embed.addField(count + ". " + sortedArray[i].username, "RP: " + sortedArray[i].RP, false);
             count++;
         }
+
         message.channel.send({embed});
         message.channel.stopTyping();
+    }
 
+    if (command === "map"){
+        setTimeout(async () => {
+            message.channel.startTyping();
+            const URI = `https://api.mozambiquehe.re/maprotation?version=2&auth=${config.ALS_Token}`;
+            const encodedURI = encodeURI(URI);          
+            await axios.get(encodedURI)
+            .then(function (response){
+                const embed = new Discord.MessageEmbed()
+                .setTitle("Map Rotation")
+                .addFields(
+                    {
+                        name: "__Battle Royale__",
+                        value: `Current map: **${response.data.battle_royale.current.map}**\nNext Map: **${response.data.battle_royale.next.map}**\nRemaining: **${response.data.battle_royale.current.remainingMins} min**`,
+                        inline: true
+                    },
+                    {
+                        name: "__Arenas__",
+                        value: `Current map: **${response.data.arenas.current.map}**\nNext Map: **${response.data.arenas.next.map}**\nRemaining: **${response.data.arenas.current.remainingMins} min**`,
+                        inline: true
+                    },
+                    {
+                        name: "__Arenas Ranked__",
+                        value: `Current map: **${response.data.arenasRanked.current.map}**\nNext Map: **${response.data.arenasRanked.next.map}**\nRemaining: **${response.data.arenasRanked.current.remainingMins} min**`,
+                        inline: true
+                    }
+                )
+                .setImage(response.data.battle_royale.current.asset)
+                .setColor("#e3a600");
+                message.channel.stopTyping();
+                message.channel.send({embed});
+            }).catch((error) => {
+                console.log(error);
+                message.channel.stopTyping();
+            });
+        }, 255);
+    }
+
+    if (command === "status"){
+        //todo
     }
 });
 
