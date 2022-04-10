@@ -66,12 +66,12 @@ function makeChart(_labels = [],_data = []){
     return encodeURI(chart);
 };
 
-client.once('ready', () => {
-    console.log('Edgy Loba is now online!');
-    client.user.setPresence({ activity: { name: '>hl || Checking the stats!' }, status: 'online' });
+client.once("ready", () => {
+    console.log("Edgy Loba is now online!");
+    client.user.setPresence({ activity: { name: ">help", type: "LISTENING" }, status: "online" });
 })
 
-client.on('message', async message => {
+client.on("message", async message => {
 
     if (message.author.bot) return;
     if (message.content.indexOf(prefix) !== 0) return;
@@ -120,7 +120,7 @@ client.on('message', async message => {
         message.channel.send({embed});
     }
 
-    if (command === "link"){
+    if (command === "link"){ // Find a way to confirm that it is their account
         const dbRef = ref(getDatabase(app));
 
         await get(child(dbRef, "guilds/" + message.guild.id + "/users/" + message.author.id))
@@ -207,7 +207,7 @@ client.on('message', async message => {
 
     }
 
-    if (command === "stats"){
+    if (command === "stats"){ //If user exists in db then show graph
 
         var IGN;
         var platform;
