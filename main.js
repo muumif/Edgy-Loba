@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const config = require('./config.json');
 const axios = require('axios');
 const firebase = require("firebase/app");
-const { set, getDatabase, ref, get, child} = require('firebase/database');
+const { set, getDatabase, ref, get, child, orderByValue} = require('firebase/database');
 
 const client = new Discord.Client();
 const prefix = config.prefix;
@@ -31,9 +31,9 @@ function writeUserData(guildID, userID, name, currentRP, rankIMG, platform, leve
 };
 
 function writeHistoryData(rp, userID, guildID){
-    const today = new Date();
-    const monthVal = today.getUTCMonth() + 1;   
-    const date = (today.getUTCDate()) + "-" + monthVal + "-" + today.getUTCFullYear();
+    let today = new Date();
+    let monthVal = today.getUTCMonth() + 1;   
+    let date = (today.getUTCDate()) + "-" + monthVal + "-" + today.getUTCFullYear();
 
     const database = getDatabase(app);
     set(child(ref(database), "guilds/" + guildID + "/history/" +  userID + "/" + date), {
@@ -44,7 +44,7 @@ function writeHistoryData(rp, userID, guildID){
 
 async function getHistoryData(guildID, userID, _callback){
     const dbRef = ref(getDatabase(app));
-    const labels = [], dataArray = [];
+    let labels = [], dataArray = []; 
 
     await get(child(dbRef, "guilds/" + guildID + "/history/" + userID))
     .then((snapshot) => {
@@ -56,9 +56,23 @@ async function getHistoryData(guildID, userID, _callback){
         }
     }).catch((error) => {
         console.log(error);
-    })
+    });
     
-    _callback(labels, dataArray);
+    let timeStrings = [];
+    for (let i = 0; i < labels.length; i++) {
+        timeStrings.push(labels[i].replace("-","").replace("-",""));
+    }
+
+    let arrayPairs = timeStrings.map(function(a,b) {return [a, dataArray[b]]});
+    arrayPairs.sort(function(a,b){ return a[0] - b[0];});
+
+    let finalLabels = [], finalDataArray = [];
+    for (let i = 0; i < arrayPairs.length; i++) {
+        finalLabels.push(arrayPairs[i][0]);
+        finalDataArray.push(arrayPairs[i][1]);
+    }
+
+    _callback(finalLabels, finalDataArray);
 }
 
 function makeChart(_labels = [],_data = []){
