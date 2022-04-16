@@ -2,8 +2,7 @@ const Discord = require('discord.js');
 const config = require('./config.json');
 const axios = require('axios');
 const firebase = require("firebase/app");
-const { set, getDatabase, ref, get, child, orderByValue, query} = require('firebase/database');
-const { async } = require('@firebase/util');
+const { set, getDatabase, ref, get, child } = require('firebase/database');
 
 const client = new Discord.Client();
 const prefix = config.prefix;
