@@ -2,7 +2,8 @@ const Discord = require('discord.js');
 const config = require('./config.json');
 const axios = require('axios');
 const firebase = require("firebase/app");
-const { set, getDatabase, ref, get, child, orderByValue} = require('firebase/database');
+const { set, getDatabase, ref, get, child, orderByValue, query} = require('firebase/database');
+const { async } = require('@firebase/util');
 
 const client = new Discord.Client();
 const prefix = config.prefix;
@@ -76,7 +77,12 @@ async function getHistoryData(guildID, userID, _callback){
     };
     
     _callback(finalLabels, finalDataArray);
-}
+};
+
+async function fetchUser(id, callback){
+    let user = await client.users.fetch(id);
+    callback(user);
+};
 
 function makeChart(_labels = [],_data = []){
     const chart = `https://image-charts.com/chart.js/2.8.0?bkg=rgb(54,57,63)&c={type:'line',data:{labels:[${_labels.map(function(ele){return "'" + ele + "'"})}],datasets:[{backgroundColor:'rgba(44,47,51,0)',borderColor:'rgb(277,166,0)',data:[${_data}],label:'RP'}]},options:{scales:{yAxes:[{ticks:{stepSize: 100}}]}}}`;
@@ -228,8 +234,7 @@ client.on("message", async message => {
 
     }
 
-    if (command === "stats"){ //If user exists in db then show graph
-
+    if (command === "stats"){
         var IGN;
         var platform;
         const dbRef = ref(getDatabase(app));
@@ -332,7 +337,32 @@ client.on("message", async message => {
                     );
                     message.channel.stopTyping();
                 });
-            }else{message.channel.send({embed})};
+            }else{
+                get(child(dbRef, "guilds/" + message.guild.id + "/users/"))
+                .then((snapshot) => {
+                    if(snapshot.exists()){
+                        snapshot.forEach(function (user) {
+                            if (user.val().username == response.data.global.name){
+                                writeHistoryData(response.data.global.rank.rankScore, user.key, message.guild.id);
+                                getHistoryData(message.guild.id, user.key, function(_labels, _data){
+                                    embed.setImage(makeChart(_labels, _data));
+                                    fetchUser(user.key, function(a){
+                                        embed.setDescription("Account linked to " + a.username + "#" + a.discriminator);
+                                        message.channel.send({embed});
+                                    });
+                                });
+                            };
+                        });
+                    };
+                }).catch((error) => {
+                    message.channel.send(
+                        new Discord.MessageEmbed()
+                        .setTitle("Error")
+                        .setDescription(error)
+                        .setColor("#e3a600")
+                    );
+                });
+            };
 
             message.channel.stopTyping();
                 
@@ -340,7 +370,7 @@ client.on("message", async message => {
                 message.channel.send(
                     new Discord.MessageEmbed()
                     .setTitle("Error")
-                    .setDescription(error.response.data.Error)
+                    .setDescription(error)
                     .setColor("#e3a600")
                 );
                 message.channel.stopTyping();
