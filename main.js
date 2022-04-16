@@ -33,7 +33,7 @@ function writeUserData(guildID, userID, name, currentRP, rankIMG, platform, leve
 function writeHistoryData(rp, userID, guildID){
     let today = new Date();
     let monthVal = today.getUTCMonth() + 1;   
-    let date = (today.getUTCDate()) + "-" + monthVal + "-" + today.getUTCFullYear();
+    let date = today.getUTCDate() + "-" + monthVal + "-" + today.getUTCFullYear();
 
     const database = getDatabase(app);
     set(child(ref(database), "guilds/" + guildID + "/history/" +  userID + "/" + date), {
@@ -58,20 +58,23 @@ async function getHistoryData(guildID, userID, _callback){
         console.log(error);
     });
     
-    let timeStrings = [];
-    for (let i = 0; i < labels.length; i++) {
-        timeStrings.push(labels[i].replace("-","").replace("-",""));
-    }
 
-    let arrayPairs = timeStrings.map(function(a,b) {return [a, dataArray[b]]});
-    arrayPairs.sort(function(a,b){ return a[0] - b[0];});
+    let arrayPairs = labels.map(function(a,b) {return [a, dataArray[b]]});
+    for (let i = 0; i < arrayPairs.length; i++) {
+        arrayPairs[i][0] = arrayPairs[i][0].split("-").reverse().join("/");     
+    }
+    
+    arrayPairs.sort(function (a,b) {
+        var dateA = new Date(a[0]), dateB = new Date(b[0]);
+        return dateA - dateB;
+    });
 
     let finalLabels = [], finalDataArray = [];
     for (let i = 0; i < arrayPairs.length; i++) {
         finalLabels.push(arrayPairs[i][0]);
         finalDataArray.push(arrayPairs[i][1]);
-    }
-
+    };
+    
     _callback(finalLabels, finalDataArray);
 }
 
@@ -140,7 +143,11 @@ client.on("message", async message => {
         await get(child(dbRef, "guilds/" + message.guild.id + "/users/" + message.author.id))
         .then((snapshot) => {
             if(snapshot.exists()){
-                return message.channel.send("Username already linked!"); // Todo embed
+                const embed = new Discord.MessageEmbed()
+                .setTitle("Username already linked!")
+                .setDescription("Do unlink your account use **!unlink**")
+                .setColor("#e3a600")
+                return message.channel.send({embed}); 
             }else{
                 if(args[0] == undefined){
                     const embed = new Discord.MessageEmbed()
@@ -244,7 +251,7 @@ client.on("message", async message => {
                 message.channel.send(
                     new Discord.MessageEmbed()
                     .setTitle("Error")
-                    .setDescription(error.response.data.Error)
+                    .setDescription(error)
                     .setColor("#e3a600")
                 );
                 message.channel.stopTyping();
