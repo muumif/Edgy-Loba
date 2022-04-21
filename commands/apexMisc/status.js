@@ -15,7 +15,7 @@ async function getData(){
     return data;
 }
 
-function mapStatusEmbed(){
+async function makeStatusEmbed(){
     return getData().then(result => {
         const embed = new Discord.MessageEmbed()
         .setTitle("Server Status")
@@ -63,5 +63,5 @@ function mapStatusEmbed(){
 }
 
 module.exports = {
-    mapStatusEmbed
+    makeStatusEmbed
 }

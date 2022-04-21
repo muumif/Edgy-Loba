@@ -15,7 +15,7 @@ async function getData(){
     return data;
 }
 
-function makeMapEmbed(){
+async function makeMapEmbed(){
     return getData().then(result => {
         const embed = new Discord.MessageEmbed()
         .setTitle("Map Rotation")

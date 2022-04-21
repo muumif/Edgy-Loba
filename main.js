@@ -6,7 +6,8 @@ require("dotenv").config();
 const { set, getDatabase, ref, get, child } = require('firebase/database');
 
 const { makeMapEmbed } = require('./commands/apexMisc/map');
-const { mapStatusEmbed } = require('./commands/apexMisc/status');
+const { makeStatusEmbed } = require('./commands/apexMisc/status');
+const { makeTopEmbed } = require('./commands/userStats/tops');
 
 const client = new Discord.Client();
 const prefix = process.env.PREFIX;
@@ -408,57 +409,27 @@ client.on("message", async message => {
         }, 250);
     }
 
-    if(command === "top"){ //Todo chart with all values
-        const dbRef = ref(getDatabase(app));
-
-        const embed = new Discord.MessageEmbed()
-        .setTitle("Leaderboard")
-        .setColor("#e3a600");
-
-        var sortedArray = [];
-
+    if(command === "top"){
         message.channel.startTyping();
-
-        await get(child(dbRef, "guilds/" + message.guild.id + "/users"))
-        .then((snapshot) => {
-            if(snapshot.exists()){
-                snapshot.forEach(function(_child){
-                    sortedArray.push(_child.val());
-                });
-                sortedArray.sort((a,b) => {return b.RP - a.RP;})
-                message.channel.stopTyping();
-            }
-        }).catch((error) => {
-            message.channel.send(error);
-            message.channel.stopTyping();
+        makeTopEmbed(message.guild.id).then(result => {
+            message.channel.send(result);
         });
-
-        for(i = 0, count = 1; i < sortedArray.length; i++){
-            embed.addField(count + ". " + sortedArray[i].username, "RP: " + sortedArray[i].RP, false);
-            count++;
-        }
-
-        message.channel.send({embed});
         message.channel.stopTyping();
     }
 
     if(command === "map"){
         message.channel.startTyping();
-
         makeMapEmbed().then(result =>{
             message.channel.send(result);
         });
-
         message.channel.stopTyping();
     }
 
     if (command === "status"){
         message.channel.startTyping();
-
-        mapStatusEmbed().then(result => {
+        makeStatusEmbed().then(result => {
             message.channel.send(result);
         });
-
         message.channel.stopTyping();
     }
 });
