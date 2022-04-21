@@ -2,19 +2,23 @@ const Discord = require('discord.js');
 const config = require('./config.json');
 const axios = require('axios');
 const firebase = require("firebase/app");
+require("dotenv").config();
 const { set, getDatabase, ref, get, child } = require('firebase/database');
 
+const { makeMapEmbed } = require('./commands/apexMisc/map');
+const { mapStatusEmbed } = require('./commands/apexMisc/status');
+
 const client = new Discord.Client();
-const prefix = config.prefix;
+const prefix = process.env.PREFIX;
 
 const firebaseConfig = {
-    apiKey: config.firebase_apiKey,
+    apiKey: process.env.FIREBASE_APIKEY,
     authDomain: "edgyloba.firebaseapp.com",
     databaseURL: "https://edgyloba-default-rtdb.europe-west1.firebasedatabase.app",
     projectId: "edgyloba",
     storageBucket: "edgyloba.appspot.com",
-    messagingSenderId: config.firebase_messagingSenderId,
-    appId: config.firebase_appId
+    messagingSenderId: process.env.FIREBASE_MESSAGINGSENDERID,
+    appId: process.env.FIREBASE_APPID
 }
 
 const app = firebase.initializeApp(firebaseConfig);
@@ -87,6 +91,33 @@ function makeChart(_labels = [],_data = []){
     const chart = `https://image-charts.com/chart.js/2.8.0?bkg=rgb(54,57,63)&c={type:'line',data:{labels:[${_labels.map(function(ele){return "'" + ele + "'"})}],datasets:[{backgroundColor:'rgba(44,47,51,0)',borderColor:'rgb(277,166,0)',data:[${_data}],label:'RP'}]},options:{scales:{yAxes:[{ticks:{stepSize: 200}}]}}}`;
     return encodeURI(chart);
 };
+
+function makeTopChart(labels = [], data = [], datasetsNumber){ 
+    const chart = `https://image-charts.com/chart.js/2.8.0?bkg=rgb(54,57,63)&c=
+    {
+        type:'line',
+        data:{
+            labels:[${_labels.map(function(ele){return "'" + ele + "'"})}],
+            datasets:[
+            {
+                backgroundColor:'rgba(44,47,51,0)',
+                borderColor:'rgb(277,166,0)',
+                data:[${_data}],label:'RP'
+            }
+        ]
+    },
+    options:{
+        scales:{
+            yAxes:[{
+                ticks:{
+                    stepSize: 200
+                }
+            }
+        ]
+    }
+}
+}`
+}
 
 client.once("ready", () => {
     console.log("Edgy Loba is now online!");
@@ -411,46 +442,25 @@ client.on("message", async message => {
         message.channel.stopTyping();
     }
 
-    if (command === "map"){
-        setTimeout(async () => {
-            message.channel.startTyping();
-            const URI = `https://api.mozambiquehe.re/maprotation?version=2&auth=${config.ALS_Token}`;
-            const encodedURI = encodeURI(URI);          
-            await axios.get(encodedURI)
-            .then(function (response){
-                const embed = new Discord.MessageEmbed()
-                .setTitle("Map Rotation")
-                .addFields(
-                    {
-                        name: "__Battle Royale__",
-                        value: `Current map: **${response.data.battle_royale.current.map}**\nNext Map: **${response.data.battle_royale.next.map}**\nRemaining: **${response.data.battle_royale.current.remainingMins} min**`,
-                        inline: true
-                    },
-                    {
-                        name: "__Arenas__",
-                        value: `Current map: **${response.data.arenas.current.map}**\nNext Map: **${response.data.arenas.next.map}**\nRemaining: **${response.data.arenas.current.remainingMins} min**`,
-                        inline: true
-                    },
-                    {
-                        name: "__Arenas Ranked__",
-                        value: `Current map: **${response.data.arenasRanked.current.map}**\nNext Map: **${response.data.arenasRanked.next.map}**\nRemaining: **${response.data.arenasRanked.current.remainingMins} min**`,
-                        inline: true
-                    }
-                )
-                .setImage(response.data.battle_royale.current.asset)
-                .setColor("#e3a600");
-                message.channel.stopTyping();
-                message.channel.send({embed});
-            }).catch((error) => {
-                console.log(error);
-                message.channel.stopTyping();
-            });
-        }, 255);
+    if(command === "map"){
+        message.channel.startTyping();
+
+        makeMapEmbed().then(result =>{
+            message.channel.send(result);
+        });
+
+        message.channel.stopTyping();
     }
 
     if (command === "status"){
-        //todo
+        message.channel.startTyping();
+
+        mapStatusEmbed().then(result => {
+            message.channel.send(result);
+        });
+
+        message.channel.stopTyping();
     }
 });
 
-client.login(config.token);
+client.login(process.env.DISCORD_TOKEN);
