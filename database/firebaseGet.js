@@ -20,9 +20,9 @@ async function getAllGuildUsers(guildID){
     .then((snapshot) => {
         if(snapshot.exists()){
             return snapshot;
-        }else{return Error("Guild does not exist in the database!")}
+        }else{return Promise.reject("Guild does not exist in the database!")}
     }).catch((error) => {
-        return error;
+        return Promise.reject(error);
     });
 }
 
@@ -31,9 +31,9 @@ async function getUser(guildID, userID){
     .then((snapshot) => {
         if(snapshot.exists()){
             return snapshot;
-        }else{return Error("User or guild does not exist in the database!")}
+        }else{return Promise.reject("User or guild does not exist in the database!")}
     }).catch((error) => {
-        return error;
+        return Promise.reject(error);
     });
 }
 
@@ -49,9 +49,9 @@ async function getUserHistoryData(guildID, userID){
 
             let history = labels.map(function(a,b) {return [a, dataArray[b]]});
             return history;
-        }else{return Error("User or guild does not exist in the database!")}
+        }else{return Promise.reject("User or guild does not exist in the database!")}
     }).catch((error) => {
-        return error;
+        return Promise.reject(error);
     });
 }
 
