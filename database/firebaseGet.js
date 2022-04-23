@@ -20,12 +20,43 @@ async function getAllGuildUsers(guildID){
     .then((snapshot) => {
         if(snapshot.exists()){
             return snapshot;
-        }
+        }else{return Error("Guild does not exist in the database!")}
+    }).catch((error) => {
+        return error;
+    });
+}
+
+async function getUser(guildID, userID){
+    return await get(child(dbRef, "gulds/" + guildID + "/users/" + userID))
+    .then((snapshot) => {
+        if(snapshot.exists()){
+            return snapshot;
+        }else{return Error("User or guild does not exist in the database!")}
+    }).catch((error) => {
+        return error;
+    });
+}
+
+async function getUserHistoryData(guildID, userID){
+    let dates = [], rps = [];
+    return await get(child(dbRef, "guilds/" + guildID + "/history/" + userID))
+    .then((snapshot) => {
+        if(snapshot.exists){
+            snapshot.forEach(function (data) {
+                dates.push(data.val().date);
+                rps.push(data.val().rp);
+            });
+
+            let history = labels.map(function(a,b) {return [a, dataArray[b]]});
+            return history;
+        }else{return Error("User or guild does not exist in the database!")}
     }).catch((error) => {
         return error;
     });
 }
 
 module.exports = {
-    getAllGuildUsers
+    getAllGuildUsers,
+    getUser,
+    getUserHistoryData
 }

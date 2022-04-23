@@ -15,7 +15,6 @@ const firebaseConfig = {
 const app = firebase.initializeApp(firebaseConfig);
 const dbRef = getDatabase(app);
 
-
 function writeUserData(guildID, userID, IGN, rp, platform, level){ 
     set(ref(dbRef, "guilds/" + guildID + "/users/" + userID), {
         username: IGN,
