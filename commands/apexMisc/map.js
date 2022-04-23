@@ -1,6 +1,6 @@
 const axios  = require("axios");
 const Discord = require('discord.js');
-require("dotenv").config();
+require("dotenv").config()
 
 async function getData(){
     let data;

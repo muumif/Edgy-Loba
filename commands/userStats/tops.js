@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const { getUserHistoryData } = require('../../database/firebaseGet');
-require("dotenv").config();
+require("dotenv").config()
 
 
 async function getTopHistoryData(guildID, userID){
