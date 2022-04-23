@@ -1,9 +1,11 @@
 {
   "name": "EdgyLoba",
-  "version": "1",
+  "version": "0.9.4",
   "description": "",
   "main": "main.js",
   "scripts": {
+    "start": "node main.js",
+    "dev": "echo Todo" ,
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "muumif",
