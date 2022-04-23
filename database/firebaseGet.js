@@ -47,7 +47,7 @@ async function getUserHistoryData(guildID, userID){
                 rps.push(data.val().rp);
             });
 
-            let history = labels.map(function(a,b) {return [a, dataArray[b]]});
+            let history = dates.map(function(a,b) {return [a, rps[b]]});
             return history;
         }else{return Promise.reject("User or guild does not exist in the database!")}
     }).catch((error) => {

@@ -377,7 +377,7 @@ client.on("message", async message => {
 
     if(command === "top"){
         message.channel.startTyping();
-        makeTopEmbed(message.guild.id).then(result => {
+        makeTopEmbed(message.guild.id, message.author.id).then(result => {
             message.channel.send(result);
         });
         message.channel.stopTyping();
