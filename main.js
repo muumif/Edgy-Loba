@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const config = require('./config.json');
+const config = require('./config.json'); //TODO: Get rid of config.json and go over to .env file
 const axios = require('axios');
 const firebase = require("firebase/app");
 require("dotenv").config();
@@ -7,11 +7,13 @@ const { set, getDatabase, ref, get, child } = require('firebase/database');
 
 const { makeMapEmbed } = require('./commands/apexMisc/map');
 const { makeStatusEmbed } = require('./commands/apexMisc/status');
-const { makeTopEmbed } = require('./commands/userStats/tops');
+const { makeTopEmbed } = require('./commands/userStats/localTop')
 const { makeHelpEmbed } = require('./commands/help');
 
 const client = new Discord.Client();
 const prefix = process.env.PREFIX;
+
+//TODO: Remove evrything expect commands and calls to other command modules
 
 const firebaseConfig = {
     apiKey: process.env.FIREBASE_APIKEY,
@@ -89,37 +91,11 @@ async function fetchUser(id, callback){
     callback(user);
 };
 
+//TODO: Chart module and better chart making
 function makeChart(_labels = [],_data = []){
     const chart = `https://image-charts.com/chart.js/2.8.0?bkg=rgb(54,57,63)&c={type:'line',data:{labels:[${_labels.map(function(ele){return "'" + ele + "'"})}],datasets:[{backgroundColor:'rgba(44,47,51,0)',borderColor:'rgb(277,166,0)',data:[${_data}],label:'RP'}]},options:{scales:{yAxes:[{ticks:{stepSize: 200}}]}}}`;
     return encodeURI(chart);
 };
-
-function makeTopChart(labels = [], data = [], datasetsNumber){ 
-    const chart = `https://image-charts.com/chart.js/2.8.0?bkg=rgb(54,57,63)&c=
-    {
-        type:'line',
-        data:{
-            labels:[${_labels.map(function(ele){return "'" + ele + "'"})}],
-            datasets:[
-            {
-                backgroundColor:'rgba(44,47,51,0)',
-                borderColor:'rgb(277,166,0)',
-                data:[${_data}],label:'RP'
-            }
-        ]
-    },
-    options:{
-        scales:{
-            yAxes:[{
-                ticks:{
-                    stepSize: 200
-                }
-            }
-        ]
-    }
-}
-}`
-}
 
 client.once("ready", () => {
     console.log("Edgy Loba is now online!");

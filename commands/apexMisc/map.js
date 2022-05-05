@@ -3,16 +3,13 @@ const Discord = require('discord.js');
 require("dotenv").config();
 
 async function getData(){
-    let data;
     const URI = `${process.env.ALS_ENDPOINT}/maprotation?version=2&auth=${process.env.ALS_TOKEN}`;
-    await axios.get(encodeURI(URI))
+    return await axios.get(encodeURI(URI))
     .then(function (response){
-            data = response;
+            return response;
     }).catch((error) => {
-        console.log(error); //Deal with this maybe write to db as a log
+        return Promise.reject(error);
     });
-    
-    return data;
 }
 
 async function makeMapEmbed(){

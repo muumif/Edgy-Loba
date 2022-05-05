@@ -17,6 +17,7 @@ const dbRef = getDatabase(app);
 
 function writeUserData(guildID, userID, IGN, rp, platform, level){ 
     set(ref(dbRef, "guilds/" + guildID + "/users/" + userID), {
+        discordID: `"${userID}"`,
         username: IGN,
         platform: platform,
         level: level,

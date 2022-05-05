@@ -37,17 +37,18 @@ async function getUser(guildID, userID){
     });
 }
 
-async function getUserHistoryData(guildID, userID){
+async function getUserHistory(guildID, userID){
     let dates = [], rps = [];
     return await get(child(dbRef, "guilds/" + guildID + "/history/" + userID))
     .then((snapshot) => {
         if(snapshot.exists){
+            console.log(snapshot.val());
             snapshot.forEach(function (data) {
                 dates.push(data.val().date);
                 rps.push(data.val().rp);
             });
 
-            let history = labels.map(function(a,b) {return [a, dataArray[b]]});
+            let history = dates.map(function(a,b) {return [a, rps[b]]});
             return history;
         }else{return Promise.reject("User or guild does not exist in the database!")}
     }).catch((error) => {
@@ -58,5 +59,5 @@ async function getUserHistoryData(guildID, userID){
 module.exports = {
     getAllGuildUsers,
     getUser,
-    getUserHistoryData
+    getUserHistory
 }

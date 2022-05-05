@@ -45,3 +45,5 @@ async function makeHelpEmbed(){
 module.exports = {
     makeHelpEmbed
 }
+
+//TODO: Document every command with comments or whatever
