@@ -1,6 +1,6 @@
 const axios  = require("axios");
 const Discord = require('discord.js');
-require("dotenv").config();
+require("dotenv").config()
 
 async function getData(){
     const URI = `${process.env.ALS_ENDPOINT}/servers?auth=${process.env.ALS_TOKEN}`;

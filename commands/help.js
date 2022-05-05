@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-require("dotenv").config();
+require("dotenv").config()
 
 async function makeHelpEmbed(){
     const embed = new Discord.MessageEmbed()

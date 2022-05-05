@@ -1,5 +1,5 @@
 const firebase = require("firebase/app");
-require("dotenv").config();
+require("dotenv").config()
 const { getDatabase, ref, get, child } = require('firebase/database');
 
 const firebaseConfig = {
