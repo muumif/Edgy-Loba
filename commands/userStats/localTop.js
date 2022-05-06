@@ -15,11 +15,7 @@ async function getData(guildID) {
 	return await getAllGuildUsers(guildID).then(result => {
 		const allUsers = [];
 		if (!result.exists()) {
-			const embed = new Discord.MessageEmbed()
-				.setTitle("No user data!")
-				.setDescription("No user data has been recorded for this server!")
-				.setColor("#e3a600");
-			return Promise.reject(embed);
+			return Promise.reject(804);
 		}
 		result.forEach(function(_child) {
 			allUsers.push(_child.val());
@@ -58,11 +54,14 @@ async function makeTopEmbed(guildID) {
 		return embed_1;
 
 	}).catch(error => {
-		const embed = new Discord.MessageEmbed()
-			.setTitle("Error")
-			.setDescription(error)
-			.setColor("#e3a600");
-		return Promise.reject(embed);
+		if (error == 804) {
+			const embed = new Discord.MessageEmbed()
+				.setTitle("No user data!")
+				.setDescription("No user data has been recorded for this server!")
+				.setColor("#e3a600");
+			return Promise.reject(embed);
+		}
+		return Promise.reject(error); //TODO: Make error codes
 	});
 }
 
