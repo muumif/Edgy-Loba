@@ -26,7 +26,7 @@ async function getData(guildID) {
 		allUsers.sort((a, b) => {return b.RP - a.RP;});
 
 		return allUsers;
-	}).catch((error) => {
+	}).catch(error => {
 		return Promise.reject(error);
 	});
 }
@@ -59,8 +59,12 @@ async function makeTopEmbed(guildID) {
 		const embed_1 = await discordIDToName();
 		return embed_1;
 
-	}).catch((error) => {
-		return Promise.reject(error); //TODO: EMbed
+	}).catch(error => {
+		const embed = new Discord.MessageEmbed()
+			.setTitle("Error")
+			.setDescription(error)
+			.setColor("#e3a600");
+		return Promise.reject(embed);
 	});
 }
 

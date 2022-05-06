@@ -20,7 +20,11 @@ async function makeUnlinkEmbed(guildID, userID) {
 			return embed;
 		}
 	}).catch(error => {
-		return Promise.reject(error);//TODO: Make embed
+		const embed = new Discord.MessageEmbed()
+			.setTitle("Error")
+			.setDescription(error)
+			.setColor("#e3a600");
+		return Promise.reject(embed);
 	});
 }
 

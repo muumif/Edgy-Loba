@@ -59,8 +59,7 @@ async function makeLinkEmbed(IGN, platform, guildID, userID, messageAuthor) {
 						.setColor("#e3a600");
 					return embed;
 				}).catch(function(error) {
-					console.log(error);
-					return Promise.reject(error); //TODO: Make embed
+					return Promise.reject(error);
 				});
 		});
 	}).catch(error => {
