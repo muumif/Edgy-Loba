@@ -1,5 +1,6 @@
 const Discord = require("discord.js");
 const { getAllGuildUsers } = require("../../database/firebaseGet");
+const { UIDToIGN } = require("../../moduels/UIDToIGN");
 require("dotenv").config();
 
 const client = new Discord.Client();
@@ -40,14 +41,11 @@ async function makeTopEmbed(guildID) {
 		const discordIDToName = async _ => {
 			for (let i = 0; i < result.length; i++) {
 				const fetch = await fetchUser(result[i].discordID);
+				result[i].IGN = await UIDToIGN(result[i].originUID, result[i].platform);
 				result[i].discordName = fetch.username;
 				result[i].discordDiscriminator = fetch.discriminator;
 				result[i].discordImg = fetch.avatarURL();
-			}
-
-			for (let j = 0, count = 1; j < result.length; j++) {
-				embed.addField(count + ". " + result[j].username + " / " + result[j].discordName + "#" + result[j].discordDiscriminator, "RP: " + result[j].RP, false);
-				count++;
+				embed.addField((i + 1) + ". " + result[i].IGN + " / " + result[i].discordName + "#" + result[i].discordDiscriminator, "RP: " + result[i].RP, false); // FIXME: Usernames are now replace with UID-s
 			}
 
 			embed.setThumbnail(result[0].discordImg);

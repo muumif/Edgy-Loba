@@ -321,7 +321,7 @@ client.on("message", async message => {
 		message.channel.stopTyping();
 	}
 
-	if (command === "pred") {
+	if (command === "pred" || command === "predator") {
 		message.channel.startTyping();
 		makePredatorEmbed().then(result => {
 			message.channel.send(result);
