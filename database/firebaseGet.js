@@ -18,9 +18,7 @@ const dbRef = ref(getDatabase(app));
 async function getAllGuildUsers(guildID){
     return await get(child(dbRef, "guilds/" + guildID + "/users"))
     .then((snapshot) => {
-        if(snapshot.exists()){
             return snapshot;
-        }else{return Promise.reject("Guild does not exist in the database!")}
     }).catch((error) => {
         return Promise.reject(error);
     });
@@ -29,9 +27,7 @@ async function getAllGuildUsers(guildID){
 async function getUser(guildID, userID){
     return await get(child(dbRef, "gulds/" + guildID + "/users/" + userID))
     .then((snapshot) => {
-        if(snapshot.exists()){
             return snapshot;
-        }else{return Promise.reject("User or guild does not exist in the database!")}
     }).catch((error) => {
         return Promise.reject(error);
     });
@@ -50,7 +46,7 @@ async function getUserHistory(guildID, userID){
 
             let history = dates.map(function(a,b) {return [a, rps[b]]});
             return history;
-        }else{return Promise.reject("User or guild does not exist in the database!")}
+        }
     }).catch((error) => {
         return Promise.reject(error);
     });

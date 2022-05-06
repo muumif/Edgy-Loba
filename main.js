@@ -9,6 +9,8 @@ const { makeMapEmbed } = require('./commands/apexMisc/map');
 const { makeStatusEmbed } = require('./commands/apexMisc/status');
 const { makeTopEmbed } = require('./commands/userStats/localTop')
 const { makeHelpEmbed } = require('./commands/help');
+const { makeStatsEmbed } = require('./commands/userStats/stats');
+const { makeLinkEmbed } = require('./commands/userStats/link');
 
 const client = new Discord.Client();
 const prefix = process.env.PREFIX;
@@ -116,65 +118,14 @@ client.on("message", async message => {
         });
     }
 
-    if (command === "link"){ // Find a way to confirm that it is their account
-        const dbRef = ref(getDatabase(app));
-
-        await get(child(dbRef, "guilds/" + message.guild.id + "/users/" + message.author.id))
-        .then((snapshot) => {
-            if(snapshot.exists()){
-                const embed = new Discord.MessageEmbed()
-                .setTitle("Username already linked!")
-                .setDescription("Do unlink your account use **!unlink**")
-                .setColor("#e3a600")
-                return message.channel.send({embed}); 
-            }else{
-                if(args[0] == undefined){
-                    const embed = new Discord.MessageEmbed()
-                    .setTitle("Wrong format!")
-                    .setDescription("Correct way: **!link (Apex username) (PC/PS4/X1)**")
-                    .setColor("#e3a600");
-                    return message.channel.send({embed});
-                }
-                if(args[1] == undefined){
-                    const embed = new Discord.MessageEmbed()
-                    .setTitle("Wrong format!")
-                    .setDescription(`Correct way: **!link ${args[0]} (PC/PS4/X1)**`)
-                    .setColor("#e3a600");
-                    return message.channel.send({embed});
-                }
-                var username = args[0];
-                var platform = args[1].toUpperCase();
-                setTimeout(async () => {
-                    const URI = `https://api.mozambiquehe.re/bridge?version=5&platform=${platform}&player=${username}&auth=${config.ALS_Token}`;
-                    const encodedURI = encodeURI(URI);
-                    await axios.get(encodedURI)
-                    .then(function (response){
-                    writeUserData(message.guild.id, message.author.id, response.data.global.name, response.data.global.rank.rankScore, response.data.global.rank.rankImg, platform, response.data.global.level);
-                    writeHistoryData(response.data.global.rank.rankScore, message.author.id, message.guild.id);
-                    const embed = new Discord.MessageEmbed()
-                    .setTitle("Username successfully linked!")
-                    .setDescription(`${message.author} linked to **${username} using ${platform}**`)
-                    .setColor("#e3a600");
-                      message.channel.send({embed});
-                      message.channel.stopTyping();
-                    })
-          
-                    .catch(function(error){
-                        if(error.response){
-                            message.channel.send(
-                                new Discord.MessageEmbed()
-                                .setTitle("Error")
-                                .setDescription(error.response.data.Error)
-                                .setColor("#e3a600")
-                            );
-                            message.channel.stopTyping();
-                        }
-                    });
-                  }, 250);
-            }
-        }).catch((error) => {
+    if (command === "link"){
+        message.channel.startTyping();
+        makeLinkEmbed(args[0], args[1], message.guild.id, message.author.id, message.author).then(result => {
+            message.channel.send(result);
+        }).catch(error => {
             message.channel.send(error);
-        })    
+        });
+        message.channel.stopTyping();
     }
 
     if (command === "unlink"){
@@ -355,6 +306,8 @@ client.on("message", async message => {
         message.channel.startTyping();
         makeTopEmbed(message.guild.id, message.author.id).then(result => {
             message.channel.send(result);
+        }).catch((error) => {
+            message.channel.send(error);
         });
         message.channel.stopTyping();
     }

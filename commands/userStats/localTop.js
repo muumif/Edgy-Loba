@@ -13,6 +13,13 @@ async function fetchUser(id){
 async function getData(guildID){
     return await getAllGuildUsers(guildID).then(result => {
         let allUsers = [];
+        if (!result.exists()){
+            const embed = new Discord.MessageEmbed()
+            .setTitle("No user data!")
+            .setDescription("No user data has been recorded for this server!")
+            .setColor("#e3a600")
+            return Promise.reject(embed);
+        }
         result.forEach(function(_child){
             allUsers.push(_child.val());
         })
@@ -25,7 +32,7 @@ async function getData(guildID){
 }
 
 async function makeTopEmbed(guildID){ 
-    return await getData(guildID).then(result => {
+    return await getData(guildID).then(async result => {
         const embed = new Discord.MessageEmbed()
         .setTitle("Leaderboard")
         .setColor("#e3a600");
@@ -48,9 +55,8 @@ async function makeTopEmbed(guildID){
             return embed;
         }
 
-        return discordIDToName().then(embed => {
-            return embed;
-        })
+        const embed_1 = await discordIDToName();
+        return embed_1;
         
     }).catch((error) => {
         return Promise.reject(error);

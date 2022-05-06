@@ -15,19 +15,18 @@ const firebaseConfig = {
 const app = firebase.initializeApp(firebaseConfig);
 const dbRef = getDatabase(app);
 
-function writeUserData(guildID, userID, IGN, rp, platform, level){ 
+function writeUserData(guildID, userID, UID, rp, platform){ 
     set(ref(dbRef, "guilds/" + guildID + "/users/" + userID), {
-        discordID: `"${userID}"`,
-        username: IGN,
-        platform: platform,
-        level: level,
-        rp: rp
+        discordID: `${userID}`,
+        originUID: UID,
+        RP: rp,
+        platform: platform
     });
 };
 
 function writeHistoryData(guildID, userID, rp){
     let today = new Date();
-    let date = today.getUTCDate() + "-" + (today.getUTCMonth + 1) + "-" + today.getUTCFullYear();
+    let date = today.getUTCDate() + "-" + (today.getUTCMonth() + 1) + "-" + today.getUTCFullYear();
 
     set(child(ref(dbRef), "guilds/" + guildID + "/history/" + userID + "/" + date), {
         date: date,
