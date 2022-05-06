@@ -16,7 +16,7 @@ async function makeStatusEmbed() {
 	return getData().then(result => {
 		const embed = new Discord.MessageEmbed()
 			.setTitle("Server Status")
-			.setDescription("Data from apexlegendsstatus.com")
+			.setDescription("Data from https://apexlegendsstatus.com")
 			.addFields(
 				{
 					name: ":flag_eu: EU-West",

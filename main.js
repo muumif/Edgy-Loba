@@ -12,6 +12,7 @@ const { makeHelpEmbed } = require("./commands/help");
 const { makeStatsEmbed } = require("./commands/userStats/stats");
 const { makeLinkEmbed } = require("./commands/userStats/link");
 const { makeUnlinkEmbed } = require("./commands/userStats/unlink");
+const { makePredatorEmbed } = require("./commands/apexMisc/predCap");
 
 const client = new Discord.Client();
 const prefix = process.env.PREFIX;
@@ -309,6 +310,14 @@ client.on("message", async message => {
 	if (command === "status") {
 		message.channel.startTyping();
 		makeStatusEmbed().then(result => {
+			message.channel.send(result);
+		});
+		message.channel.stopTyping();
+	}
+
+	if (command === "pred") {
+		message.channel.startTyping();
+		makePredatorEmbed().then(result => {
 			message.channel.send(result);
 		});
 		message.channel.stopTyping();
