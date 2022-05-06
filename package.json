@@ -15,5 +15,8 @@
     "dotenv": "^16.0.0",
     "firebase": "^9.6.8",
     "json-bigint": "^1.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.14.0"
   }
 }
