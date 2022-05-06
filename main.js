@@ -13,6 +13,8 @@ const { makeStatsEmbed } = require("./commands/userStats/stats");
 const { makeLinkEmbed } = require("./commands/userStats/link");
 const { makeUnlinkEmbed } = require("./commands/userStats/unlink");
 const { makePredatorEmbed } = require("./commands/apexMisc/predCap");
+const { makeCraftingEmbed } = require("./commands/apexMisc/crafting");
+const { makeNewsEmbed } = require("./commands/apexMisc/news");
 
 const client = new Discord.Client();
 const prefix = process.env.PREFIX;
@@ -303,6 +305,8 @@ client.on("message", async message => {
 		message.channel.startTyping();
 		makeMapEmbed().then(result => {
 			message.channel.send(result);
+		}).catch(error => {
+			message.channel.send(error);
 		});
 		message.channel.stopTyping();
 	}
@@ -311,6 +315,8 @@ client.on("message", async message => {
 		message.channel.startTyping();
 		makeStatusEmbed().then(result => {
 			message.channel.send(result);
+		}).catch(error => {
+			message.channel.send(error);
 		});
 		message.channel.stopTyping();
 	}
@@ -319,6 +325,28 @@ client.on("message", async message => {
 		message.channel.startTyping();
 		makePredatorEmbed().then(result => {
 			message.channel.send(result);
+		}).catch(error => {
+			message.channel.send(error);
+		});
+		message.channel.stopTyping();
+	}
+
+	if (command == "crafting") {
+		message.channel.startTyping();
+		makeCraftingEmbed().then(result => {
+			message.channel.send(result);
+		}).catch(error => {
+			message.channel.send(error);
+		});
+		message.channel.stopTyping();
+	}
+
+	if (command === "news") {
+		message.channel.startTyping();
+		makeNewsEmbed().then(result => {
+			message.channel.send(result);
+		}).catch(error => {
+			message.channel.send(error);
 		});
 		message.channel.stopTyping();
 	}

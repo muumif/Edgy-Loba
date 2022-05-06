@@ -51,6 +51,7 @@ async function makeTopEmbed(guildID) {
 			}
 
 			embed.setThumbnail(result[0].discordImg);
+			//TODO: Chart where all the users are in
 
 			return embed;
 		};
@@ -59,7 +60,7 @@ async function makeTopEmbed(guildID) {
 		return embed_1;
 
 	}).catch((error) => {
-		return Promise.reject(error);
+		return Promise.reject(error); //TODO: EMbed
 	});
 }
 
