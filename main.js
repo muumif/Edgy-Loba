@@ -11,6 +11,7 @@ const { makeTopEmbed } = require('./commands/userStats/localTop')
 const { makeHelpEmbed } = require('./commands/help');
 const { makeStatsEmbed } = require('./commands/userStats/stats');
 const { makeLinkEmbed } = require('./commands/userStats/link');
+const { makeUnlinkEmbed } = require('./commands/userStats/unlink');
 
 const client = new Discord.Client();
 const prefix = process.env.PREFIX;
@@ -129,33 +130,13 @@ client.on("message", async message => {
     }
 
     if (command === "unlink"){
-        const dbRef = ref(getDatabase(app));
-
-        await get(child(dbRef, "guilds/" + message.guild.id + "/users/" + message.author.id))
-        .then((snapshot) => {
-            if(snapshot.exists()){
-                set(ref(getDatabase(app), "guilds/" + message.guild.id + "/users/" + message.author.id), null);
-                const embed = new Discord.MessageEmbed()
-                .setTitle("Username has been unlinked!")
-                .setColor("#e3a600");
-                return message.channel.send({embed});
-            }else{
-                const embed = new Discord.MessageEmbed()
-                .setTitle("You don't have any linked usernames!")
-                .setDescription("You can link your username: **!link (Apex username) (PC/PS4/X1)**")
-                .setColor("#e3a600");
-                return message.channel.send({embed})
-            }
-        }).catch((error) => {
-            message.channel.send(
-                new Discord.MessageEmbed()
-                .setTitle("Error")
-                .setDescription(error.response.data.Error)
-                .setColor("#e3a600")
-            );
-            message.channel.stopTyping();
+        message.channel.startTyping();
+        makeUnlinkEmbed(message.guild.id, message.author.id).then(result => {
+            message.channel.send(result);
+        }).catch(error => {
+            message.channel.send(error);
         });
-
+        message.channel.stopTyping();
     }
 
     if (command === "stats"){

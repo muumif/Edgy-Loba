@@ -25,9 +25,9 @@ async function getAllGuildUsers(guildID){
 }
 
 async function getUser(guildID, userID){
-    return await get(child(dbRef, "gulds/" + guildID + "/users/" + userID))
+    return await get(child(dbRef, "guilds/" + guildID + "/users/" + userID))
     .then((snapshot) => {
-            return snapshot;
+        return snapshot;
     }).catch((error) => {
         return Promise.reject(error);
     });

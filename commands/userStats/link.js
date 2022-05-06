@@ -61,10 +61,10 @@ async function makeLinkEmbed(IGN, platform, guildID, userID, messageAuthor){
                 return embed;
             }).catch(function(error){
                 console.log(error)
-                return Promise.reject(error);
+                return Promise.reject(error); //TODO: Make embed
             })
         })
-    }).catch((error) => {
+    }).catch(error => {
         const embed = new Discord.MessageEmbed()
         .setTitle("Error")
         .setDescription(error.response.data)

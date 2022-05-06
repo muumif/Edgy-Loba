@@ -24,6 +24,10 @@ function writeUserData(guildID, userID, UID, rp, platform){
     });
 };
 
+function deleteUserData(guildID, userID){
+    set(ref(dbRef, "guilds/" + guildID + "/users/" + userID), null);
+}
+
 function writeHistoryData(guildID, userID, rp){
     let today = new Date();
     let date = today.getUTCDate() + "-" + (today.getUTCMonth() + 1) + "-" + today.getUTCFullYear();
@@ -36,5 +40,6 @@ function writeHistoryData(guildID, userID, rp){
 
 module.exports = {
     writeUserData,
+    deleteUserData,
     writeHistoryData
 }

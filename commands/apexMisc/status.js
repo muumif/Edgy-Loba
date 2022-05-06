@@ -7,7 +7,7 @@ async function getData(){
     return await axios.get(encodeURI(URI))
     .then(function (response){
             return response;
-    }).catch((error) => {
+    }).catch(error => {
         return Promise.reject(error);
     });
 }
@@ -56,7 +56,9 @@ async function makeStatusEmbed(){
         )
         .setColor("#e3a600");
         return embed;
-    });
+    }).catch(error => {
+        return Promise.reject(error); //TODO: Make embed
+    })
 }
 
 module.exports = {
