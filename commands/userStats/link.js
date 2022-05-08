@@ -32,7 +32,7 @@ async function makeLinkEmbed(IGN, platform, guildID, userID, messageAuthor) {
 				return embed;
 			}
 		}
-
+		//TODO: Reminder to use origin name not steam
 		if (platform == "pc" || platform == "ORIGIN" || platform == "origin") {
 			platform = "PC";
 		}

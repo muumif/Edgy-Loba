@@ -117,9 +117,11 @@ client.on("message", async message => {
 	const command = args.shift().toLowerCase();
 
 	if (command === "help") {
+		message.channel.startTyping();
 		makeHelpEmbed().then(result => {
 			message.channel.send(result);
 		});
+		message.channel.stopTyping();
 	}
 
 	if (command === "link") {
@@ -143,152 +145,13 @@ client.on("message", async message => {
 	}
 
 	if (command === "stats") {
-		let IGN;
-		let platform;
-		const dbRef = ref(getDatabase(app));
-
-		if (args[0] == undefined) {
-			await get(child(dbRef, "guilds/" + message.guild.id + "/users/" + message.author.id))
-				.then((snapshot) => {
-					if (!snapshot.exists()) {
-						const embed1 = new Discord.MessageEmbed()
-							.setTitle("No username has been linked!")
-							.setDescription("You can link your username: **!link (Apex username) (PC/PS4/X1)**")
-							.setColor("#e3a600");
-						return message.channel.send({ embed1 });
-					}
-					else {
-						const data = snapshot.val();
-						IGN = data.username;
-					}
-				}).catch((error) => {
-					message.channel.send(
-						new Discord.MessageEmbed()
-							.setTitle("Error")
-							.setDescription(error)
-							.setColor("#e3a600"),
-					);
-					message.channel.stopTyping();
-				});
-		}
-		else {(IGN = args[0]);}
-
-		if (args[1] == undefined) {
-			await get(child(dbRef, "guilds/" + message.guild.id + "/users/" + message.author.id))
-				.then((snapshot) => {
-					if (!snapshot.exists()) {
-						const embed2 = new Discord.MessageEmbed()
-							.setTitle("No username has been linked")
-							.setDescription(`You can link your username: **!link ${args[0]} (PC/PS4/X1)**`)
-							.setColor("#e3a600");
-						message.channel.send({ embed2 });
-					}
-					else {
-						const data = snapshot.val();
-						platform = data.platform;
-					}
-				}).catch((error) => {
-					message.channel.send(
-						new Discord.MessageEmbed()
-							.setTitle("Error")
-							.setDescription(error.response.data.Error)
-							.setColor("#e3a600"),
-					);
-					message.channel.stopTyping();
-				});
-		}
-		else {platform = args[1];}
-
 		message.channel.startTyping();
-
-		setTimeout(async () => {
-			const URI = `https://api.mozambiquehe.re/bridge?version=5&platform=${platform.toUpperCase()}&player=${IGN}&auth=${config.ALS_Token}`;
-			const encodedURI = encodeURI(URI);
-			await axios.get(encodedURI)
-				.then(function(response) {
-					const embed = new Discord.MessageEmbed()
-						.setTitle("Stats for " + response.data.global.name)
-						.setAuthor("Platform: " + platform.toUpperCase())
-						.setThumbnail(response.data.global.rank.rankImg)
-						.addFields(
-							{
-								name: "__Level__",
-								value: response.data.global.level,
-								inline: true,
-							},
-							{
-								name: "__Rank__",
-								value: response.data.global.rank.rankName + " " + response.data.global.rank.rankDiv,
-								inline: true,
-							},
-							{
-								name: "__RP__",
-								value: response.data.global.rank.rankScore,
-								inline: true,
-							},
-						)
-						.setColor("#e3a600");
-					if (args[0] == undefined) {
-						get(child(dbRef, "guilds/" + message.guild.id + "/users/" + message.author.id))
-							.then((snapshot) => {
-								if (snapshot.exists()) {
-									writeUserData(message.guild.id, message.author.id, response.data.global.name, response.data.global.rank.rankScore, response.data.global.rank.rankImg, platform, response.data.global.level);
-									writeHistoryData(response.data.global.rank.rankScore, message.author.id, message.guild.id);
-									getHistoryData(message.guild.id, message.author.id, function(_labels, _data) {
-										embed.setImage(makeChart(_labels, _data));
-										embed.setDescription("Account linked to " + message.author.tag);
-										message.channel.send({ embed });
-									});
-								}
-							}).catch((error) => {
-								message.channel.send(
-									new Discord.MessageEmbed()
-										.setTitle("Error")
-										.setDescription(error)
-										.setColor("#e3a600"),
-								);
-								message.channel.stopTyping();
-							});
-					}
-					else {
-						get(child(dbRef, "guilds/" + message.guild.id + "/users/"))
-							.then((snapshot) => {
-								if (snapshot.exists()) {
-									snapshot.forEach(function(user) {
-										if (user.val().username == response.data.global.name) {
-											writeHistoryData(response.data.global.rank.rankScore, user.key, message.guild.id);
-											getHistoryData(message.guild.id, user.key, function(_labels, _data) {
-												embed.setImage(makeChart(_labels, _data));
-												fetchUser(user.key, function(a) {
-													embed.setDescription("Account linked to " + a.username + "#" + a.discriminator);
-													message.channel.send({ embed });
-												});
-											});
-										}
-									});
-								}
-							}).catch((error) => {
-								message.channel.send(
-									new Discord.MessageEmbed()
-										.setTitle("Error")
-										.setDescription(error)
-										.setColor("#e3a600"),
-								);
-							});
-					}
-
-					message.channel.stopTyping();
-
-				}).catch((error) => {
-					message.channel.send(
-						new Discord.MessageEmbed()
-							.setTitle("Error")
-							.setDescription(error)
-							.setColor("#e3a600"),
-					);
-					message.channel.stopTyping();
-				});
-		}, 250);
+		makeStatsEmbed(args[0], args[1], message.guild.id, message.author.id).then(result => {
+			message.channel.send(result);
+		}).catch(error => {
+			console.log(error);
+		});
+		message.channel.stopTyping();
 	}
 
 	if (command === "top") {
@@ -350,6 +213,9 @@ client.on("message", async message => {
 		});
 		message.channel.stopTyping();
 	}
+
+	//TODO: Server settigs command
+	//TODO: User prefrences command
 });
 
 client.login(process.env.DISCORD_TOKEN);

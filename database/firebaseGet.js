@@ -16,7 +16,7 @@ const app = firebase.initializeApp(firebaseConfig);
 const dbRef = ref(getDatabase(app));
 
 async function getAllGuildUsers(guildID) {
-	return await get(child(dbRef, "guilds/" + guildID + "/users"))
+	return await get(child(dbRef, "guilds/" + guildID + "/users/"))
 		.then((snapshot) => {
 			return snapshot;
 		}).catch((error) => {
@@ -38,7 +38,6 @@ async function getUserHistory(guildID, userID) {
 	return await get(child(dbRef, "guilds/" + guildID + "/history/" + userID))
 		.then((snapshot) => {
 			if (snapshot.exists) {
-				console.log(snapshot.val());
 				snapshot.forEach(function(data) {
 					dates.push(data.val().date);
 					rps.push(data.val().rp);
