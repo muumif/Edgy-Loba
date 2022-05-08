@@ -11,7 +11,7 @@ To give Apex Legends players their stats in an easy and convenient way inside of
 
 ### Commands that are being worked on:
 \>**status** - Show the server status of Lobby/Matchmaking server by region. <br />
-\>**gtop** - Global top leaderboard for every Discord server that has the bot in it.\ <br />
+\>**gtop** - Global top leaderboard for every Discord server that has the bot in it. <br />
 
 #### Any suggestions, bugs, issues are welcome in the [GitHub](https://github.com/muumif/Edgy-Loba/issues) issues page.
 
