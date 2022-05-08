@@ -8,7 +8,32 @@ async function getData() {
 		.then(function(response) {
 			return response;
 		}).catch(error => {
-			return Promise.reject(error);
+			const embed = new Discord.MessageEmbed()
+				.setTitle("An error accured")
+				.setColor("#e3a600");
+			switch (error.response) {
+			case 400:
+				embed.setDescription("Something went wrong. Try again in a few minutes.");
+				return Promise.reject(embed);
+			case 403:
+				embed.setDescription("Unauthorized / Unknown API key. The bot might be worked on at this moment. If this continues to happen report it with /bug.");
+				return Promise.reject(embed);
+			case 404:
+				embed.setDescription("Player could not be found. If this continues to happen check that you are using your origin username or report the bug with /bug.");
+				return Promise.reject(embed);
+			case 405:
+				embed.setDescription("External API error. Try again in a few seconds.");
+				return Promise.reject(embed);
+			case 410:
+				embed.setDescription("Unknown platform provided. If this continues to happen report it as a bug with /bug");
+				return Promise.reject(embed);
+			case 429:
+				embed.setDescription("API Rate limit reached. Try again in a few seconds.");
+				return Promise.reject(embed);
+			case 500:
+				embed.setDescription("API Internal error.");
+				return Promise.reject(embed);
+			}
 		});
 }
 
@@ -32,11 +57,7 @@ async function makePredatorEmbed() {
 			.setColor("#e3a600");
 		return embed;
 	}).catch(error => {
-		const embed = new Discord.MessageEmbed()
-			.setTitle("Error")
-			.setDescription(error.response.data)
-			.setColor("#e3a600");
-		return Promise.reject(embed);
+		return Promise.reject(error);
 	});
 }
 
