@@ -16,7 +16,7 @@ async function makeInfoEmbed() {
 			},
 			{
 				name: "Used mem",
-				value: (Math.round(((os.totalmem / (1024 * 1024 * 1024)) - (os.freemem / (1024 * 1024 * 1024))) * 100)) / 100 + " / " + (Math.round((os.totalmem / (1024 * 1024 * 1024)) * 100)) / 100,
+				value: (Math.round((os.totalmem - ((os.totalmem / (1024 * 1024 * 1024)) - (os.freemem / (1024 * 1024 * 1024)))) * 100)) / 100 + " / " + (Math.round((os.totalmem / (1024 * 1024 * 1024)) * 100)) / 100,
 				inline: true,
 			},
 			{
