@@ -15,7 +15,7 @@ async function getData(guildID) {
 	return await getAllGuildUsers(guildID).then(result => {
 		const allUsers = [];
 		if (!result.exists()) {
-			return Promise.reject(804);
+			return Promise.reject(404);
 		}
 		result.forEach(function(_child) {
 			allUsers.push(_child.val());
@@ -53,7 +53,7 @@ async function makeTopEmbed(guildID) {
 		return embed_1;
 
 	}).catch(error => {
-		if (error == 804) {
+		if (error == 404) {
 			const embed = new Discord.MessageEmbed()
 				.setTitle("No user data!")
 				.setDescription("No user data has been recorded for this server!")

@@ -1,6 +1,7 @@
 const firebase = require("firebase/app");
 require("dotenv").config();
 const { getDatabase, ref, get, child } = require("firebase/database");
+const Discord = require("discord.js");
 
 const firebaseConfig = {
 	apiKey: process.env.FIREBASE_APIKEY,
@@ -17,26 +18,28 @@ const dbRef = ref(getDatabase(app));
 
 async function getAllGuildUsers(guildID) {
 	return await get(child(dbRef, "guilds/" + guildID + "/users/"))
-		.then((snapshot) => {
+		.then(snapshot => {
 			return snapshot;
-		}).catch((error) => {
-			return Promise.reject(error);
+		}).catch(error => {
+			console.log(error);
+			return new Discord.MessageEmbed().setTitle("An unknown error accured!").setColor("#e3a600");
 		});
 }
 
 async function getUser(guildID, userID) {
 	return await get(child(dbRef, "guilds/" + guildID + "/users/" + userID))
-		.then((snapshot) => {
+		.then(snapshot => {
 			return snapshot;
-		}).catch((error) => {
-			return Promise.reject(error);
+		}).catch(error => {
+			console.log(error);
+			return new Discord.MessageEmbed().setTitle("An unknown error accured!").setColor("#e3a600");
 		});
 }
 
 async function getUserHistory(guildID, userID) {
 	const dates = [], rps = [];
 	return await get(child(dbRef, "guilds/" + guildID + "/history/" + userID))
-		.then((snapshot) => {
+		.then(snapshot => {
 			if (snapshot.exists) {
 				snapshot.forEach(function(data) {
 					dates.push(data.val().date);
@@ -46,8 +49,9 @@ async function getUserHistory(guildID, userID) {
 				const history = dates.map(function(a, b) {return [a, rps[b]];});
 				return history;
 			}
-		}).catch((error) => {
-			return Promise.reject(error);
+		}).catch(error => {
+			console.log(error);
+			return new Discord.MessageEmbed().setTitle("An unknown error accured!").setColor("#e3a600");
 		});
 }
 

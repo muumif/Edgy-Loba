@@ -23,7 +23,7 @@ const prefix = process.env.PREFIX;
 //TODO: User prefrences command
 //TODO: Update stats and top every day at 23:59 for every guild
 //TODO: link.js Verifying that the user is acctualy who they claim to be
-//TODO: stats.js Clubs when works better it works better
+//TODO: stats.js Clubs when it works better
 //TODO: stats.js Let user choose if arenas ranked or BR ranked or both when cheking stats goes together with user prefrences command
 //TODO: Bug report command
 
@@ -33,19 +33,11 @@ const prefix = process.env.PREFIX;
 //TODO: store.js command
 //TODO: link.js/help.js Reminder to use origin name not steam
 //TODO: localTop.js Chart where all the users are in goes together with charts.js
-//TODO: localtop.js error codes
-//TODO: stats.js error codes
 //TODO: stats.js l167 Update user data goes together with firebaseSet.js
 //TODO: stats.js default to pc platform
-//TODO: unlink.js error codes
 //TODO: help.js command rework with diffrent categories
-//TODO: help.js error codes
-//TODO: firebaseGet.js error codes
 //TODO: firebaseSet.js Update user data function
-//TODO: firebaseSet.js error codes
 //TODO: charts.js makeTopChart function
-//TODO: getUID.js error codes
-//TODO: UIDToIGN.js error codes
 
 client.once("ready", () => {
 	client.user.setPresence({ activity: { name: ">help", type: "LISTENING" }, status: "online" });
