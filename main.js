@@ -13,6 +13,7 @@ const { makeLinkEmbed } = require("./commands/userStats/link");
 const { makeUnlinkEmbed } = require("./commands/userStats/unlink");
 
 const { makeHelpEmbed } = require("./commands/help");
+const { makeInfoEmbed } = require("./commands/info");
 
 const client = new Discord.Client();
 const prefix = process.env.PREFIX;
@@ -50,6 +51,14 @@ client.on("message", async message => {
 	if (command === "help") {
 		message.channel.startTyping();
 		makeHelpEmbed(args[0]).then(result => {
+			message.channel.send(result);
+		});
+		message.channel.stopTyping();
+	}
+
+	if (command === "info") {
+		message.channel.startTyping();
+		makeInfoEmbed().then(result => {
 			message.channel.send(result);
 		});
 		message.channel.stopTyping();
