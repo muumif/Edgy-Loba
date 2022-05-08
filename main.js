@@ -35,6 +35,7 @@ const prefix = process.env.PREFIX;
 //TODO: localTop.js limit to ten people
 
 client.once("ready", () => {
+	console.log("Online!");
 	client.user.setPresence({ activity: { name: ">help", type: "LISTENING" }, status: "online" });
 });
 
