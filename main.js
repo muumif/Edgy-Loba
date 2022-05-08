@@ -33,10 +33,8 @@ const prefix = process.env.PREFIX;
 //TODO: store.js command
 //TODO: link.js/help.js Reminder to use origin name not steam
 //TODO: localTop.js Chart where all the users are in goes together with charts.js
-//TODO: stats.js l167 Update user data goes together with firebaseSet.js
 //TODO: stats.js default to pc platform
 //TODO: help.js command rework with diffrent categories
-//TODO: firebaseSet.js Update user data function
 //TODO: charts.js makeTopChart function
 
 client.once("ready", () => {

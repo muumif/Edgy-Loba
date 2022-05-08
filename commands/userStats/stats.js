@@ -2,7 +2,7 @@ const Discord = require("discord.js");
 const axios = require("axios");
 const { getUser, getUserHistory, getAllGuildUsers } = require("../../database/firebaseGet");
 const { getUserUID } = require("../../moduels/getUID");
-const { writeUserData, writeHistoryData } = require("../../database/firebaseSet");
+const { writeUserData, writeHistoryData, updateUserData } = require("../../database/firebaseSet");
 const { makeStatsChart } = require("../../moduels/charts");
 require("dotenv").config();
 
@@ -96,6 +96,7 @@ async function makeStatsEmbed(_IGN, _platform, guildID, userID) {
 							},
 						)
 						.setColor("#e3a600");
+					updateUserData(guildID, userID, result.data.global.rank.rankScore);
 					writeUserData(guildID, userID, UID, result.data.global.rank.rankScore, platform);
 					writeHistoryData(guildID, userID, result.data.global.rank.rankScore);
 					return getUserHistory(guildID, userID).then(result => {
@@ -189,6 +190,7 @@ async function makeStatsEmbed(_IGN, _platform, guildID, userID) {
 
 				for (let i = 0; i < userArray.length; i++) {
 					if (userArray[i].originUID == apexResult.data.global.uid) {
+						updateUserData(guildID, userID, apexResult.data.global.rank.rankScore);
 						writeHistoryData(guildID, userID, apexResult.data.global.rank.rankScore);
 						await getUserHistory(guildID, userID).then(async userHistory => {
 							for (let i = 0; i < userHistory.length; i++) {
