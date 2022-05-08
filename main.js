@@ -1,110 +1,53 @@
 const Discord = require("discord.js");
-const config = require("./config.json"); //TODO: Get rid of config.json and go over to .env file
-const axios = require("axios");
-const firebase = require("firebase/app");
 require("dotenv").config();
-const { set, getDatabase, ref, get, child } = require("firebase/database");
 
 const { makeMapEmbed } = require("./commands/apexMisc/map");
 const { makeStatusEmbed } = require("./commands/apexMisc/status");
+const { makeNewsEmbed } = require("./commands/apexMisc/news");
+const { makePredatorEmbed } = require("./commands/apexMisc/predCap");
+const { makeCraftingEmbed } = require("./commands/apexMisc/crafting");
+
 const { makeTopEmbed } = require("./commands/userStats/localTop");
-const { makeHelpEmbed } = require("./commands/help");
 const { makeStatsEmbed } = require("./commands/userStats/stats");
 const { makeLinkEmbed } = require("./commands/userStats/link");
 const { makeUnlinkEmbed } = require("./commands/userStats/unlink");
-const { makePredatorEmbed } = require("./commands/apexMisc/predCap");
-const { makeCraftingEmbed } = require("./commands/apexMisc/crafting");
-const { makeNewsEmbed } = require("./commands/apexMisc/news");
+
+const { makeHelpEmbed } = require("./commands/help");
 
 const client = new Discord.Client();
 const prefix = process.env.PREFIX;
 
-//TODO: Remove evrything expect commands and calls to other command modules
+//TODO: Changable per guild with server settings
+//TODO: Server settings command
+//TODO: User prefrences command
+//TODO: Update stats and top every day at 23:59 for every guild
+//TODO: Error codes for every command
+//TODO: crafting.js command
+//TODO: map.js error codes
+//TODO: news.js error codes
+//TODO: predCap.js error codes
+//TODO: status.js error codes
+//TODO: store.js command
+//TODO: link.js Verifying that the user is acctualy who they claim to be
+//TODO: link.js/help.js Reminder to use origin name not steam
+//TODO: localTop.js Chart where all the users are in goes together with charts.js
+//TODO: localtop.js error codes
+//TODO: stats.js Clubs when works better it works better
+//TODO: stats.js Let user choose if arenas ranked or BR ranked or both when cheking stats goes together with user prefrences command
+//TODO: stats.js error codes
+//TODO: stats.js l167 Update user data geos together with firebaseSet.js
+//TODO: unlink.js error codes
+//TODO: help.js command rework with diffrent categories
+//TODO: help.js error codes
+//TODO: firebaseGet.js error codes
+//TODO: firebaseSet.js Update user data function
+//TODO: firebaseSet.js error codes
+//TODO: charts.js makeTopChart function
+//TODO: getUID.js error codes
+//TODO: UIDToIGN.js error codes
 
-const firebaseConfig = {
-	apiKey: process.env.FIREBASE_APIKEY,
-	authDomain: "edgyloba.firebaseapp.com",
-	databaseURL: "https://edgyloba-default-rtdb.europe-west1.firebasedatabase.app",
-	projectId: "edgyloba",
-	storageBucket: "edgyloba.appspot.com",
-	messagingSenderId: process.env.FIREBASE_MESSAGINGSENDERID,
-	appId: process.env.FIREBASE_APPID,
-};
-
-const app = firebase.initializeApp(firebaseConfig);
-
-function writeUserData(guildID, userID, name, currentRP, rankIMG, platform, level) {
-	const database = getDatabase(app);
-	set(ref(database, "guilds/" + guildID + "/users/" + userID), {
-		username: name,
-		platform: platform,
-		level: level,
-		RP: currentRP,
-		img: rankIMG,
-	});
-}
-
-function writeHistoryData(rp, userID, guildID) {
-	const today = new Date();
-	const monthVal = today.getUTCMonth() + 1;
-	const date = today.getUTCDate() + "-" + monthVal + "-" + today.getUTCFullYear();
-
-	const database = getDatabase(app);
-	set(child(ref(database), "guilds/" + guildID + "/history/" + userID + "/" + date), {
-		date: date,
-		rp: rp,
-	});
-}
-
-async function getHistoryData(guildID, userID, _callback) {
-	const dbRef = ref(getDatabase(app));
-	const labels = [], dataArray = [];
-
-	await get(child(dbRef, "guilds/" + guildID + "/history/" + userID))
-		.then((snapshot) => {
-			if (snapshot.exists) {
-				snapshot.forEach(function(data) {
-					labels.push(data.val().date);
-					dataArray.push(data.val().rp);
-				});
-			}
-		}).catch((error) => {
-			console.log(error);
-		});
-
-
-	const arrayPairs = labels.map(function(a, b) {return [a, dataArray[b]];});
-	for (let i = 0; i < arrayPairs.length; i++) {
-		arrayPairs[i][0] = arrayPairs[i][0].split("-").reverse().join("/");
-	}
-
-	arrayPairs.sort(function(a, b) {
-		const dateA = new Date(a[0]), dateB = new Date(b[0]);
-		return dateA - dateB;
-	});
-
-	const finalLabels = [], finalDataArray = [];
-	for (let i = 0; i < arrayPairs.length; i++) {
-		finalLabels.push(arrayPairs[i][0]);
-		finalDataArray.push(arrayPairs[i][1]);
-	}
-
-	_callback(finalLabels, finalDataArray);
-}
-
-async function fetchUser(id, callback) {
-	const user = await client.users.fetch(id);
-	callback(user);
-}
-
-//TODO: Chart module and better chart making
-function makeChart(_labels = [], _data = []) {
-	const chart = `https://image-charts.com/chart.js/2.8.0?bkg=rgb(54,57,63)&c={type:'line',data:{labels:[${_labels.map(function(ele) {return "'" + ele + "'";})}],datasets:[{backgroundColor:'rgba(44,47,51,0)',borderColor:'rgb(277,166,0)',data:[${_data}],label:'RP'}]},options:{scales:{yAxes:[{ticks:{stepSize: 200}}]}}}`;
-	return encodeURI(chart);
-}
 
 client.once("ready", () => {
-	console.log("Edgy Loba is now online!");
 	client.user.setPresence({ activity: { name: ">help", type: "LISTENING" }, status: "online" });
 });
 
@@ -213,9 +156,6 @@ client.on("message", async message => {
 		});
 		message.channel.stopTyping();
 	}
-
-	//TODO: Server settigs command
-	//TODO: User prefrences command
 });
 
 client.login(process.env.DISCORD_TOKEN);

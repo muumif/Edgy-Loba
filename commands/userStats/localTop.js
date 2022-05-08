@@ -41,11 +41,10 @@ async function makeTopEmbed(guildID) {
 				result[i].discordName = fetch.username;
 				result[i].discordDiscriminator = fetch.discriminator;
 				result[i].discordImg = fetch.avatarURL();
-				embed.addField((i + 1) + ". " + result[i].IGN + " / " + result[i].discordName + "#" + result[i].discordDiscriminator, "RP: " + result[i].RP, false); // FIXME: Usernames are now replace with UID-s
+				embed.addField((i + 1) + ". " + result[i].IGN + " / " + result[i].discordName + "#" + result[i].discordDiscriminator, "RP: " + result[i].RP, false);
 			}
 
 			embed.setThumbnail(result[0].discordImg);
-			//TODO: Chart where all the users are in
 
 			return embed;
 		};
@@ -61,7 +60,7 @@ async function makeTopEmbed(guildID) {
 				.setColor("#e3a600");
 			return Promise.reject(embed);
 		}
-		return Promise.reject(error); //TODO: Make error codes
+		return Promise.reject(error);
 	});
 }
 

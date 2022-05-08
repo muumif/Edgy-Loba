@@ -5,8 +5,6 @@ const { writeUserData, writeHistoryData } = require("../../database/firebaseSet"
 const { getUserUID } = require("../../moduels/getUID");
 require("dotenv").config();
 
-//TODO: Verifying that the user is acctualy who they claim to be
-
 async function makeLinkEmbed(IGN, platform, guildID, userID, messageAuthor) {
 	return getUser(guildID, userID).then(snapshot => {
 		if (snapshot.exists()) {
@@ -32,7 +30,7 @@ async function makeLinkEmbed(IGN, platform, guildID, userID, messageAuthor) {
 				return embed;
 			}
 		}
-		//TODO: Reminder to use origin name not steam
+
 		if (platform == "pc" || platform == "ORIGIN" || platform == "origin") {
 			platform = "PC";
 		}

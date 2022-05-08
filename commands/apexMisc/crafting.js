@@ -25,7 +25,6 @@ async function makeCraftingEmbed() {
 			)
 			.setColor("#e3a600");
 		return embed;
-		//TODO: THIS
 	}).catch(error => {
 		const embed = new Discord.MessageEmbed()
 			.setTitle("Error")

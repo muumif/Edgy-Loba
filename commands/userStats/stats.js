@@ -15,7 +15,6 @@ async function fetchUser(id) {
 }
 
 async function getData(UID, platform) {
-	//TODO: Clubs when works better
 	const URI = `${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${UID}&platform=${platform}&enableClubsBeta=false`;
 	return axios.get(encodeURI(URI))
 		.then(function(response) {
@@ -45,7 +44,6 @@ async function makeStatsEmbed(_IGN, _platform, guildID, userID) {
 	}
 
 	if (_IGN == undefined) {
-		//TODO: Let user choose if arenas ranked or BR ranked or both
 		return await getUser(guildID, userID).then(async userDB => {
 			if (userDB.exists()) {
 				UID = userDB.val().originUID;
@@ -98,7 +96,7 @@ async function makeStatsEmbed(_IGN, _platform, guildID, userID) {
 						});
 					});
 				}).catch(error => {
-					return Promise.reject(error); //TODO: Embed
+					return Promise.reject(error);
 				});
 			}
 			else {
@@ -154,7 +152,7 @@ async function makeStatsEmbed(_IGN, _platform, guildID, userID) {
 			);
 			embed.setColor("#e3a600");
 		}).catch(error => {
-			return Promise.reject(error); //TODO: Embed
+			return Promise.reject(error);
 		});
 
 		const makeEmbed = async _ => {
@@ -166,7 +164,6 @@ async function makeStatsEmbed(_IGN, _platform, guildID, userID) {
 
 				for (let i = 0; i < userArray.length; i++) {
 					if (userArray[i].originUID == apexResult.data.global.uid) {
-						//TODO: Update user data
 						writeHistoryData(guildID, userID, apexResult.data.global.rank.rankScore);
 						await getUserHistory(guildID, userID).then(async userHistory => {
 							for (let i = 0; i < userHistory.length; i++) {

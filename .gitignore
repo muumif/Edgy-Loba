@@ -129,8 +129,5 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-# Config file
-config.json
-
 #Eslint
 .eslintrc.json
