@@ -27,7 +27,7 @@ const prefix = process.env.PREFIX;
 //TODO: stats.js Let user choose if arenas ranked or BR ranked or both when cheking stats goes together with user prefrences command
 //TODO: Bug report command
 
-//GOAL: Rework-of-commands todo-s under here to get it pushed out to master
+//GOAL: 1.0/Rework-of-commands todo-s under here to get it pushed out to master
 //TODO: Error codes for every command
 //TODO: map.js error codes for link shortening
 //TODO: store.js command
