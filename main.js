@@ -17,10 +17,16 @@ const { makeHelpEmbed } = require("./commands/help");
 const client = new Discord.Client();
 const prefix = process.env.PREFIX;
 
+//GOAL: Future after version 1.0/Rework-of-commands
 //TODO: Changable per guild with server settings
 //TODO: Server settings command
 //TODO: User prefrences command
 //TODO: Update stats and top every day at 23:59 for every guild
+//TODO: link.js Verifying that the user is acctualy who they claim to be
+//TODO: stats.js Clubs when works better it works better
+//TODO: stats.js Let user choose if arenas ranked or BR ranked or both when cheking stats goes together with user prefrences command
+
+//GOAL: Rework-of-commands todo-s under here to get it pushed out to master
 //TODO: Error codes for every command
 //TODO: crafting.js command
 //TODO: map.js error codes
@@ -28,14 +34,11 @@ const prefix = process.env.PREFIX;
 //TODO: predCap.js error codes
 //TODO: status.js error codes
 //TODO: store.js command
-//TODO: link.js Verifying that the user is acctualy who they claim to be
 //TODO: link.js/help.js Reminder to use origin name not steam
 //TODO: localTop.js Chart where all the users are in goes together with charts.js
 //TODO: localtop.js error codes
-//TODO: stats.js Clubs when works better it works better
-//TODO: stats.js Let user choose if arenas ranked or BR ranked or both when cheking stats goes together with user prefrences command
 //TODO: stats.js error codes
-//TODO: stats.js l167 Update user data geos together with firebaseSet.js
+//TODO: stats.js l167 Update user data goes together with firebaseSet.js
 //TODO: unlink.js error codes
 //TODO: help.js command rework with diffrent categories
 //TODO: help.js error codes
@@ -45,7 +48,6 @@ const prefix = process.env.PREFIX;
 //TODO: charts.js makeTopChart function
 //TODO: getUID.js error codes
 //TODO: UIDToIGN.js error codes
-
 
 client.once("ready", () => {
 	client.user.setPresence({ activity: { name: ">help", type: "LISTENING" }, status: "online" });
