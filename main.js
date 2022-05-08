@@ -18,24 +18,21 @@ const client = new Discord.Client();
 const prefix = process.env.PREFIX;
 
 //GOAL: Future after version 1.0/Rework-of-commands
-//TODO: Changable per guild with server settings
+//TODO: Changable settings per guild with server settings
 //TODO: Server settings command
 //TODO: User prefrences command
 //TODO: Update stats and top every day at 23:59 for every guild
 //TODO: link.js Verifying that the user is acctualy who they claim to be
+//TODO: Global top on every guild
 //TODO: stats.js Clubs when it works better
 //TODO: stats.js Let user choose if arenas ranked or BR ranked or both when cheking stats goes together with user prefrences command
 //TODO: Bug report command
-
-//GOAL: 1.0/Rework-of-commands todo-s under here to get it pushed out to master
-//TODO: Error codes for every command
-//TODO: map.js error codes for link shortening
-//TODO: store.js command
-//TODO: link.js/help.js Reminder to use origin name not steam
 //TODO: localTop.js Chart where all the users are in goes together with charts.js
-//TODO: stats.js default to pc platform
-//TODO: help.js command rework with diffrent categories
 //TODO: charts.js makeTopChart function
+//TODO: stats.js default platform to whatever is in server settings
+//TODO: store.js command
+//TODO: canvas(image manipulation) for store.js could be used for much more
+//TODO: localTop.js limit to ten people
 
 client.once("ready", () => {
 	client.user.setPresence({ activity: { name: ">help", type: "LISTENING" }, status: "online" });
@@ -51,7 +48,7 @@ client.on("message", async message => {
 
 	if (command === "help") {
 		message.channel.startTyping();
-		makeHelpEmbed().then(result => {
+		makeHelpEmbed(args[0]).then(result => {
 			message.channel.send(result);
 		});
 		message.channel.stopTyping();
