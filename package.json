@@ -5,7 +5,7 @@
   "main": "main.js",
   "scripts": {
     "start": "node main.js",
-    "test": "mocha --timeout 5000"
+    "test": "mocha --timeout 5000 --exit"
   },
   "author": "muumif",
   "license": "ISC",
