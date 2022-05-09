@@ -24,7 +24,7 @@ async function makeLinkEmbed(IGN, platform, guildID, userID, messageAuthor) {
 			}
 			if (platform == undefined) {
 				const embed = new Discord.MessageEmbed()
-					.setTitle("No platform given")
+					.setTitle("No platform given!")
 					.setDescription(`>link **${IGN} [PC | xbox | Playstation | Switch]**`)
 					.setColor("#e3a600");
 				return embed;

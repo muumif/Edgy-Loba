@@ -24,12 +24,6 @@ function writeUserData(guildID, userID, UID, rp, platform) {
 	});
 }
 
-function updateUserData(guildID, userID, rp) {
-	set(ref(dbRef, "guilds/" + guildID + "/users/" + userID), {
-		RP: rp,
-	});
-}
-
 function deleteUserData(guildID, userID) {
 	set(ref(dbRef, "guilds/" + guildID + "/users/" + userID), null);
 }
@@ -48,5 +42,4 @@ module.exports = {
 	writeUserData,
 	deleteUserData,
 	writeHistoryData,
-	updateUserData,
 };

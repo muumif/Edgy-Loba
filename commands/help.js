@@ -5,7 +5,7 @@ async function makeHelpEmbed(args) {
 	switch (args) {
 	case undefined: {
 		const embed = new Discord.MessageEmbed()
-			.setTitle("Help/Commands")
+			.setTitle("Help")
 			.setColor("#e3a600")
 			.setThumbnail("https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256")
 			.addFields(
@@ -37,7 +37,7 @@ async function makeHelpEmbed(args) {
 	}
 	case "stats":{
 		const embed = new Discord.MessageEmbed()
-			.setTitle("Help/Commands")
+			.setTitle("Help stats")
 			.setColor("#e3a600")
 			.setThumbnail("https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256")
 			.addFields(
@@ -68,7 +68,7 @@ async function makeHelpEmbed(args) {
 
 	case "misc":{
 		const embed = new Discord.MessageEmbed()
-			.setTitle("Help/Commands")
+			.setTitle("Help misc")
 			.setColor("#e3a600")
 			.setThumbnail("https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256")
 			.addFields(

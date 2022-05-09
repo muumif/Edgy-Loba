@@ -15,7 +15,7 @@ async function fetchUser(id) {
 }
 
 async function getData(UID, platform) {
-	const URI = `${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${UID}&platform=${platform}&enableClubsBeta=false`;
+	const URI = `${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${UID}&platform=${platform}`;
 	return axios.get(encodeURI(URI))
 		.then(function(response) {
 			return response;
@@ -73,7 +73,7 @@ async function makeStatsEmbed(_IGN, _platform, guildID, userID) {
 			if (userDB.exists()) {
 				UID = userDB.val().originUID;
 				platform = userDB.val().platform;
-				return await getData(UID, platform).then(async result => {
+				return await getData(UID, platform).then(result => {
 					const embed = new Discord.MessageEmbed()
 						.setTitle(result.data.global.name)
 						.setAuthor("Platform: " + platform)
@@ -96,7 +96,6 @@ async function makeStatsEmbed(_IGN, _platform, guildID, userID) {
 							},
 						)
 						.setColor("#e3a600");
-					updateUserData(guildID, userID, result.data.global.rank.rankScore);
 					writeUserData(guildID, userID, UID, result.data.global.rank.rankScore, platform);
 					writeHistoryData(guildID, userID, result.data.global.rank.rankScore);
 					return getUserHistory(guildID, userID).then(result => {
@@ -190,7 +189,7 @@ async function makeStatsEmbed(_IGN, _platform, guildID, userID) {
 
 				for (let i = 0; i < userArray.length; i++) {
 					if (userArray[i].originUID == apexResult.data.global.uid) {
-						updateUserData(guildID, userID, apexResult.data.global.rank.rankScore);
+						writeUserData(guildID, userID, UID, apexResult.data.global.rank.rankScore, platform);
 						writeHistoryData(guildID, userID, apexResult.data.global.rank.rankScore);
 						await getUserHistory(guildID, userID).then(async userHistory => {
 							for (let i = 0; i < userHistory.length; i++) {
