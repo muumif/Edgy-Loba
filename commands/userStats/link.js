@@ -60,7 +60,7 @@ async function makeLinkEmbed(IGN, platform, guildID, userID, messageAuthor) {
 					const embed = new Discord.MessageEmbed()
 						.setTitle("An error accured")
 						.setColor("#e3a600");
-					switch (error.response) {
+					switch (error.response.status) {
 					case 400:
 						embed.setDescription("Something went wrong. Try again in a few minutes.");
 						return Promise.reject(embed);
