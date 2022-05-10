@@ -72,7 +72,7 @@ client.on("message", async message => {
 		makeStatsEmbed(args[0], args[1], message.guild.id, message.author.id).then(result => {
 			message.channel.send(result);
 		}).catch(error => {
-			console.log(error);
+			message.channel.send(error);
 		});
 		message.channel.stopTyping();
 	}
