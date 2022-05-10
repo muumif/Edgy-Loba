@@ -9,26 +9,31 @@ async function getData() {
 			return response;
 		}).catch(error => {
 			const embed = new Discord.MessageEmbed()
-				.setTitle("An error accured")
 				.setColor("#e3a600");
-			switch (error.response) {
+			switch (error.response.status) {
 			case 400:
-				embed.setDescription("Something went wrong. Try again in a few minutes.");
+				embed.setTitle("Something went wrong.");
+				embed.setDescription("Try again in a few minutes.");
 				return Promise.reject(embed);
 			case 403:
-				embed.setDescription("Unauthorized / Unknown API key. The bot might be worked on at this moment. If this continues to happen report it with /bug.");
+				embed.setTitle("Unauthorized / Unknown API key.");
+				embed.setDescription("The bot might be worked on at this moment. If this continues to happen report it with /bug.");
 				return Promise.reject(embed);
 			case 404:
-				embed.setDescription("Player could not be found. If this continues to happen check that you are using your origin username or report the bug with /bug.");
+				embed.setTitle("Player could not be found.");
+				embed.setDescription("If this continues to happen check that you are using your origin username or report the bug with /bug.");
 				return Promise.reject(embed);
 			case 405:
-				embed.setDescription("External API error. Try again in a few seconds.");
+				embed.setTitle("External API error.");
+				embed.setDescription("Try again in a few seconds.");
 				return Promise.reject(embed);
 			case 410:
-				embed.setDescription("Unknown platform provided. If this continues to happen report it as a bug with /bug");
+				embed.setTitle("Unknown platform provided.");
+				embed.setDescription("If this continues to happen report it as a bug with /bug");
 				return Promise.reject(embed);
 			case 429:
-				embed.setDescription("API Rate limit reached. Try again in a few seconds.");
+				embed.setTitle("API Rate limit reached.");
+				embed.setDescription("Try again in a few seconds.");
 				return Promise.reject(embed);
 			case 500:
 				embed.setDescription("API Internal error.");
