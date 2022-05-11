@@ -1,5 +1,4 @@
 const Discord = require("discord.js");
-const { getAllGuildUsers } = require("../../database/firebaseGet");
 const { UIDToIGN } = require("../../moduels/UIDToIGN");
 require("dotenv").config();
 

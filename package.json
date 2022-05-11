@@ -14,7 +14,8 @@
     "discord.js": "^12.2.0",
     "dotenv": "^16.0.0",
     "firebase": "^9.6.8",
-    "json-bigint": "^1.0.0"
+    "json-bigint": "^1.0.0",
+    "mongodb": "4.4"
   },
   "devDependencies": {
     "chai": "^4.3.6",

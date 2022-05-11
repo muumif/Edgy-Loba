@@ -2,7 +2,7 @@ const Discord = require("discord.js");
 const axios = require("axios");
 const { getUser, getUserHistory, getAllGuildUsers } = require("../../database/firebaseGet");
 const { getUserUID } = require("../../moduels/getUID");
-const { writeUserData, writeHistoryData, updateUserData } = require("../../database/firebaseSet");
+const { writeUserData, writeHistoryData } = require("../../database/firebaseSet");
 const { makeStatsChart } = require("../../moduels/charts");
 require("dotenv").config();
 
