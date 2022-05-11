@@ -120,6 +120,7 @@ async function insertNewUser(guildID, discordID, originUID, RP, platform) {
 		await client.close();
 	}
 }
+
 /**
  * Inserts new history data to the DB
  * @param {String} discordID The discordID of the user to set
@@ -143,6 +144,27 @@ async function insertHistoryData(discordID, RP) {
 		await client.close();
 	}
 }
+
+/**
+ * Update user RP data
+ * @param {String} discordID The discordID of the user to set
+ * @param {Int32} RP The users current RP
+ * @return {Promise} Return Promise.resolve when RP was update successfully
+ * @return {Promise} Return Promise.reject when something went wrong
+ */
+async function updateUserRP(discordID, RP) {
+	try {
+		await client.connect();
+
+		return await client.db("EdgyLoba").collection("users").updateOne({ discordID: discordID }, { $set:{ RP: RP } })
+			.then(res => {return Promise.resolve("Updated RP successfully!");})
+			.catch(err => {return Promise.reject(err);});
+	}
+	finally {
+		await client.close();
+	}
+}
+
 /**
  * Delete user data form the DB
  * @param {String} discordID
@@ -161,3 +183,14 @@ async function deleteUserData(discordID) {
 		await client.close();
 	}
 }
+
+module.exports = {
+	getUserExists,
+	getUserHistory,
+	getTopGuildUsers,
+	getTopGlobalUsers,
+	insertNewUser,
+	insertHistoryData,
+	updateUserRP,
+	deleteUserData,
+};
