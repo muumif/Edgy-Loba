@@ -15,12 +15,30 @@ const { makeUnlinkEmbed } = require("./commands/userStats/unlink");
 const { makeHelpEmbed } = require("./commands/help");
 const { makeInfoEmbed } = require("./commands/info");
 
+const { insertNewGuild, deleteGuild } = require("./database/db");
+
 const client = new Discord.Client();
 const prefix = process.env.PREFIX;
 
 client.once("ready", () => {
 	console.log("Online!");
 	client.user.setPresence({ activity: { name: ">help", type: "LISTENING" }, status: "online" });
+});
+
+client.on("guildCreate", guild => {
+	insertNewGuild(guild).then(res => {
+		console.log(res);
+	}).catch(err => {
+		console.log(err);
+	});
+});
+
+client.on("guildDelete", guild => {
+	deleteGuild(guild).then(res => {
+		console.log(res);
+	}).catch(err => {
+		console.log(err);
+	});
 });
 
 client.on("message", async message => {
@@ -59,7 +77,7 @@ client.on("message", async message => {
 
 	if (command === "unlink") {
 		message.channel.startTyping();
-		makeUnlinkEmbed(message.guild.id, message.author.id).then(result => {
+		makeUnlinkEmbed(message.author.id).then(result => {
 			message.channel.send(result);
 		}).catch(error => {
 			message.channel.send(error);
@@ -69,9 +87,10 @@ client.on("message", async message => {
 
 	if (command === "stats") {
 		message.channel.startTyping();
-		makeStatsEmbed(args[0], args[1], message.guild.id, message.author.id).then(result => {
+		makeStatsEmbed(args[0], args[1], message.author.id).then(result => {
 			message.channel.send(result);
 		}).catch(error => {
+			console.log(error);
 			message.channel.send(error);
 		});
 		message.channel.stopTyping();
@@ -79,7 +98,7 @@ client.on("message", async message => {
 
 	if (command === "top") {
 		message.channel.startTyping();
-		makeTopEmbed(message.guild.id, message.author.id).then(result => {
+		makeTopEmbed(message.guild.id).then(result => {
 			message.channel.send(result);
 		}).catch((error) => {
 			message.channel.send(error);

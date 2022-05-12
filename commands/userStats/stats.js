@@ -1,9 +1,8 @@
 const Discord = require("discord.js");
 const axios = require("axios");
-const { getUser, getUserHistory, getAllGuildUsers } = require("../../database/firebaseGet");
 const { getUserUID } = require("../../moduels/getUID");
-const { writeUserData, writeHistoryData, updateUserData } = require("../../database/firebaseSet");
 const { makeStatsChart } = require("../../moduels/charts");
+const { getUserExists, getUser, updateUserRP, getUserHistory } = require("../../database/db");
 require("dotenv").config();
 
 const client = new Discord.Client();
@@ -54,7 +53,7 @@ async function getData(UID, platform) {
 		});
 }
 
-async function makeStatsEmbed(_IGN, _platform, guildID, userID) {
+async function makeStatsEmbed(_IGN, _platform, userID) {
 	let UID;
 	let platform = _platform;
 
@@ -74,11 +73,13 @@ async function makeStatsEmbed(_IGN, _platform, guildID, userID) {
 	}
 
 	if (_IGN == undefined) {
-		return await getUser(guildID, userID).then(async userDB => {
-			if (userDB.exists()) {
-				UID = userDB.val().originUID;
-				platform = userDB.val().platform;
-				return await getData(UID, platform).then(result => {
+		return await getUserExists(userID).then(async exists => {
+			if (exists == true) {
+				await getUser(userID).then(async userDB => {
+					UID = userDB.originUID;
+					platform = userDB.platform;
+				});
+				return await getData(UID, platform).then(async result => {
 					const embed = new Discord.MessageEmbed()
 						.setTitle(result.data.global.name)
 						.setAuthor("Platform: " + platform)
@@ -101,29 +102,20 @@ async function makeStatsEmbed(_IGN, _platform, guildID, userID) {
 							},
 						)
 						.setColor("#e3a600");
-					writeUserData(guildID, userID, UID, result.data.global.rank.rankScore, platform);
-					writeHistoryData(guildID, userID, result.data.global.rank.rankScore);
-					return getUserHistory(guildID, userID).then(result => {
-						for (let i = 0; i < result.length; i++) {
-							result[i][0] = result[i][0].split("-").reverse().join("/");
-						}
+					await fetchUser(userID).then(ID => {
+						embed.setDescription("Linked to " + ID.username + "#" + ID.discriminator);
+					});
 
-						result.sort(function(a, b) {
-							const dateA = new Date(a[0]), dateB = new Date(b[0]);
-							return dateA - dateB;
-						});
-
+					await updateUserRP(userID, result.data.global.rank.rankScore);
+					return await getUserHistory(userID).then(history => {
 						const labels = [], data = [];
-						for (let i = 0; i < result.length; i++) {
-							labels.push(result[i][0]);
-							data.push(result[i][1]);
+						for (let i = 0; i < history.length; i++) {
+							const date = new Date(history[i].date).getUTCDate() + "/" + (new Date(history[i].date).getUTCMonth() + 1) + "/" + new Date(history[i].date).getUTCFullYear();
+							labels.push(date);
+							data.push(history[i].RP);
 						}
-
 						embed.setImage(makeStatsChart(labels, data));
-						return fetchUser(userID).then(ID => {
-							embed.setDescription("Linked to " + ID.username + "#" + ID.discriminator);
-							return embed;
-						});
+						return embed;
 					});
 				}).catch(error => {
 					return Promise.reject(error);
@@ -149,7 +141,6 @@ async function makeStatsEmbed(_IGN, _platform, guildID, userID) {
 
 	if (UID == undefined) {
 		let apexResult;
-		const labels = [], data = [];
 		const embed = new Discord.MessageEmbed();
 
 		await getUserUID(_IGN, platform).then(_UID => {
@@ -186,38 +177,22 @@ async function makeStatsEmbed(_IGN, _platform, guildID, userID) {
 		});
 
 		const makeEmbed = async _ => {
-			await getAllGuildUsers(guildID).then(async users => {
-				const userArray = [];
-				users.forEach(function(user) {
-					userArray.push(user.val());
-				});
-
-				for (let i = 0; i < userArray.length; i++) {
-					if (userArray[i].originUID == apexResult.data.global.uid) {
-						writeUserData(guildID, userID, UID, apexResult.data.global.rank.rankScore, platform);
-						writeHistoryData(guildID, userID, apexResult.data.global.rank.rankScore);
-						await getUserHistory(guildID, userID).then(async userHistory => {
-							for (let i = 0; i < userHistory.length; i++) {
-								userHistory[i][0] = userHistory[i][0].split("-").reverse().join("/");
-							}
-
-							userHistory.sort(function(a, b) {
-								const dateA = new Date(a[0]), dateB = new Date(b[0]);
-								return dateA - dateB;
-							});
-
-							for (let i = 0; i < userHistory.length; i++) {
-								labels.push(userHistory[i][0]);
-								data.push(userHistory[i][1]);
-							}
-							embed.setImage(makeStatsChart(labels, data));
-
-							await fetchUser(userID).then(discordUser => {
-								embed.setDescription("Linked to " + discordUser.username + "#" + discordUser.discriminator);
-							});
-							return embed;
-						});
-					}
+			return await getUserExists(userID).then(async exists => {
+				if (exists == true) {
+					await fetchUser(userID).then(discordUser => {
+						embed.setDescription("Linked to " + discordUser.username + "#" + discordUser.discriminator);
+					});
+					await updateUserRP(userID, apexResult.data.global.rank.rankScore);
+					const labels = [], data = [];
+					await getUserHistory(userID).then(async history => {
+						for (let i = 0; i < history.length; i++) {
+							const date = new Date(history[i].date).getUTCDate() + "/" + (new Date(history[i].date).getUTCMonth() + 1) + "/" + new Date(history[i].date).getUTCFullYear();
+							labels.push(date);
+							data.push(history[i].RP);
+						}
+						embed.setImage(makeStatsChart(labels, data));
+						return embed;
+					});
 				}
 			});
 		};
