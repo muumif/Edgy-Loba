@@ -1,3 +1,4 @@
+const { Guild } = require("discord.js");
 const { MongoClient } = require("mongodb");
 require("dotenv").config();
 
@@ -186,7 +187,7 @@ async function updateUserRP(discordID, RP) {
 
 /**
  * Delete user data form the DB
- * @param {String} discordID
+ * @param {String} discordID The discordID of the user to set
  * @return {Promise} Return Promise.resolve when user was deleted
  * @return {Promise} Return Promise.reject when something went wrong
  */
@@ -196,6 +197,48 @@ async function deleteUserData(discordID) {
 
 		return await client.db("EdgyLoba").collection("users").deleteOne({ discordID: discordID })
 			.then(res => {return Promise.resolve("Deleted user from the DB!");})
+			.catch(err => {return Promise.reject(err);});
+	}
+	finally {
+		await client.close();
+	}
+}
+
+/**
+ * Inserts new guild data to the DB
+ * @param {Guild} guild The guild object
+ * @return {Promise} Return Promise.resolve when guild was created succesfully
+ * @return {Promise} Return Promise.reject when something went wrong
+ */
+async function insertNewGuild(guild) {
+	try {
+		await client.connect();
+
+		return await client.db("EdgyLoba").collection("guilds").insertOne({
+			guildID: guild.id,
+			guildName: guild.name,
+			settings: { modeBref: "BR" },
+		})
+			.then(res => {return Promise.resolve("Guild inserted successfully to the DB!");})
+			.catch(err => {return Promise.reject(err);});
+	}
+	finally {
+		await client.close();
+	}
+}
+
+/**
+ * Deletes new guild data to the DB
+ * @param {Guild} guild The guild object
+ * @return {Promise} Return Promise.resolve when guild was deleted succesfully
+ * @return {Promise} Return Promise.reject when something went wrong
+ */
+async function deleteGuild(guild) {
+	try {
+		await client.connect();
+
+		return await client.db("EdgyLoba").collection("guilds").deleteOne({ guildID: guild.id })
+			.then(res => {return Promise.resolve("Deleted guild from the DB!");})
 			.catch(err => {return Promise.reject(err);});
 	}
 	finally {
@@ -213,4 +256,6 @@ module.exports = {
 	insertHistoryData,
 	updateUserRP,
 	deleteUserData,
+	insertNewGuild,
+	deleteGuild,
 };

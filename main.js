@@ -15,12 +15,30 @@ const { makeUnlinkEmbed } = require("./commands/userStats/unlink");
 const { makeHelpEmbed } = require("./commands/help");
 const { makeInfoEmbed } = require("./commands/info");
 
+const { insertNewGuild, deleteGuild } = require("./database/db");
+
 const client = new Discord.Client();
 const prefix = process.env.PREFIX;
 
 client.once("ready", () => {
 	console.log("Online!");
 	client.user.setPresence({ activity: { name: ">help", type: "LISTENING" }, status: "online" });
+});
+
+client.on("guildCreate", guild => {
+	insertNewGuild(guild).then(res => {
+		console.log(res);
+	}).catch(err => {
+		console.log(err);
+	});
+});
+
+client.on("guildDelete", guild => {
+	deleteGuild(guild).then(res => {
+		console.log(res);
+	}).catch(err => {
+		console.log(err);
+	});
 });
 
 client.on("message", async message => {
