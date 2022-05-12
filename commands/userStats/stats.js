@@ -108,6 +108,7 @@ async function makeStatsEmbed(_IGN, _platform, userID) {
 					});
 
 					await updateUserRP(userID, result.data.global.rank.rankScore);
+					/*
 					return await getUserHistory(userID).then(history => {
 						const labels = [], data = [];
 						for (let i = 0; i < history.length; i++) {
@@ -117,7 +118,8 @@ async function makeStatsEmbed(_IGN, _platform, userID) {
 						}
 						embed.setImage(makeStatsChart(labels, data));
 						return embed;
-					}).catch(err => {console.log(err);});
+					});*/
+					return embed;
 				}).catch(error => {
 					return Promise.reject(error);
 				});
@@ -186,7 +188,11 @@ async function makeStatsEmbed(_IGN, _platform, userID) {
 						});
 						await updateUserRP(userID, apexResult.data.global.rank.rankScore);
 						const labels = [], data = [];
+						/*
 						await getUserHistory(userID).then(async history => {
+							if (history == "No history data has been recorded!") {
+								return;
+							}
 							for (let i = 0; i < history.length; i++) {
 								const date = new Date(history[i].date).getUTCDate() + "/" + (new Date(history[i].date).getUTCMonth() + 1) + "/" + new Date(history[i].date).getUTCFullYear();
 								labels.push(date);
@@ -194,7 +200,8 @@ async function makeStatsEmbed(_IGN, _platform, userID) {
 							}
 							embed.setImage(makeStatsChart(labels, data));
 							return embed;
-						}).catch(err => {console.log(err);});
+						});*/
+						return embed;
 					}
 				});
 			});
