@@ -3,6 +3,7 @@ const axios = require("axios");
 const { getUserUID } = require("../../moduels/getUID");
 const { makeStatsChart } = require("../../moduels/charts");
 const { getUserExists, getUser, updateUserRP, getUserHistory } = require("../../database/db");
+const { UIDToIGN } = require("../../moduels/UIDToIGN");
 require("dotenv").config();
 
 const client = new Discord.Client();
@@ -178,22 +179,24 @@ async function makeStatsEmbed(_IGN, _platform, userID) {
 
 		const makeEmbed = async _ => {
 			return await getUserExists(userID).then(async exists => {
-				if (exists == true) {
-					await fetchUser(userID).then(discordUser => {
-						embed.setDescription("Linked to " + discordUser.username + "#" + discordUser.discriminator);
-					});
-					await updateUserRP(userID, apexResult.data.global.rank.rankScore);
-					const labels = [], data = [];
-					await getUserHistory(userID).then(async history => {
-						for (let i = 0; i < history.length; i++) {
-							const date = new Date(history[i].date).getUTCDate() + "/" + (new Date(history[i].date).getUTCMonth() + 1) + "/" + new Date(history[i].date).getUTCFullYear();
-							labels.push(date);
-							data.push(history[i].RP);
-						}
-						embed.setImage(makeStatsChart(labels, data));
-						return embed;
-					});
-				}
+				return await getUser(userID).then(async user => {
+					if (exists == true && _IGN == await UIDToIGN(user.originUID, platform)) {
+						await fetchUser(userID).then(discordUser => {
+							embed.setDescription("Linked to " + discordUser.username + "#" + discordUser.discriminator);
+						});
+						await updateUserRP(userID, apexResult.data.global.rank.rankScore);
+						const labels = [], data = [];
+						await getUserHistory(userID).then(async history => {
+							for (let i = 0; i < history.length; i++) {
+								const date = new Date(history[i].date).getUTCDate() + "/" + (new Date(history[i].date).getUTCMonth() + 1) + "/" + new Date(history[i].date).getUTCFullYear();
+								labels.push(date);
+								data.push(history[i].RP);
+							}
+							embed.setImage(makeStatsChart(labels, data));
+							return embed;
+						});
+					}
+				});
 			});
 		};
 		await makeEmbed();
