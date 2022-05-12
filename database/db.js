@@ -1,9 +1,7 @@
-const { MongoClient, Int32 } = require("mongodb");
-//require("dotenv").config();
+const { MongoClient } = require("mongodb");
+require("dotenv").config();
 
-//const URI = `mongodb://muumi:${process.env.MONGO_PASSWORD}@192.168.8.105:27017/?authMechanism=DEFAULT`;
-const URI = "mongodb://muumi:Rokiolitore16@192.168.8.105:27017/?authMechanism=DEFAULT";
-
+const URI = `mongodb://muumi:${process.env.MONGO_PASSWORD}@192.168.8.105:27017/?authMechanism=DEFAULT`;
 
 const client = new MongoClient(URI);
 
@@ -16,10 +14,31 @@ async function getUserExists(discordID) {
 	try {
 		await client.connect();
 
-		if (await client.db("EdgyLoba").collection("users").findOne({ discordID: discordID }) == null) {
+		if (await client.db("EdgyLoba").collection("users").findOne({ discordID: discordID.toString() }) == null) {
 			return Promise.resolve(false);
 		}
 		return Promise.resolve(true);
+	}
+	finally {
+		await client.close();
+	}
+}
+/**
+ * Get the user from database
+ * @param {String} discordID The discordID of user
+ * @return {Object} Return user data
+ * @return {Promise} Return Promise.reject when no user data is recorded in the database
+ */
+async function getUser(discordID) {
+	try {
+		await client.connect();
+
+		const user = await client.db("EdgyLoba").collection("users").findOne({ discordID: discordID });
+
+		if (user == null) {
+			return Promise.reject("User doesent exist!");
+		}
+		return Promise.resolve(user);
 	}
 	finally {
 		await client.close();
@@ -50,13 +69,13 @@ async function getTopGuildUsers(guildID) {
 /**
  * Returns top 10 users in globaly in the DB
  * @param {String} guildID The discord guildID
- * @return {Array} Return Array of top 10 users
+ * @return {Array} Return Array of top 10 users globally in the db
  * @return {Promise} Return Promise.reject when no user data is recorded in the database
  */
 async function getTopGlobalUsers() {
 	try {
-		await client.close();
-		const users = await client.db("EdgyLoba").collection("users").find().sort({ RP: -1 }).limit(10).toArray();
+		await client.connect();
+		const users = await client.db("EdgyLoba").collection("users").find().sort({ date: -1 }).limit(10).toArray();
 
 		if (users.length == 0) {
 			return Promise.reject("No users in the database!");
@@ -78,7 +97,7 @@ async function getUserHistory(discordID) {
 	try {
 		await client.connect();
 
-		const history = await client.db("EdgyLoba").collection("userHistory").find({ discordID: discordID }).sort({ date: -1 }).toArray();
+		const history = await client.db("EdgyLoba").collection("userHistory").find({ discordID: discordID }).sort({ date: 1 }).toArray();
 
 		if (history.length == 0) {
 			return Promise.reject("No history data has been recorded!");
@@ -187,6 +206,7 @@ async function deleteUserData(discordID) {
 module.exports = {
 	getUserExists,
 	getUserHistory,
+	getUser,
 	getTopGuildUsers,
 	getTopGlobalUsers,
 	insertNewUser,

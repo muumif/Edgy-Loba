@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+const { getTopGuildUsers } = require("../../database/db");
 const { UIDToIGN } = require("../../moduels/UIDToIGN");
 require("dotenv").config();
 
@@ -11,17 +12,8 @@ async function fetchUser(id) {
 }
 
 async function getData(guildID) {
-	return await getAllGuildUsers(guildID).then(result => {
-		const allUsers = [];
-		if (!result.exists()) {
-			return Promise.reject(404);
-		}
-		result.forEach(function(_child) {
-			allUsers.push(_child.val());
-		});
-		allUsers.sort((a, b) => {return b.RP - a.RP;});
-
-		return allUsers;
+	return await getTopGuildUsers(guildID).then(result => {
+		return result;
 	}).catch(error => {
 		return Promise.reject(error);
 	});
