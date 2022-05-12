@@ -117,7 +117,7 @@ async function makeStatsEmbed(_IGN, _platform, userID) {
 						}
 						embed.setImage(makeStatsChart(labels, data));
 						return embed;
-					});
+					}).catch(err => {console.log(err);});
 				}).catch(error => {
 					return Promise.reject(error);
 				});
@@ -194,7 +194,7 @@ async function makeStatsEmbed(_IGN, _platform, userID) {
 							}
 							embed.setImage(makeStatsChart(labels, data));
 							return embed;
-						});
+						}).catch(err => {console.log(err);});
 					}
 				});
 			});
