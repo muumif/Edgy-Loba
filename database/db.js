@@ -24,6 +24,27 @@ async function getUserExists(discordID) {
 		await client.close();
 	}
 }
+
+/**
+ * Get all users from the DB
+ * @returns {Array} An array of all users
+ */
+async function getAllUsers() {
+	try {
+		await client.connect();
+
+		const users = await client.db("EdgyLoba").collection("users").find({}, { discordID: 1, originUID: 1, platform: 1 }).toArray();
+
+		if (users == null) {
+			return Promise.reject("Wtf no users?");
+		}
+		return Promise.resolve(users);
+	}
+	finally {
+		await client.close();
+	}
+}
+
 /**
  * Get the user from database
  * @param {String} discordID The discordID of user
@@ -67,6 +88,7 @@ async function getTopGuildUsers(guildID) {
 		await client.close();
 	}
 }
+
 /**
  * Returns top 10 users in globaly in the DB
  * @param {String} guildID The discord guildID
@@ -250,6 +272,7 @@ module.exports = {
 	getUserExists,
 	getUserHistory,
 	getUser,
+	getAllUsers,
 	getTopGuildUsers,
 	getTopGlobalUsers,
 	insertNewUser,
