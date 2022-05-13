@@ -57,6 +57,7 @@ async function getData(UID, platform) {
 async function makeStatsEmbed(_IGN, _platform, userID) {
 	let UID;
 	let platform = _platform;
+	let userDBrp;
 
 	if (platform != undefined) {
 		if (platform == "pc" || platform == "ORIGIN" || platform == "origin") {
@@ -79,6 +80,7 @@ async function makeStatsEmbed(_IGN, _platform, userID) {
 				await getUser(userID).then(async userDB => {
 					UID = userDB.originUID;
 					platform = userDB.platform;
+					userDBrp = userDB.RP;
 				});
 				return await getData(UID, platform).then(async result => {
 					const embed = new Discord.MessageEmbed()
@@ -93,7 +95,7 @@ async function makeStatsEmbed(_IGN, _platform, userID) {
 							},
 							{
 								name: "__Battle Royale__",
-								value: result.data.global.rank.rankName + " " + result.data.global.rank.rankDiv + "\nRP: " + result.data.global.rank.rankScore,
+								value: result.data.global.rank.rankName + " " + result.data.global.rank.rankDiv + "\nRP: " + result.data.global.rank.rankScore + ` (${userDBrp - result.data.global.rank.rankScore})`,
 								inline: true,
 							},
 							{
@@ -163,16 +165,6 @@ async function makeStatsEmbed(_IGN, _platform, userID) {
 					value: result.data.global.level,
 					inline: true,
 				},
-				{
-					name: "__Battle Royale__",
-					value: result.data.global.rank.rankName + " " + result.data.global.rank.rankDiv + "\nRP: " + result.data.global.rank.rankScore,
-					inline: true,
-				},
-				{
-					name: "__Arenas__",
-					value: result.data.global.arena.rankName + " " + result.data.global.arena.rankDiv + "\nAP: " + result.data.global.arena.rankScore,
-					inline: true,
-				},
 			);
 			embed.setColor("#e3a600");
 		}).catch(error => {
@@ -186,6 +178,18 @@ async function makeStatsEmbed(_IGN, _platform, userID) {
 						await fetchUser(userID).then(discordUser => {
 							embed.setDescription("Linked to " + discordUser.username + "#" + discordUser.discriminator);
 						});
+						embed.addFields(
+							{
+								name: "__Battle Royale__",
+								value: apexResult.data.global.rank.rankName + " " + apexResult.data.global.rank.rankDiv + "\nRP: " + apexResult.data.global.rank.rankScore + ` (${user.RP - apexResult.data.global.rank.rankScore})`,
+								inline: true,
+							},
+							{
+								name: "__Arenas__",
+								value: apexResult.data.global.arena.rankName + " " + apexResult.data.global.arena.rankDiv + "\nAP: " + apexResult.data.global.arena.rankScore,
+								inline: true,
+							},
+						);
 						await updateUserRP(userID, apexResult.data.global.rank.rankScore);
 						const labels = [], data = [];
 						/*
