@@ -2,7 +2,7 @@ const Discord = require("discord.js");
 const axios = require("axios");
 const { getUserUID } = require("../../moduels/getUID");
 const { makeStatsChart } = require("../../moduels/charts");
-const { getUserExists, getUser, updateUserRP, getUserHistory } = require("../../database/db");
+const { getUserExists, getUser, updateUserRPAP, getUserHistory } = require("../../database/db");
 const { UIDToIGN } = require("../../moduels/UIDToIGN");
 require("dotenv").config();
 
@@ -58,6 +58,7 @@ async function makeStatsEmbed(_IGN, _platform, userID) {
 	let UID;
 	let platform = _platform;
 	let userDBrp;
+	let userDBap;
 
 	if (platform != undefined) {
 		if (platform == "pc" || platform == "ORIGIN" || platform == "origin") {
@@ -81,6 +82,7 @@ async function makeStatsEmbed(_IGN, _platform, userID) {
 					UID = userDB.originUID;
 					platform = userDB.platform;
 					userDBrp = userDB.RP;
+					userDBap = userDB.AP;
 				});
 				return await getData(UID, platform).then(async result => {
 					const embed = new Discord.MessageEmbed()
@@ -100,7 +102,7 @@ async function makeStatsEmbed(_IGN, _platform, userID) {
 							},
 							{
 								name: "__Arenas__",
-								value: result.data.global.arena.rankName + " " + result.data.global.arena.rankDiv + "\nAP: " + result.data.global.arena.rankScore,
+								value: result.data.global.arena.rankName + " " + result.data.global.arena.rankDiv + "\nAP: " + result.data.global.arena.rankScore + ` (${userDBap - result.data.global.arena.rankScore})`,
 								inline: true,
 							},
 						)
@@ -109,7 +111,7 @@ async function makeStatsEmbed(_IGN, _platform, userID) {
 						embed.setDescription("Linked to " + ID.username + "#" + ID.discriminator);
 					});
 
-					await updateUserRP(userID, result.data.global.rank.rankScore);
+					await updateUserRPAP(userID, result.data.global.rank.rankScore, result.data.global.arena.rankScore);
 					return await getUserHistory(userID).then(history => {
 						const labels = [], data = [];
 						for (let i = 0; i < history.length; i++) {
@@ -186,11 +188,11 @@ async function makeStatsEmbed(_IGN, _platform, userID) {
 							},
 							{
 								name: "__Arenas__",
-								value: apexResult.data.global.arena.rankName + " " + apexResult.data.global.arena.rankDiv + "\nAP: " + apexResult.data.global.arena.rankScore,
+								value: apexResult.data.global.arena.rankName + " " + apexResult.data.global.arena.rankDiv + "\nAP: " + apexResult.data.global.arena.rankScore + ` (${user.AP - apexResult.data.global.arena.rankScore})`,
 								inline: true,
 							},
 						);
-						await updateUserRP(userID, apexResult.data.global.rank.rankScore);
+						await updateUserRPAP(userID, apexResult.data.global.rank.rankScore, apexResult.data.global.arena.rankScore);
 						const labels = [], data = [];
 						return await getUserHistory(userID).then(async history => {
 							if (history == "No history data has been recorded!") {

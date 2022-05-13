@@ -142,7 +142,7 @@ async function getUserHistory(discordID) {
  * @return {Promise} Returns Promise.resolve when user was created successfully
  * @return {Promise} Returns Promise.reject when something went wrong
  */
-async function insertNewUser(guildID, discordID, originUID, RP, platform) {
+async function insertNewUser(guildID, discordID, originUID, RP, AP, platform) {
 	try {
 		await client.connect();
 
@@ -150,6 +150,7 @@ async function insertNewUser(guildID, discordID, originUID, RP, platform) {
 			discordID: discordID,
 			originUID: originUID,
 			RP: RP,
+			AP: AP,
 			platform: platform,
 			prefrences: { ranked: "BR" },
 			guildID: guildID,
@@ -169,7 +170,7 @@ async function insertNewUser(guildID, discordID, originUID, RP, platform) {
  * @return {Promise} Return Promise.resolve when history data was created successfully
  * @return {Promise} Return Promise.reject when something went wrong
  */
-async function insertHistoryData(discordID, RP) {
+async function insertHistoryData(discordID, RP, AP) {
 	try {
 		await client.connect();
 
@@ -177,6 +178,7 @@ async function insertHistoryData(discordID, RP) {
 			discordID: discordID,
 			date: new Date(),
 			RP: RP,
+			AP: AP,
 		})
 			.then(res => {return Promise.resolve("History inserted successfully to the DB!");})
 			.catch(err => {return Promise.reject(err);});
@@ -193,11 +195,11 @@ async function insertHistoryData(discordID, RP) {
  * @return {Promise} Return Promise.resolve when RP was update successfully
  * @return {Promise} Return Promise.reject when something went wrong
  */
-async function updateUserRP(discordID, RP) {
+async function updateUserRPAP(discordID, RP, AP) {
 	try {
 		await client.connect();
 
-		return await client.db("EdgyLoba").collection("users").updateOne({ discordID: discordID }, { $set:{ RP: RP } })
+		return await client.db("EdgyLoba").collection("users").updateOne({ discordID: discordID }, { $set:{ RP: RP, AP: AP } })
 			.then(res => {return Promise.resolve("Updated RP successfully!");})
 			.catch(err => {return Promise.reject(err);});
 	}
@@ -306,7 +308,7 @@ module.exports = {
 	getTopGlobalUsers,
 	insertNewUser,
 	insertHistoryData,
-	updateUserRP,
+	updateUserRPAP,
 	deleteUserData,
 	insertNewGuild,
 	deleteGuild,
