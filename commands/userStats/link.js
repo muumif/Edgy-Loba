@@ -49,7 +49,7 @@ async function makeLinkEmbed(IGN, platform, guildID, userID, messageAuthor) {
 		const URI = `${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${UID}&platform=${platform}`;
 		return await axios.get(encodeURI(URI))
 			.then(async function(response) {
-				await insertNewUser(guildID, userID, UID, response.data.global.rank.rankScore, platform);
+				await insertNewUser(guildID, userID, UID, response.data.global.rank.rankScore, response.data.global.arena.rankScore, platform);
 
 				const embed = new Discord.MessageEmbed()
 					.setTitle("IGN has been successfully linked!")

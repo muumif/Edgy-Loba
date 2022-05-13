@@ -36,7 +36,7 @@ async function importAllUsers() {
 	const insertData = async _ => {
 		for (let i = 0; i < allUsers.length; i++) {
 			await getData(allUsers[i].originUID, allUsers[i].platform).then(async result => {
-				await insertHistoryData(allUsers[i].discordID, result.data.global.rank.rankScore);
+				await insertHistoryData(allUsers[i].discordID, result.data.global.rank.rankScore, result.data.global.arena.rankScore);
 			});
 		}
 	};
