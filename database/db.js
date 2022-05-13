@@ -1,4 +1,3 @@
-const { Guild } = require("discord.js");
 const { MongoClient } = require("mongodb");
 require("dotenv").config();
 
@@ -250,6 +249,36 @@ async function insertNewGuild(guild) {
 }
 
 /**
+ * Inserts new bug report to DB
+ * @param {Guild} guild The guild object
+ * @param {String} userID The userID of user that reported
+ * @param {String} command The command that there are issues with
+ * @param {String} message The message of bug report
+ * @return {Promise} Return Promise.resolve when bug report was created succesfully
+ * @return {Promise} Return Promise.reject when something went wrong
+ */
+async function insertNewBug(guild, userID, command, message) {
+	try {
+		await client.connect();
+
+		return await client.db("EdgyLoba").collection("bugs").insertOne({
+			guildID: guild.id,
+			userID: userID,
+			date: new Date(),
+			bug: {
+				command: command,
+				message: message,
+			},
+		})
+			.then(res => {return Promise.resolve("Bug report inserted successfully to the DB!");})
+			.catch(err => {return Promise.reject(err);});
+	}
+	finally {
+		await client.close();
+	}
+}
+
+/**
  * Deletes new guild data to the DB
  * @param {Guild} guild The guild object
  * @return {Promise} Return Promise.resolve when guild was deleted succesfully
@@ -281,4 +310,5 @@ module.exports = {
 	deleteUserData,
 	insertNewGuild,
 	deleteGuild,
+	insertNewBug,
 };
