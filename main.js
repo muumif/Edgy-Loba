@@ -16,6 +16,7 @@ const { makeHelpEmbed } = require("./commands/help");
 const { makeInfoEmbed } = require("./commands/info");
 
 const { insertNewGuild, deleteGuild } = require("./database/db");
+const { makeBugEmbed } = require("./commands/bug");
 
 require("./moduels/historyUpdater")();
 
@@ -150,6 +151,16 @@ client.on("message", async message => {
 	if (command === "news") {
 		message.channel.startTyping();
 		makeNewsEmbed().then(result => {
+			message.channel.send(result);
+		}).catch(error => {
+			message.channel.send(error);
+		});
+		message.channel.stopTyping();
+	}
+
+	if (command === "bug") {
+		message.channel.startTyping();
+		makeBugEmbed(message.guild, message.author.id, args).then(result => {
 			message.channel.send(result);
 		}).catch(error => {
 			message.channel.send(error);
