@@ -17,6 +17,8 @@ const { makeInfoEmbed } = require("./commands/info");
 
 const { insertNewGuild, deleteGuild } = require("./database/db");
 
+require("./moduels/historyUpdater")();
+
 const client = new Discord.Client();
 const prefix = process.env.PREFIX;
 
