@@ -45,7 +45,7 @@ async function importAllUsers() {
 }
 
 module.exports = () => {
-	cron.schedule("0 0 * * *", async function() {
+	cron.schedule("59 23 * * *", async function() {
 		importAllUsers();
 	});
 };
