@@ -10,6 +10,7 @@
   "author": "muumif",
   "license": "ISC",
   "dependencies": {
+    "@napi-rs/canvas": "^0.1.21",
     "axios": "^0.26.0",
     "discord.js": "^12.2.0",
     "dotenv": "^16.0.0",

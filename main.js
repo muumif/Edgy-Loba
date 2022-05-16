@@ -90,7 +90,7 @@ client.on("message", async message => {
 
 	if (command === "stats") {
 		message.channel.startTyping();
-		makeStatsEmbed(args[0], args[1], message.author.id).then(result => {
+		makeStatsEmbed(args[0], args[1], message.author.id, message.guild.id).then(result => {
 			message.channel.send(result);
 		}).catch(error => {
 			message.channel.send(error);
