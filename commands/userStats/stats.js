@@ -79,16 +79,16 @@ async function makeStatsEmbed(_IGN, _platform, userID, guildID) {
 		return await getUserExists(userID).then(async exists => {
 			if (exists == true) {
 				await getUser(userID).then(async userDB => {
+					UID = userDB.originUID;
+					platform = userDB.platform;
+					userDBrp = userDB.RP;
+					userDBap = userDB.AP;
 					for (let i = 0; i < userDB.guilds.length; i++) {
 						if (userDB.guilds[i] == guildID) {
 							return;
 						}
 						await insertUserGuild(userID, guildID);
 					}
-					UID = userDB.originUID;
-					platform = userDB.platform;
-					userDBrp = userDB.RP;
-					userDBap = userDB.AP;
 				});
 				return await getData(UID, platform).then(async result => {
 					const embed = new Discord.MessageEmbed()
