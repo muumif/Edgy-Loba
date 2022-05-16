@@ -76,7 +76,7 @@ async function getTopGuildUsers(guildID) {
 	try {
 		await client.connect();
 
-		const users = await client.db("EdgyLoba").collection("users").find({ guildID: guildID }).sort({ RP: -1 }).limit(10).toArray();
+		const users = await client.db("EdgyLoba").collection("users").find({ guilds: guildID }).sort({ RP: -1 }).limit(10).toArray();
 
 		if (users.length == 0) {
 			return Promise.reject("No user data has been recorded for this server!");
@@ -153,7 +153,7 @@ async function insertNewUser(guildID, discordID, originUID, RP, AP, platform) {
 			AP: AP,
 			platform: platform,
 			prefrences: { ranked: "BR" },
-			guildID: guildID,
+			guilds: [guildID],
 		})
 			.then(res => {return Promise.resolve("User inserted successfully to the DB!");})
 			.catch(err => {return Promise.reject(err);});
@@ -299,6 +299,26 @@ async function deleteGuild(guild) {
 	}
 }
 
+/**
+ * Insert new guild to user data
+ * @param {String} discordID The id of the user
+ * @param {String} guildID The id of the guild
+ * @return {Promise} Return Promise.resolve when guild was inserted succesfully
+ * @return {Promise} Return Promise.reject when something went wrong
+ */
+async function insertUserGuild(discordID, guildID) {
+	try {
+		await client.connect();
+
+		return await client.db("EdgyLoba").collection("users").updateOne({ discordID: discordID }, { $push: { guilds: guildID } })
+			.then(res => {return Promise.resolve("Inserted new guild to the DB!");})
+			.catch(err => {return Promise.reject(err);});
+	}
+	finally {
+		await client.close();
+	}
+}
+
 module.exports = {
 	getUserExists,
 	getUserHistory,
@@ -313,4 +333,5 @@ module.exports = {
 	insertNewGuild,
 	deleteGuild,
 	insertNewBug,
+	insertUserGuild,
 };

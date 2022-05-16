@@ -2,7 +2,7 @@ const Discord = require("discord.js");
 const axios = require("axios");
 const { getUserUID } = require("../../moduels/getUID");
 const { makeStatsChart } = require("../../moduels/charts");
-const { getUserExists, getUser, updateUserRPAP, getUserHistory } = require("../../database/db");
+const { getUserExists, getUser, updateUserRPAP, getUserHistory, insertUserGuild } = require("../../database/db");
 const { UIDToIGN } = require("../../moduels/UIDToIGN");
 require("dotenv").config();
 
@@ -54,7 +54,7 @@ async function getData(UID, platform) {
 		});
 }
 
-async function makeStatsEmbed(_IGN, _platform, userID) {
+async function makeStatsEmbed(_IGN, _platform, userID, guildID) {
 	let UID;
 	let platform = _platform;
 	let userDBrp;
@@ -79,6 +79,12 @@ async function makeStatsEmbed(_IGN, _platform, userID) {
 		return await getUserExists(userID).then(async exists => {
 			if (exists == true) {
 				await getUser(userID).then(async userDB => {
+					for (let i = 0; i < userDB.guilds.length; i++) {
+						if (userDB.guilds[i] == guildID) {
+							return;
+						}
+						await insertUserGuild(userID, guildID);
+					}
 					UID = userDB.originUID;
 					platform = userDB.platform;
 					userDBrp = userDB.RP;
@@ -110,7 +116,6 @@ async function makeStatsEmbed(_IGN, _platform, userID) {
 					await fetchUser(userID).then(ID => {
 						embed.setDescription("Linked to " + ID.username + "#" + ID.discriminator);
 					});
-
 					await updateUserRPAP(userID, result.data.global.rank.rankScore, result.data.global.arena.rankScore);
 					return await getUserHistory(userID).then(history => {
 						const labels = [], data = [];
@@ -177,6 +182,12 @@ async function makeStatsEmbed(_IGN, _platform, userID) {
 			return await getUserExists(userID).then(async exists => {
 				return await getUser(userID).then(async user => {
 					if (exists == true && _IGN == await UIDToIGN(user.originUID, platform)) {
+						for (let i = 0; i < user.guilds.length; i++) {
+							if (user.guilds[i] == guildID) {
+								return;
+							}
+							await insertUserGuild(userID, guildID);
+						}
 						await fetchUser(userID).then(discordUser => {
 							embed.setDescription("Linked to " + discordUser.username + "#" + discordUser.discriminator);
 						});
