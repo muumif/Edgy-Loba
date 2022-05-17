@@ -59,7 +59,9 @@ async function makePredatorEmbed() {
 				},
 			)
 			.setThumbnail("https://api.mozambiquehe.re/assets/ranks/apexpredator1.png")
-			.setColor("#e3a600");
+			.setColor("#e3a600")
+			.setFooter("Bugs can be reported with >bug", "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256")
+			.setTimestamp();
 		return embed;
 	}).catch(error => {
 		return Promise.reject(error);

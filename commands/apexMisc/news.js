@@ -56,7 +56,9 @@ async function makeNewsEmbed() {
 		const linkToShorten = async _ => {
 			const embed = new Discord.MessageEmbed()
 				.setTitle("Latest news")
-				.setColor("#e3a600");
+				.setColor("#e3a600")
+				.setFooter("Bugs can be reported with >bug", "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256")
+				.setTimestamp();
 
 			for (let i = 0; i < result.data.length; i++) {
 				if (i == 3) {

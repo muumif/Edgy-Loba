@@ -57,9 +57,11 @@ async function makeStoreEmbed() {
 	return getData().then(result => {
 		const embed = new Discord.MessageEmbed()
 			.setTitle("Store")
-			.setColor("#e3a600")
 			.attachFiles(attachment)
-			.setImage("attachment://store.jpeg");
+			.setImage("attachment://store.jpeg")
+			.setColor("#e3a600")
+			.setFooter("Bugs can be reported with >bug", "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256")
+			.setTimestamp();
 		return embed;
 	}).catch(error => {
 		return Promise.reject(error);

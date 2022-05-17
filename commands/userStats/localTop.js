@@ -23,7 +23,9 @@ async function makeTopEmbed(guildID) {
 	return await getData(guildID).then(async result => {
 		const embed = new Discord.MessageEmbed()
 			.setTitle("Leaderboard")
-			.setColor("#e3a600");
+			.setColor("#e3a600")
+			.setTimestamp()
+			.setFooter("Top 10", "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256");
 
 		const discordIDToName = async _ => {
 			for (let i = 0; i < result.length; i++) {
@@ -48,7 +50,9 @@ async function makeTopEmbed(guildID) {
 			const embed = new Discord.MessageEmbed()
 				.setTitle("No user data!")
 				.setDescription("No user data has been recorded for this server!")
-				.setColor("#e3a600");
+				.setColor("#e3a600")
+				.setTimestamp()
+				.setFooter("Error page", "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256");
 			return Promise.reject(embed);
 		}
 		return Promise.reject(error);

@@ -112,7 +112,9 @@ async function makeStatsEmbed(_IGN, _platform, userID, guildID) {
 								inline: true,
 							},
 						)
-						.setColor("#e3a600");
+						.setColor("#e3a600")
+						.setTimestamp()
+						.setFooter("Existing user", "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256");
 					await fetchUser(userID).then(ID => {
 						embed.setDescription("Linked to " + ID.username + "#" + ID.discriminator);
 					});
@@ -137,7 +139,9 @@ async function makeStatsEmbed(_IGN, _platform, userID, guildID) {
 				const embed = new Discord.MessageEmbed()
 					.setTitle("No IGN given or account hasn't been linked!")
 					.setDescription(">stats **[Apex IGN] [PC | Xbox | Playstation | Switch]**\n>link **[Apex IGN] [PC | Xbox | Playstation | Switch]**")
-					.setColor("#e3a600");
+					.setColor("#e3a600")
+					.setTimestamp()
+					.setFooter("Error page", "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256");
 				return embed;
 			}
 		});
@@ -147,7 +151,9 @@ async function makeStatsEmbed(_IGN, _platform, userID, guildID) {
 		const embed = new Discord.MessageEmbed()
 			.setTitle("No platform given!")
 			.setDescription(">stats **[Apex IGN] [PC | Xbox | Playstation | Switch]**")
-			.setColor("#e3a600");
+			.setColor("#e3a600")
+			.setTimestamp()
+			.setFooter("Error page", "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256");
 		return embed;
 	}
 
@@ -174,6 +180,8 @@ async function makeStatsEmbed(_IGN, _platform, userID, guildID) {
 				},
 			);
 			embed.setColor("#e3a600");
+			embed.setTimestamp()
+			embed.setFooter("Bugs can be reported with >bug", "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256");
 		}).catch(error => {
 			return Promise.reject(error);
 		});

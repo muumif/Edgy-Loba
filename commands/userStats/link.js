@@ -10,7 +10,9 @@ async function makeLinkEmbed(IGN, platform, guildID, userID, messageAuthor) {
 			const embed = new Discord.MessageEmbed()
 				.setTitle("Username already linked!")
 				.setDescription("Use command **>unlink** to unlink your account! \nAccount needs to be verified again when unlinked!")
-				.setColor("#e3a600");
+				.setColor("#e3a600")
+				.setTimestamp()
+				.setFooter("Error page", "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256");
 			return embed;
 		}
 
@@ -18,7 +20,9 @@ async function makeLinkEmbed(IGN, platform, guildID, userID, messageAuthor) {
 			const embed = new Discord.MessageEmbed()
 				.setTitle("No username given!")
 				.setDescription(">link **[Apex IGN] [PC | Xbox | Playstation | Switch]**")
-				.setColor("#e3a600");
+				.setColor("#e3a600")
+				.setTimestamp()
+				.setFooter("Error page", "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256");
 			return embed;
 		}
 
@@ -26,7 +30,9 @@ async function makeLinkEmbed(IGN, platform, guildID, userID, messageAuthor) {
 			const embed = new Discord.MessageEmbed()
 				.setTitle("No platform given!")
 				.setDescription(`>link **${IGN} [PC | Xbox | Playstation | Switch]**`)
-				.setColor("#e3a600");
+				.setColor("#e3a600")
+				.setTimestamp()
+				.setFooter("Error page", "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256");
 			return embed;
 		}
 
@@ -54,7 +60,9 @@ async function makeLinkEmbed(IGN, platform, guildID, userID, messageAuthor) {
 				const embed = new Discord.MessageEmbed()
 					.setTitle("IGN has been successfully linked!")
 					.setDescription(`${messageAuthor} linked to **${response.data.global.name}** using **${platform}**`)
-					.setColor("#e3a600");
+					.setColor("#e3a600")
+					.setTimestamp()
+					.setFooter("Unlink with >unlink", "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256");
 				return embed;
 
 			}).catch(function(error) {
