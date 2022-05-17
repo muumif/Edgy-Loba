@@ -217,11 +217,11 @@ async function makeMapEmbed() {
 		}
 		}
 
-		context.drawImage(brMap, 960, 0, brMap.width, brMap.height, 0, 0, canvas.width, canvas.height);
-		context.drawImage(arenasMap, 960, 0, arenasMap.width, arenasMap.height, (canvas.width / 3), 0, canvas.width, canvas.height);
-		context.drawImage(rankedArenasMap, 960, 0, rankedArenasMap.width, rankedArenasMap.height, (canvas.width / 3) * 2, 0, canvas.width, canvas.height);
+		context.drawImage(brMap, 900, 0, brMap.width, brMap.height, 0, 0, canvas.width, canvas.height);
+		context.drawImage(arenasMap, 900, 0, arenasMap.width, arenasMap.height, canvas.width / 3, 0, canvas.width, canvas.height);
+		context.drawImage(rankedArenasMap, 900, 0, rankedArenasMap.width, rankedArenasMap.height, (canvas.width / 3) * 2, 0, canvas.width, canvas.height);
 		context.strokeStyle = "#e3a600";
-		context.lineWidth = 20;
+		context.lineWidth = 30;
 		context.strokeRect(0, 0, canvas.width, canvas.height);
 		await writeFile("./temp/map.jpeg", canvas.toBuffer("image/jpeg"));
 		const attachment = new Discord.MessageAttachment("./temp/map.jpeg", "map.jpeg");

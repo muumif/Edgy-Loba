@@ -132,3 +132,6 @@ dist
 # Development stuff
 /development
 .eslintrc.json
+
+# Temp file storage
+/temp
