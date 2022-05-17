@@ -17,6 +17,7 @@ const { makeInfoEmbed } = require("./commands/info");
 
 const { insertNewGuild, deleteGuild } = require("./database/db");
 const { makeBugEmbed } = require("./commands/bug");
+const { makeStoreEmbed } = require("./commands/apexMisc/store");
 
 require("./moduels/historyUpdater")();
 
@@ -151,6 +152,16 @@ client.on("message", async message => {
 	if (command === "news") {
 		message.channel.startTyping();
 		makeNewsEmbed().then(result => {
+			message.channel.send(result);
+		}).catch(error => {
+			message.channel.send(error);
+		});
+		message.channel.stopTyping();
+	}
+
+	if (command === "store") {
+		message.channel.startTyping();
+		makeStoreEmbed().then(result => {
 			message.channel.send(result);
 		}).catch(error => {
 			message.channel.send(error);

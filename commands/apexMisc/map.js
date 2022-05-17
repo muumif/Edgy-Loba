@@ -1,5 +1,7 @@
 const axios = require("axios");
 const Discord = require("discord.js");
+const Canvas = require("@napi-rs/canvas");
+const { readFile, writeFile } = require("fs/promises");
 require("dotenv").config();
 
 async function getData() {
@@ -43,27 +45,207 @@ async function getData() {
 }
 
 async function makeMapEmbed() {
-	return getData().then(result => {
+	const canvas = Canvas.createCanvas(2000, 800);
+	const context = canvas.getContext("2d");
+	const brMap = new Canvas.Image();
+	const rankedBrMap = new Canvas.Image();
+	const arenasMap = new Canvas.Image();
+	const rankedArenasMap = new Canvas.Image();
+
+	return getData().then(async result => {
+		switch (result.data.battle_royale.current.code) { // Battle royale map setter
+		case "olympus_rotation": {
+			const brMapFile = await readFile("./images/maps/Olympus.jpg");
+			brMap.src = brMapFile;
+			break;
+		}
+
+		case "worlds_edge_rotation": {
+			const brMapFile = await readFile("./images/maps/Worlds_Edge.jpg");
+			brMap.src = brMapFile;
+			break;
+		}
+
+		case "kings_canyon_rotation": {
+			const brMapFile = await readFile("./images/maps/Kings_Canyon.jpg");
+			brMap.src = brMapFile;
+			break;
+		}
+
+		case "storm_point_rotation": {
+			const brMapFile = await readFile("./images/maps/Storm_Point.jpg");
+			brMap.src = brMapFile;
+			break;
+		}
+		}
+
+		switch (result.data.ranked.current.code) { // Ranked Battle royale map setter
+		case "olympus_rotation": {
+			const brMapFile = await readFile("./images/maps/Olympus.jpg");
+			rankedBrMap.src = brMapFile;
+			break;
+		}
+
+		case "worlds_edge_rotation": {
+			const brMapFile = await readFile("./images/maps/Worlds_Edge.jpg");
+			rankedBrMap.src = brMapFile;
+			break;
+		}
+
+		case "kings_canyon_rotation": {
+			const brMapFile = await readFile("./images/maps/Kings_Canyon.jpg");
+			rankedBrMap.src = brMapFile;
+			break;
+		}
+
+		case "storm_point_rotation": {
+			const brMapFile = await readFile("./images/maps/Storm_Point.jpg");
+			rankedBrMap.src = brMapFile;
+			break;
+		}
+		}
+
+		switch (result.data.arenas.current.code) { // Arenas map setter
+		case "arenas_artillery" :{
+			const arenasMapFile = await readFile("./images/maps/Arena_Artillery.jpg");
+			arenasMap.src = arenasMapFile;
+			break;
+		}
+
+		case "arenas_encore": {
+			const arenasMapFile = await readFile("./images/maps/Arena_Encore.jpg");
+			arenasMap.src = arenasMapFile;
+			break;
+		}
+
+		case "arenas_golden_gardens": {
+			const arenasMapFile = await readFile("./images/maps/Arena_Golden_Gardens.jpg");
+			arenasMap.src = arenasMapFile;
+			break;
+		}
+
+		case "arenas_overflow": {
+			const arenasMapFile = await readFile("./images/maps/Arena_Overflow.jpg");
+			arenasMap.src = arenasMapFile;
+			break;
+		}
+
+		case "arenas_party_crasher": {
+			const arenasMapFile = await readFile("./images/maps/Arena_Party_Crasher.jpg");
+			arenasMap.src = arenasMapFile;
+			break;
+		}
+
+		case "arenas_phase_runner": {
+			const arenasMapFile = await readFile("./images/maps/Arena_Phase_Runner.jpg");
+			arenasMap.src = arenasMapFile;
+			break;
+		}
+
+		case "arenas_thermal_station": {
+			const arenasMapFile = await readFile("./images/maps/Arena_Thermal_Station.jpg");
+			arenasMap.src = arenasMapFile;
+			break;
+		}
+
+		case "arenas_composite": {
+			const arenasMapFile = await readFile("./images/maps/Arena_Drop_Off.jpg");
+			arenasMap.src = arenasMapFile;
+			break;
+		}
+
+		case "arenas_habitat": {
+			const arenasMapFile = await readFile("./images/maps/Arena_Habitat.jpg");
+			arenasMap.src = arenasMapFile;
+			break;
+		}
+		}
+
+		switch (result.data.arenasRanked.current.code) { // Ranked Arenas map setter
+		case "arenas_artillery" :{
+			const arenasMapFile = await readFile("./images/maps/Arena_Artillery.jpg");
+			rankedArenasMap.src = arenasMapFile;
+			break;
+		}
+
+		case "arenas_encore": {
+			const arenasMapFile = await readFile("./images/maps/Arena_Encore.jpg");
+			rankedArenasMap.src = arenasMapFile;
+			break;
+		}
+
+		case "arenas_golden_gardens": {
+			const arenasMapFile = await readFile("./images/maps/Arena_Golden_Gardens.jpg");
+			rankedArenasMap.src = arenasMapFile;
+			break;
+		}
+
+		case "arenas_overflow": {
+			const arenasMapFile = await readFile("./images/maps/Arena_Overflow.jpg");
+			rankedArenasMap.src = arenasMapFile;
+			break;
+		}
+
+		case "arenas_party_crasher": {
+			const arenasMapFile = await readFile("./images/maps/Arena_Party_Crasher.jpg");
+			rankedArenasMap.src = arenasMapFile;
+			break;
+		}
+
+		case "arenas_phase_runner": {
+			const arenasMapFile = await readFile("./images/maps/Arena_Phase_Runner.jpg");
+			rankedArenasMap.src = arenasMapFile;
+			break;
+		}
+
+		case "arenas_thermal_station": {
+			const arenasMapFile = await readFile("./images/maps/Arena_Thermal_Station.jpg");
+			rankedArenasMap.src = arenasMapFile;
+			break;
+		}
+
+		case "arenas_composite": {
+			const arenasMapFile = await readFile("./images/maps/Arena_Drop_Off.jpg");
+			rankedArenasMap.src = arenasMapFile;
+			break;
+		}
+
+		case "arenas_habitat": {
+			const arenasMapFile = await readFile("./images/maps/Arena_Habitat.jpg");
+			rankedArenasMap.src = arenasMapFile;
+			break;
+		}
+		}
+
+		context.drawImage(brMap, 960, 0, brMap.width, brMap.height, 0, 0, canvas.width, canvas.height);
+		context.drawImage(arenasMap, 960, 0, arenasMap.width, arenasMap.height, (canvas.width / 3), 0, canvas.width, canvas.height);
+		context.drawImage(rankedArenasMap, 960, 0, rankedArenasMap.width, rankedArenasMap.height, (canvas.width / 3) * 2, 0, canvas.width, canvas.height);
+		context.strokeStyle = "#e3a600";
+		context.lineWidth = 20;
+		context.strokeRect(0, 0, canvas.width, canvas.height);
+		await writeFile("./temp/map.jpeg", canvas.toBuffer("image/jpeg"));
+		const attachment = new Discord.MessageAttachment("./temp/map.jpeg", "map.jpeg");
 		const embed = new Discord.MessageEmbed()
 			.setTitle("Map Rotation")
 			.addFields(
 				{
 					name: "__Battle Royale__",
-					value: `Current map: **${result.data.battle_royale.current.map}**\nNext Map: **${result.data.battle_royale.next.map}**\nRemaining: **${result.data.battle_royale.current.remainingMins} min**`,
+					value: `Current map: **${result.data.battle_royale.current.map}**\nNext Map: **${result.data.battle_royale.next.map}**\nRemaining: **${result.data.battle_royale.current.remainingTimer}**`,
 					inline: true,
 				},
 				{
 					name: "__Arenas__",
-					value: `Current map: **${result.data.arenas.current.map}**\nNext Map: **${result.data.arenas.next.map}**\nRemaining: **${result.data.arenas.current.remainingMins} min**`,
+					value: `Current map: **${result.data.arenas.current.map}**\nNext Map: **${result.data.arenas.next.map}**\nRemaining: **${result.data.arenas.current.remainingTimer}**`,
 					inline: true,
 				},
 				{
 					name: "__Arenas Ranked__",
-					value: `Current map: **${result.data.arenasRanked.current.map}**\nNext Map: **${result.data.arenasRanked.next.map}**\nRemaining: **${result.data.arenasRanked.current.remainingMins} min**`,
+					value: `Current map: **${result.data.arenasRanked.current.map}**\nNext Map: **${result.data.arenasRanked.next.map}**\nRemaining: **${result.data.arenasRanked.current.remainingTimer}**`,
 					inline: true,
 				},
 			)
-			.setImage(result.data.battle_royale.current.asset)
+			.attachFiles(attachment)
+			.setImage("attachment://map.jpeg")
 			.setColor("#e3a600");
 		return embed;
 	}).catch(error => {
