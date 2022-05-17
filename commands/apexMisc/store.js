@@ -1,7 +1,7 @@
 const axios = require("axios");
 const Discord = require("discord.js");
 const Canvas = require("@napi-rs/canvas");
-const { readFile } = require("fs/promises");
+const { readFile } = require("fs").promises;
 require("dotenv").config();
 
 async function getData() {
