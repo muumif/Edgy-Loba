@@ -1,5 +1,7 @@
 const axios = require("axios");
 const Discord = require("discord.js");
+const Canvas = require("@napi-rs/canvas");
+const { readFile } = require("fs/promises");
 require("dotenv").config();
 
 async function getData() {
@@ -43,10 +45,21 @@ async function getData() {
 }
 
 async function makeStoreEmbed() {
+	const canvas = Canvas.createCanvas(1920, 1080);
+	const context = canvas.getContext("2d");
+
+	const background = new Canvas.Image();
+	background.src = "http://via.placeholder.com/1920x1080";
+
+	context.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+	const attachment = new Discord.MessageAttachment(canvas.toBuffer("image/jpeg"), "store.jpeg");
 	return getData().then(result => {
 		const embed = new Discord.MessageEmbed()
 			.setTitle("Store")
-			.setColor("#e3a600");
+			.setColor("#e3a600")
+			.attachFiles(attachment)
+			.setImage("attachment://store.jpeg");
 		return embed;
 	}).catch(error => {
 		return Promise.reject(error);
