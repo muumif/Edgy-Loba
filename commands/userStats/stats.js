@@ -103,12 +103,12 @@ async function makeStatsEmbed(_IGN, _platform, userID, guildID) {
 							},
 							{
 								name: "__Battle Royale__",
-								value: result.data.global.rank.rankName + " " + result.data.global.rank.rankDiv + "\nRP: " + result.data.global.rank.rankScore + ` (${userDBrp - result.data.global.rank.rankScore})`,
+								value: result.data.global.rank.rankName + " " + result.data.global.rank.rankDiv + "\nRP: " + result.data.global.rank.rankScore + ` (${result.data.global.rank.rankScore - userDBrp})`,
 								inline: true,
 							},
 							{
 								name: "__Arenas__",
-								value: result.data.global.arena.rankName + " " + result.data.global.arena.rankDiv + "\nAP: " + result.data.global.arena.rankScore + ` (${userDBap - result.data.global.arena.rankScore})`,
+								value: result.data.global.arena.rankName + " " + result.data.global.arena.rankDiv + "\nAP: " + result.data.global.arena.rankScore + ` (${result.data.global.arena.rankScore - userDBap})`,
 								inline: true,
 							},
 						)
@@ -180,7 +180,7 @@ async function makeStatsEmbed(_IGN, _platform, userID, guildID) {
 				},
 			);
 			embed.setColor("#e3a600");
-			embed.setTimestamp()
+			embed.setTimestamp();
 			embed.setFooter("Bugs can be reported with >bug", "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256");
 		}).catch(error => {
 			return Promise.reject(error);
@@ -202,12 +202,12 @@ async function makeStatsEmbed(_IGN, _platform, userID, guildID) {
 						embed.addFields(
 							{
 								name: "__Battle Royale__",
-								value: apexResult.data.global.rank.rankName + " " + apexResult.data.global.rank.rankDiv + "\nRP: " + apexResult.data.global.rank.rankScore + ` (${user.RP - apexResult.data.global.rank.rankScore})`,
+								value: apexResult.data.global.rank.rankName + " " + apexResult.data.global.rank.rankDiv + "\nRP: " + apexResult.data.global.rank.rankScore + ` (${apexResult.data.global.rank.rankScore - user.RP})`,
 								inline: true,
 							},
 							{
 								name: "__Arenas__",
-								value: apexResult.data.global.arena.rankName + " " + apexResult.data.global.arena.rankDiv + "\nAP: " + apexResult.data.global.arena.rankScore + ` (${user.AP - apexResult.data.global.arena.rankScore})`,
+								value: apexResult.data.global.arena.rankName + " " + apexResult.data.global.arena.rankDiv + "\nAP: " + apexResult.data.global.arena.rankScore + ` (${apexResult.data.global.arena.rankScore - user.AP})`,
 								inline: true,
 							},
 						);
@@ -243,19 +243,6 @@ async function makeStatsEmbed(_IGN, _platform, userID, guildID) {
 						);
 					}
 				});
-			}).catch(error => {
-				embed.addFields(
-					{
-						name: "__Battle Royale__",
-						value: apexResult.data.global.rank.rankName + " " + apexResult.data.global.rank.rankDiv + "\nRP: " + apexResult.data.global.rank.rankScore,
-						inline: true,
-					},
-					{
-						name: "__Arenas__",
-						value: apexResult.data.global.arena.rankName + " " + apexResult.data.global.arena.rankDiv + "\nAP: " + apexResult.data.global.arena.rankScore,
-						inline: true,
-					},
-				);
 			});
 		};
 		await makeEmbed();
