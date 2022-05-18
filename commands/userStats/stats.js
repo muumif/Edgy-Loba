@@ -243,6 +243,19 @@ async function makeStatsEmbed(_IGN, _platform, userID, guildID) {
 						);
 					}
 				});
+			}).catch(error => {
+				embed.addFields(
+					{
+						name: "__Battle Royale__",
+						value: apexResult.data.global.rank.rankName + " " + apexResult.data.global.rank.rankDiv + "\nRP: " + apexResult.data.global.rank.rankScore,
+						inline: true,
+					},
+					{
+						name: "__Arenas__",
+						value: apexResult.data.global.arena.rankName + " " + apexResult.data.global.arena.rankDiv + "\nAP: " + apexResult.data.global.arena.rankScore,
+						inline: true,
+					},
+				);
 			});
 		};
 		await makeEmbed();
