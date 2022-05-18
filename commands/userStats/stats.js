@@ -98,7 +98,7 @@ async function makeStatsEmbed(_IGN, _platform, userID, guildID) {
 						.addFields(
 							{
 								name: "__Level__",
-								value: result.data.global.level,
+								value: result.data.global.level + "\n" + result.data.global.toNextLevelPercent + "%/100%",
 								inline: true,
 							},
 							{
@@ -175,7 +175,7 @@ async function makeStatsEmbed(_IGN, _platform, userID, guildID) {
 			embed.addFields(
 				{
 					name: "__Level__",
-					value: result.data.global.level,
+					value: result.data.global.level + "\n" + result.data.global.toNextLevelPercent + "%/100%",
 					inline: true,
 				},
 			);
