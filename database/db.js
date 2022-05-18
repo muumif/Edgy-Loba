@@ -240,10 +240,53 @@ async function insertNewGuild(guild) {
 		return await client.db("EdgyLoba").collection("guilds").insertOne({
 			guildID: guild.id,
 			guildName: guild.name,
-			settings: { modeBref: "BR" },
+			settings: { modePref: "BR", defaultPlatform: "PC", notifyNews: false, newsRole: undefined },
 		})
 			.then(res => {return Promise.resolve("Guild inserted successfully to the DB!");})
 			.catch(err => {return Promise.reject(err);});
+	}
+	finally {
+		await client.close();
+	}
+}
+
+/**
+ * Update guild settings
+ * @param {String} guildID The guildID
+ * @param {String} setting The setting to change
+ * @param {String} value The value to change the setting to
+ * @return {Promise} Return Promise.resolve when settings were updated succesfully
+ * @return {Promise} Return Promise.reject when something went wrong
+ */
+async function updateGuildSettings(guildID, setting, value) {
+	try {
+		await client.connect();
+
+		switch (setting) {
+		case "modePref": {
+			return await client.db("EdgyLoba").collection("guilds").updateOne({ guildID: guildID }, { $set: { "settings.modePref": value } })
+				.then(res => {return Promise.resolve("Updated succesfully!");})
+				.catch(err => {return Promise.reject(err);});
+		}
+
+		case "defaultPlatform": {
+			return await client.db("EdgyLoba").collection("guilds").updateOne({ guildID: guildID }, { $set: { "settings.defaultPlatform": value } })
+				.then(res => {return Promise.resolve("Updated succesfully!");})
+				.catch(err => {return Promise.reject(err);});
+		}
+
+		case "notifyNews": {
+			return await client.db("EdgyLoba").collection("guilds").updateOne({ guildID: guildID }, { $set: { "settings.notifyNews": value } })
+				.then(res => {return Promise.resolve("Updated succesfully!");})
+				.catch(err => {return Promise.reject(err);});
+		}
+
+		case "newsRole": {
+			return await client.db("EdgyLoba").collection("guilds").updateOne({ guildID: guildID }, { $set: { "settings.newsRole": value } })
+				.then(res => {return Promise.resolve("Updated succesfully!");})
+				.catch(err => {return Promise.reject(err);});
+		}
+		}
 	}
 	finally {
 		await client.close();
@@ -334,4 +377,5 @@ module.exports = {
 	deleteGuild,
 	insertNewBug,
 	insertUserGuild,
+	updateGuildSettings,
 };
