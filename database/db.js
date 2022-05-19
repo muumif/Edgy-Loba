@@ -293,6 +293,19 @@ async function updateGuildSettings(guildID, setting, value) {
 	}
 }
 
+async function getGuildSettings(guildID) {
+	try {
+		await client.connect();
+
+		const settings = await client.db("EdgyLoba").collection("guilds").findOne({ guildID: guildID }, { settings: 1 });
+
+		return Promise.resolve(settings);
+	}
+	finally {
+		await client.close();
+	}
+}
+
 /**
  * Inserts new bug report to DB
  * @param {Guild} guild The guild object
@@ -378,4 +391,5 @@ module.exports = {
 	insertNewBug,
 	insertUserGuild,
 	updateGuildSettings,
+	getGuildSettings,
 };

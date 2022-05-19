@@ -182,7 +182,7 @@ client.on("message", async message => {
 
 	if (command === "settings") {
 		message.channel.startTyping();
-		makeGuildSettingsEmbed(message.guild.id, args[0], args[1]).then(result => {
+		makeGuildSettingsEmbed(message.guild.id, args[0], args[1], message.member).then(result => {
 			message.channel.send(result);
 		}).catch(error => {
 			console.log(error);

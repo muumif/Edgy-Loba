@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const { getTopGuildUsers } = require("../../database/db");
+const { getTopGuildUsers, getGuildSettings } = require("../../database/db");
 const { UIDToIGN } = require("../../moduels/UIDToIGN");
 require("dotenv").config();
 
@@ -34,7 +34,14 @@ async function makeTopEmbed(guildID) {
 				result[i].discordName = fetch.username;
 				result[i].discordDiscriminator = fetch.discriminator;
 				result[i].discordImg = fetch.avatarURL();
-				embed.addField((i + 1) + ". " + result[i].IGN + " / " + result[i].discordName + "#" + result[i].discordDiscriminator, "RP: " + result[i].RP, false);
+				await getGuildSettings(guildID).then(settings => {
+					if (settings.settings.modePref == "BR") {
+						embed.addField((i + 1) + ". " + result[i].IGN + " / " + result[i].discordName + "#" + result[i].discordDiscriminator, "RP: " + result[i].RP, false);
+					}
+					if (settings.settings.modePref == "AR") {
+						embed.addField((i + 1) + ". " + result[i].IGN + " / " + result[i].discordName + "#" + result[i].discordDiscriminator, "AP: " + result[i].AP, false);
+					}
+				});
 			}
 
 			embed.setThumbnail(result[0].discordImg);
