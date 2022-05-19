@@ -22,13 +22,12 @@ async function makeHelpEmbed(args) {
 					name: "`>help settings`",
 					value: "TODO",
 					inline: false,
-				},
+				},*/
 				{
 					name: "`>help admin`",
-					value: "TODO",
+					value: "Commands meant for admin use.",
 					inline: false,
 				},
-				*/
 				{
 					name: "Other",
 					value: "[Invite Me](https://discord.com/oauth2/authorize?client_id=719542118955090011&scope=bot) - [Vote Top.gg](https://top.gg/bot/719542118955090011/vote) - [Github](https://github.com/muumif/Edgy-Loba)",
@@ -120,7 +119,39 @@ async function makeHelpEmbed(args) {
 	}
 
 	case "admin":{
-		return;
+		const embed = new Discord.MessageEmbed()
+			.setTitle("Help Admin")
+			.setDescription("These commands are not fully implemented and might not work at times!")
+			.setColor("#e3a600")
+			.setThumbnail("https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256")
+			.addFields(
+				{
+					name: "`>settings`",
+					value: "See all the settings that are set.",
+					inline: false,
+				},
+				{
+					name: "`>settings mode [BR | AR]`",
+					value: "Set the default gamemode that will be used in top and other commands.\n`BR - Battle Royale`\n`AR - Arenas`",
+					inline: false,
+				},
+				{
+					name: "`>settings default [PC | X1 | PS | SWITCH]`",
+					value: "Set the default platform so that when checking stats you wont need to enter platform if the user exists on that platform.\n`PC - PC`\n`X1 - Xbox`\n`PS - Playstation`\n`SWITCH - Nintendo Switch`",
+					inline: false,
+				},
+				/*
+				{
+					name: "`>settings notifyNews [TRUE | FALSE]`",
+					value: "NOT WORKING.",
+					inline: false,
+				},*/
+			)
+			.setColor("#e3a600")
+			.setTimestamp()
+			.setFooter("Help Admin - muumif", "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256");
+
+		return embed;
 	}
 	}
 
