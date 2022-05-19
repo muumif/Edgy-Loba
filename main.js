@@ -18,6 +18,7 @@ const { makeInfoEmbed } = require("./commands/info");
 const { insertNewGuild, deleteGuild } = require("./database/db");
 const { makeBugEmbed } = require("./commands/bug");
 const { makeStoreEmbed } = require("./commands/apexMisc/store");
+const { makeGuildSettingsEmbed } = require("./commands/guild/guildSettings");
 
 require("./moduels/historyUpdater")();
 
@@ -175,6 +176,16 @@ client.on("message", async message => {
 			message.channel.send(result);
 		}).catch(error => {
 			message.channel.send(error);
+		});
+		message.channel.stopTyping();
+	}
+
+	if (command === "settings") {
+		message.channel.startTyping();
+		makeGuildSettingsEmbed(message.guild.id, args[0], args[1], message.member).then(result => {
+			message.channel.send(result);
+		}).catch(error => {
+			console.log(error);
 		});
 		message.channel.stopTyping();
 	}
