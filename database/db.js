@@ -1,7 +1,7 @@
 const { MongoClient } = require("mongodb");
 require("dotenv").config();
 
-const URI = `mongodb://muumi:${process.env.MONGO_PASSWORD}@192.168.8.105:27017/?authMechanism=DEFAULT`;
+const URI = `mongodb://muumi:${process.env.MONGO_PASSWORD}@192.168.0.13:27017/?authMechanism=DEFAULT`;
 
 const client = new MongoClient(URI);
 
