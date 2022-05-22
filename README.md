@@ -16,5 +16,5 @@ To give Apex Legends players their stats in an easy and convenient way inside of
 #### Any suggestions, bugs, issues are welcome in the [GitHub](https://github.com/muumif/Edgy-Loba/issues) issues page.
 
 ### Previews:
-![>Stats command](https://muumi.xyz/Preview1.PNG ">stats")
-![>Map command](https://muumi.xyz/Preview2.PNG ">map")
+![>Stats command](http://images.muumi.xyz/EdgyLoba/Preview1.PNG ">stats")
+![>Map command](http://images.muumi.xyz/EdgyLoba/Preview2.PNG ">map")
