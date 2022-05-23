@@ -1,13 +1,15 @@
 const axios = require("axios");
 const Discord = require("discord.js");
 const Canvas = require("@napi-rs/canvas");
+const { logger } = require("../../moduels/logger");
 const { readFile, writeFile } = require("fs").promises;
 require("dotenv").config();
 
-async function getData() {
+async function getData(guildID, discordID) {
 	const URI = `${process.env.ALS_ENDPOINT}/maprotation?version=2&auth=${process.env.ALS_TOKEN}`;
 	return await axios.get(encodeURI(URI))
 		.then(function(response) {
+			logger.info("Map API: Succesfully returned data!", { command: "map", guildID: guildID, discordID: discordID });
 			return response;
 		}).catch(error => {
 			const embed = new Discord.MessageEmbed()
@@ -16,35 +18,43 @@ async function getData() {
 			case 400:
 				embed.setTitle("Something went wrong.");
 				embed.setDescription("Try again in a few minutes.");
+				logger.error(new Error(error), { command: "map", guildID: guildID, discordID: discordID });
 				return Promise.reject(embed);
 			case 403:
 				embed.setTitle("Unauthorized / Unknown API key.");
 				embed.setDescription("The bot might be worked on at this moment. If this continues to happen report it with /bug.");
+				logger.error(new Error(error), { command: "map", guildID: guildID, discordID: discordID });
 				return Promise.reject(embed);
 			case 404:
 				embed.setTitle("Player could not be found.");
 				embed.setDescription("If this continues to happen check that you are using your origin username or report the bug with /bug.");
+				logger.error(new Error(error), { command: "map", guildID: guildID, discordID: discordID });
 				return Promise.reject(embed);
 			case 405:
 				embed.setTitle("External API error.");
 				embed.setDescription("Try again in a few seconds.");
+				logger.error(new Error(error), { command: "map", guildID: guildID, discordID: discordID });
 				return Promise.reject(embed);
 			case 410:
 				embed.setTitle("Unknown platform provided.");
 				embed.setDescription("If this continues to happen report it as a bug with /bug");
+				logger.error(new Error(error), { command: "map", guildID: guildID, discordID: discordID });
 				return Promise.reject(embed);
 			case 429:
 				embed.setTitle("API Rate limit reached.");
 				embed.setDescription("Try again in a few seconds.");
+				logger.error(new Error(error), { command: "map", guildID: guildID, discordID: discordID });
+
 				return Promise.reject(embed);
 			case 500:
-				embed.setDescription("API Internal error.");
+				embed.setTitle("API Internal error.");
+				logger.error(new Error(error), { command: "map", guildID: guildID, discordID: discordID });
 				return Promise.reject(embed);
 			}
 		});
 }
 
-async function makeMapEmbed() {
+async function makeMapEmbed(guildID, discordID) {
 	const canvas = Canvas.createCanvas(2000, 800);
 	const context = canvas.getContext("2d");
 	const brMap = new Canvas.Image();
@@ -52,7 +62,7 @@ async function makeMapEmbed() {
 	const arenasMap = new Canvas.Image();
 	const rankedArenasMap = new Canvas.Image();
 
-	return getData().then(async result => {
+	return getData(guildID, discordID).then(async result => {
 		switch (result.data.battle_royale.current.code) { // Battle royale map setter
 		case "olympus_rotation": {
 			const brMapFile = await readFile("./images/maps/Olympus.jpg");
@@ -223,7 +233,9 @@ async function makeMapEmbed() {
 		context.strokeStyle = "#e3a600";
 		context.lineWidth = 30;
 		context.strokeRect(0, 0, canvas.width, canvas.height);
-		await writeFile("./temp/map.jpeg", canvas.toBuffer("image/jpeg"));
+		await writeFile("./temp/map.jpeg", canvas.toBuffer("image/jpeg")).then(function() {
+			logger.info("FS: Succesfully wrote map image!", { command: "map", guildID: guildID, discordID: discordID });
+		});
 		const attachment = new Discord.MessageAttachment("./temp/map.jpeg", "map.jpeg");
 		const embed = new Discord.MessageEmbed()
 			.setTitle("Map Rotation")

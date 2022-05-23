@@ -1,14 +1,16 @@
 const Discord = require("discord.js");
 const { updateGuildSettings, getGuildSettings } = require("../../database/db");
+const { logger } = require("../../moduels/logger");
 require("dotenv").config();
 
-async function makeGuildSettingsEmbed(guildID, setting, value, admin) {
+async function makeGuildSettingsEmbed(guildID, setting, value, admin, discordID) {
 	const embed = new Discord.MessageEmbed()
 		.setColor("#e3a600")
 		.setTimestamp();
 	switch (setting) {
 	case undefined:{
 		if (!admin.hasPermission("ADMINISTRATOR")) {
+			logger.warn("Non-admin tried to use an admin command!", { command: "settings", guildID: guildID, discordID: discordID });
 			embed.setTitle("No permission to use this command!");
 			embed.setDescription("This command is reserved for admins.");
 			embed.setFooter("Error page - admin", "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256");
@@ -41,6 +43,7 @@ async function makeGuildSettingsEmbed(guildID, setting, value, admin) {
 	case "mode": {
 		setting = "modePref";
 		if (!admin.hasPermission("ADMINISTRATOR")) {
+			logger.warn("Non-admin tried to use an admin command!", { command: "settings", guildID: guildID, discordID: discordID });
 			embed.setTitle("No permission to use this command!");
 			embed.setDescription("This command is reserved for admins.");
 			embed.setFooter("Error page - admin", "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256");
@@ -63,6 +66,7 @@ async function makeGuildSettingsEmbed(guildID, setting, value, admin) {
 	case "platform": {
 		setting = "defaultPlatform";
 		if (!admin.hasPermission("ADMINISTRATOR")) {
+			logger.warn("Non-admin tried to use an admin command!", { command: "settings", guildID: guildID, discordID: discordID });
 			embed.setTitle("No permission to use this command!");
 			embed.setDescription("This command is reserved for admins.");
 			embed.setFooter("Error page - admin", "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256");
@@ -85,6 +89,7 @@ async function makeGuildSettingsEmbed(guildID, setting, value, admin) {
 	case "notify": {
 		setting = "notifyNews";
 		if (!admin.hasPermission("ADMINISTRATOR")) {
+			logger.warn("Non-admin tried to use an admin command!", { command: "settings", guildID: guildID, discordID: discordID });
 			embed.setTitle("No permission to use this command!");
 			embed.setDescription("This command is reserved for admins.");
 			embed.setFooter("Error page - admin", "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256");
@@ -120,6 +125,7 @@ async function makeGuildSettingsEmbed(guildID, setting, value, admin) {
 	case "role": { // Not in use
 		setting = "newsRole";
 		if (!admin.hasPermission("ADMINISTRATOR")) {
+			logger.warn("Non-admin tried to use an admin command!", { command: "settings", guildID: guildID, discordID: discordID });
 			embed.setTitle("No permission to use this command!");
 			embed.setDescription("This command is reserved for admins.");
 			embed.setFooter("Error page - admin", "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256");
@@ -135,6 +141,7 @@ async function makeGuildSettingsEmbed(guildID, setting, value, admin) {
 
 	default: {
 		if (!admin.hasPermission("ADMINISTRATOR")) {
+			logger.warn("Non-admin tried to use an admin command!", { command: "settings", guildID: guildID, discordID: discordID });
 			embed.setTitle("No permission to use this command!");
 			embed.setDescription("This command is reserved for admins.");
 			embed.setFooter("Error page - admin", "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256");

@@ -1,8 +1,8 @@
 const { format } = require("winston");
 const winston = require("winston");
 
-const customFormat = winston.format.printf(({ level, message, timestamp }) => {
-	return `[${timestamp}] ${level}: ${message}`;
+const customFormat = winston.format.printf(({ level, message, timestamp, command, discordID, guildID }) => {
+	return `[${command}][${guildID}][${timestamp}]${level}: ${message}`;
 });
 
 const logger = winston.createLogger({
@@ -12,6 +12,8 @@ const logger = winston.createLogger({
 			format: "DD-MM-YYYY HH:mm:ss",
 		}),
 		winston.format.errors({ stack: true }),
+		winston.format.splat(),
+		winston.format.simple(),
 		winston.format.json(),
 	),
 
@@ -25,6 +27,10 @@ const logger = winston.createLogger({
 				customFormat,
 			),
 		}),
-		new winston.transports.File({ filename: "../logs/combined.log" }),
+		new winston.transports.File({ filename: "./logs/combined.log" }),
 	],
 });
+
+module.exports = {
+	logger,
+};

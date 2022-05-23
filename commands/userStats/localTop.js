@@ -1,12 +1,14 @@
 const Discord = require("discord.js");
 const { getTopGuildUsers, getGuildSettings } = require("../../database/db");
+const { logger } = require("../../moduels/logger");
 const { UIDToIGN } = require("../../moduels/UIDToIGN");
 require("dotenv").config();
 
 const client = new Discord.Client();
 
-async function fetchUser(id) {
+async function fetchUser(id, guildID) {
 	return await client.users.fetch(id).then(result => {
+		logger.info("Discord API: Succesfully fetched a user: " + result.username, { command: "stats", guildID: guildID, discordID: id });
 		return result;
 	});
 }
@@ -14,12 +16,12 @@ async function fetchUser(id) {
 async function getData(guildID) {
 	return await getTopGuildUsers(guildID).then(result => {
 		return result;
-	}).catch(error => {
-		return Promise.reject(error);
+	}).catch(err => {
+		return Promise.reject(err);
 	});
 }
 
-async function makeTopEmbed(guildID) {
+async function makeTopEmbed(guildID, discordID) {
 	return await getData(guildID).then(async result => {
 		const embed = new Discord.MessageEmbed()
 			.setTitle("Leaderboard")
@@ -29,8 +31,8 @@ async function makeTopEmbed(guildID) {
 
 		const discordIDToName = async _ => {
 			for (let i = 0; i < result.length; i++) {
-				const fetch = await fetchUser(result[i].discordID);
-				result[i].IGN = await UIDToIGN(result[i].originUID, result[i].platform);
+				const fetch = await fetchUser(result[i].discordID, guildID);
+				result[i].IGN = await UIDToIGN(result[i].originUID, result[i].platform, guildID, discordID);
 				result[i].discordName = fetch.username;
 				result[i].discordDiscriminator = fetch.discriminator;
 				result[i].discordImg = fetch.avatarURL();

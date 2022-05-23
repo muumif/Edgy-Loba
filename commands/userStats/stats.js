@@ -4,20 +4,23 @@ const { getUserUID } = require("../../moduels/getUID");
 const { makeStatsChart } = require("../../moduels/charts");
 const { getUserExists, getUser, updateUserRPAP, getUserHistory, insertUserGuild } = require("../../database/db");
 const { UIDToIGN } = require("../../moduels/UIDToIGN");
+const { logger } = require("../../moduels/logger");
 require("dotenv").config();
 
 const client = new Discord.Client();
 
-async function fetchUser(id) {
+async function fetchUser(id, guildID) {
 	return await client.users.fetch(id).then(result => {
+		logger.info("Discord API: Succesfully fetched a user: " + result.username, { command: "stats", guildID: guildID, discordID: id });
 		return result;
 	});
 }
 
-async function getData(UID, platform) {
+async function getData(UID, platform, guildID, discordID) {
 	const URI = `${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${UID}&platform=${platform}`;
 	return axios.get(encodeURI(URI))
 		.then(function(response) {
+			logger.info("Stats API: Succesfully returned a user: " + response.data.global.name + "/" + UID, { command: "stats", guildID: guildID, discordID: discordID });
 			return response;
 		}).catch(function(error) {
 			const embed = new Discord.MessageEmbed()
@@ -26,29 +29,37 @@ async function getData(UID, platform) {
 			case 400:
 				embed.setTitle("Something went wrong.");
 				embed.setDescription("Try again in a few minutes.");
+				logger.error(new Error(error), { command: "stats", guildID: guildID, discordID: discordID });
 				return Promise.reject(embed);
 			case 403:
 				embed.setTitle("Unauthorized / Unknown API key.");
 				embed.setDescription("The bot might be worked on at this moment. If this continues to happen report it with /bug.");
+				logger.error(new Error(error), { command: "stats", guildID: guildID, discordID: discordID });
 				return Promise.reject(embed);
 			case 404:
 				embed.setTitle("Player could not be found.");
 				embed.setDescription("If this continues to happen check that you are using your origin username or report the bug with /bug.");
+				logger.error(new Error(error), { command: "stats", guildID: guildID, discordID: discordID });
 				return Promise.reject(embed);
 			case 405:
 				embed.setTitle("External API error.");
 				embed.setDescription("Try again in a few seconds.");
+				logger.error(new Error(error), { command: "stats", guildID: guildID, discordID: discordID });
 				return Promise.reject(embed);
 			case 410:
 				embed.setTitle("Unknown platform provided.");
 				embed.setDescription("If this continues to happen report it as a bug with /bug");
+				logger.error(new Error(error), { command: "stats", guildID: guildID, discordID: discordID });
 				return Promise.reject(embed);
 			case 429:
 				embed.setTitle("API Rate limit reached.");
 				embed.setDescription("Try again in a few seconds.");
+				logger.error(new Error(error), { command: "stats", guildID: guildID, discordID: discordID });
+
 				return Promise.reject(embed);
 			case 500:
-				embed.setDescription("API Internal error.");
+				embed.setTitle("API Internal error.");
+				logger.error(new Error(error), { command: "stats", guildID: guildID, discordID: discordID });
 				return Promise.reject(embed);
 			}
 		});
@@ -90,7 +101,7 @@ async function makeStatsEmbed(_IGN, _platform, userID, guildID) {
 						await insertUserGuild(userID, guildID);
 					}
 				});
-				return await getData(UID, platform).then(async result => {
+				return await getData(UID, platform, guildID, userID).then(async result => {
 					const embed = new Discord.MessageEmbed()
 						.setTitle(result.data.global.name)
 						.setAuthor("Platform: " + platform)
@@ -115,7 +126,7 @@ async function makeStatsEmbed(_IGN, _platform, userID, guildID) {
 						.setColor("#e3a600")
 						.setTimestamp()
 						.setFooter("Existing user", "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256");
-					await fetchUser(userID).then(ID => {
+					await fetchUser(userID, guildID).then(ID => {
 						embed.setDescription("Linked to " + ID.username + "#" + ID.discriminator);
 					});
 					await updateUserRPAP(userID, result.data.global.rank.rankScore, result.data.global.arena.rankScore);
@@ -161,13 +172,13 @@ async function makeStatsEmbed(_IGN, _platform, userID, guildID) {
 		let apexResult;
 		const embed = new Discord.MessageEmbed();
 
-		await getUserUID(_IGN, platform).then(_UID => {
+		await getUserUID(_IGN, platform, "stats", guildID, userID).then(_UID => {
 			UID = _UID;
 		}).catch(error => {
 			return Promise.reject(error);
 		});
 
-		await getData(UID, platform).then(result => {
+		await getData(UID, platform, guildID, userID).then(result => {
 			apexResult = result;
 			embed.setTitle(result.data.global.name);
 			embed.setAuthor("Platform: " + platform);
@@ -189,14 +200,14 @@ async function makeStatsEmbed(_IGN, _platform, userID, guildID) {
 		const makeEmbed = async _ => {
 			return await getUserExists(userID).then(async exists => {
 				return await getUser(userID).then(async user => {
-					if (exists == true && _IGN == await UIDToIGN(user.originUID, platform)) {
+					if (exists == true && _IGN == await UIDToIGN(user.originUID, platform, guildID, userID)) {
 						for (let i = 0; i < user.guilds.length; i++) {
 							if (user.guilds[i] == guildID) {
 								return;
 							}
 							await insertUserGuild(userID, guildID);
 						}
-						await fetchUser(userID).then(discordUser => {
+						await fetchUser(userID, guildID).then(discordUser => {
 							embed.setDescription("Linked to " + discordUser.username + "#" + discordUser.discriminator);
 						});
 						embed.addFields(
