@@ -19,6 +19,7 @@ const { insertNewGuild, deleteGuild } = require("./database/db");
 const { makeBugEmbed } = require("./commands/bug");
 const { makeStoreEmbed } = require("./commands/apexMisc/store");
 const { makeGuildSettingsEmbed } = require("./commands/guild/guildSettings");
+const { logger } = require("./moduels/logger");
 
 require("./moduels/historyUpdater")();
 
@@ -31,19 +32,11 @@ client.once("ready", () => {
 });
 
 client.on("guildCreate", guild => {
-	insertNewGuild(guild).then(res => {
-		console.log(res);
-	}).catch(err => {
-		console.log(err);
-	});
+	insertNewGuild(guild);
 });
 
 client.on("guildDelete", guild => {
-	deleteGuild(guild).then(res => {
-		console.log(res);
-	}).catch(err => {
-		console.log(err);
-	});
+	deleteGuild(guild);
 });
 
 client.on("message", async message => {
@@ -57,6 +50,7 @@ client.on("message", async message => {
 	if (command === "help") {
 		message.channel.startTyping();
 		makeHelpEmbed(args[0]).then(result => {
+			logger.info("Discord API: Message sent succesfully!", { command: "help", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(result);
 		});
 		message.channel.stopTyping();
@@ -65,6 +59,7 @@ client.on("message", async message => {
 	if (command === "info") {
 		message.channel.startTyping();
 		makeInfoEmbed().then(result => {
+			logger.info("Discord API: Message sent succesfully!", { command: "info", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(result);
 		});
 		message.channel.stopTyping();
@@ -73,8 +68,10 @@ client.on("message", async message => {
 	if (command === "link") {
 		message.channel.startTyping();
 		makeLinkEmbed(args[0], args[1], message.guild.id, message.author.id, message.author).then(result => {
+			logger.info("Discord API: Message sent succesfully!", { command: "link", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(result);
 		}).catch(error => {
+			logger.info("Discord API: Message sent with an error succesfully!", { command: "link", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(error);
 		});
 		message.channel.stopTyping();
@@ -83,8 +80,10 @@ client.on("message", async message => {
 	if (command === "unlink") {
 		message.channel.startTyping();
 		makeUnlinkEmbed(message.author.id).then(result => {
+			logger.info("Discord API: Message sent succesfully!", { command: "unlink", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(result);
 		}).catch(error => {
+			logger.info("Discord API: Message sent with an error succesfully!", { command: "unlink", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(error);
 		});
 		message.channel.stopTyping();
@@ -93,8 +92,10 @@ client.on("message", async message => {
 	if (command === "stats") {
 		message.channel.startTyping();
 		makeStatsEmbed(args[0], args[1], message.author.id, message.guild.id).then(result => {
+			logger.info("Discord API: Message sent succesfully!", { command: "stats", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(result);
 		}).catch(error => {
+			logger.info("Discord API: Message sent with an error succesfully!", { command: "stats", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(error);
 		});
 		message.channel.stopTyping();
@@ -102,9 +103,11 @@ client.on("message", async message => {
 
 	if (command === "top") {
 		message.channel.startTyping();
-		makeTopEmbed(message.guild.id).then(result => {
+		makeTopEmbed(message.guild.id, message.author.id).then(result => {
+			logger.info("Discord API: Message sent succesfully!", { command: "top", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(result);
 		}).catch((error) => {
+			logger.info("Discord API: Message sent with an error succesfully!", { command: "top", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(error);
 		});
 		message.channel.stopTyping();
@@ -112,9 +115,11 @@ client.on("message", async message => {
 
 	if (command === "map") {
 		message.channel.startTyping();
-		makeMapEmbed().then(result => {
+		makeMapEmbed(message.guild.id, message.author.id).then(result => {
+			logger.info("Discord API: Message sent succesfully!", { command: "map", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(result);
 		}).catch(error => {
+			logger.info("Discord API: Message sent with an error succesfully!", { command: "map", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(error);
 		});
 		message.channel.stopTyping();
@@ -122,9 +127,11 @@ client.on("message", async message => {
 
 	if (command === "status") {
 		message.channel.startTyping();
-		makeStatusEmbed().then(result => {
+		makeStatusEmbed(message.guild.id, message.author.id).then(result => {
+			logger.info("Discord API: Message sent succesfully!", { command: "status", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(result);
 		}).catch(error => {
+			logger.info("Discord API: Message sent with an error succesfully!", { command: "status", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(error);
 		});
 		message.channel.stopTyping();
@@ -132,9 +139,11 @@ client.on("message", async message => {
 
 	if (command === "pred" || command === "predator") {
 		message.channel.startTyping();
-		makePredatorEmbed().then(result => {
+		makePredatorEmbed(message.guild.id, message.author.id).then(result => {
+			logger.info("Discord API: Message sent succesfully!", { command: "pred", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(result);
 		}).catch(error => {
+			logger.info("Discord API: Message sent with an error succesfully!", { command: "pred", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(error);
 		});
 		message.channel.stopTyping();
@@ -142,9 +151,11 @@ client.on("message", async message => {
 
 	if (command == "crafting") {
 		message.channel.startTyping();
-		makeCraftingEmbed().then(result => {
+		makeCraftingEmbed(message.guild.id, message.author.id).then(result => {
+			logger.info("Discord API: Message sent succesfully!", { command: "crafting", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(result);
 		}).catch(error => {
+			logger.info("Discord API: Message sent with an error succesfully!", { command: "crafting", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(error);
 		});
 		message.channel.stopTyping();
@@ -152,9 +163,11 @@ client.on("message", async message => {
 
 	if (command === "news") {
 		message.channel.startTyping();
-		makeNewsEmbed().then(result => {
+		makeNewsEmbed(message.guild.id, message.author.id).then(result => {
+			logger.info("Discord API: Message sent succesfully!", { command: "news", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(result);
 		}).catch(error => {
+			logger.info("Discord API: Message sent with an error succesfully!", { command: "news", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(error);
 		});
 		message.channel.stopTyping();
@@ -163,8 +176,10 @@ client.on("message", async message => {
 	if (command === "store") {
 		message.channel.startTyping();
 		makeStoreEmbed().then(result => {
+			logger.info("Discord API: Message sent succesfully!", { command: "store", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(result);
 		}).catch(error => {
+			logger.info("Discord API: Message sent with an error succesfully!", { command: "store", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(error);
 		});
 		message.channel.stopTyping();
@@ -173,8 +188,10 @@ client.on("message", async message => {
 	if (command === "bug") {
 		message.channel.startTyping();
 		makeBugEmbed(message.guild, message.author.id, args).then(result => {
+			logger.info("Discord API: Message sent succesfully!", { command: "bug", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(result);
 		}).catch(error => {
+			logger.info("Discord API: Message sent with an error succesfully!", { command: "bug", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(error);
 		});
 		message.channel.stopTyping();
@@ -182,9 +199,11 @@ client.on("message", async message => {
 
 	if (command === "settings") {
 		message.channel.startTyping();
-		makeGuildSettingsEmbed(message.guild.id, args[0], args[1], message.member).then(result => {
+		makeGuildSettingsEmbed(message.guild.id, args[0], args[1], message.member, message.author.id).then(result => {
+			logger.info("Discord API: Message sent succesfully!", { command: "settings", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(result);
 		}).catch(error => {
+			logger.info("Discord API: Message sent with an error succesfully!", { command: "settings", guildID: message.guild.id, discordID: message.author.id });
 			console.log(error);
 		});
 		message.channel.stopTyping();
