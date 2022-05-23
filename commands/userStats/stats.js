@@ -200,7 +200,7 @@ async function makeStatsEmbed(_IGN, _platform, userID, guildID) {
 		const makeEmbed = async _ => {
 			return await getUserExists(userID).then(async exists => {
 				return await getUser(userID).then(async user => {
-					if (exists == true && _IGN == await UIDToIGN(user.originUID, platform, guildID, userID)) {
+					if (exists == true && _IGN == await UIDToIGN(user.originUID, user.platform, guildID, userID)) {
 						for (let i = 0; i < user.guilds.length; i++) {
 							if (user.guilds[i] == guildID) {
 								return;
