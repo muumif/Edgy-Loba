@@ -75,7 +75,7 @@ async function makeStatsEmbed(_IGN, _platform, userID, guildID) {
 		if (platform == "pc" || platform == "ORIGIN" || platform == "origin") {
 			platform = "PC";
 		}
-		if (platform == "x" || platform == "X" || platform == "xbox" || platform == "XBOX" || platform == "x1") {
+		if (platform == "x" || platform == "X" || platform == "xbox" || platform == "XBOX" || platform == "x1" || platform == "Xbox" || platform == "X1") {
 			platform = "X1";
 		}
 		if (platform == "ps" || platform == "PS" || platform == "playstation" || platform == "PLAYSTATION" || platform == "ps4" || platform == "PS4" || platform == "ps5" || platform == "PS5") {
