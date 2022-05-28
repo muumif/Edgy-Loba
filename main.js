@@ -1,27 +1,28 @@
 const Discord = require("discord.js");
 require("dotenv").config();
+const { logger } = require("./moduels/logger");
+
+require("./moduels/historyUpdater")();
 
 const { makeMapEmbed } = require("./commands/apexMisc/map");
 const { makeStatusEmbed } = require("./commands/apexMisc/status");
 const { makeNewsEmbed } = require("./commands/apexMisc/news");
 const { makePredatorEmbed } = require("./commands/apexMisc/predCap");
 const { makeCraftingEmbed } = require("./commands/apexMisc/crafting");
+const { makeStoreEmbed } = require("./commands/apexMisc/store");
 
 const { makeTopEmbed } = require("./commands/userStats/localTop");
 const { makeStatsEmbed } = require("./commands/userStats/stats");
 const { makeLinkEmbed } = require("./commands/userStats/link");
 const { makeUnlinkEmbed } = require("./commands/userStats/unlink");
 
+const { makeGuildSettingsEmbed } = require("./commands/guild/guildSettings");
+
 const { makeHelpEmbed } = require("./commands/help");
 const { makeInfoEmbed } = require("./commands/info");
+const { makeBugEmbed } = require("./commands/bug");
 
 const { insertNewGuild, deleteGuild } = require("./database/db");
-const { makeBugEmbed } = require("./commands/bug");
-const { makeStoreEmbed } = require("./commands/apexMisc/store");
-const { makeGuildSettingsEmbed } = require("./commands/guild/guildSettings");
-const { logger } = require("./moduels/logger");
-
-require("./moduels/historyUpdater")();
 
 const client = new Discord.Client();
 const prefix = process.env.PREFIX;
