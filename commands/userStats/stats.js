@@ -11,7 +11,7 @@ const client = new Discord.Client();
 
 async function fetchUser(id, guildID) {
 	return await client.users.fetch(id).then(result => {
-		logger.info("Discord API: Succesfully fetched a user: " + result.username, { command: "stats", guildID: guildID, discordID: id });
+		logger.info("Discord API fetched user!", { command: "stats", guildID: guildID, discordID: id, user: result });
 		return result;
 	});
 }
@@ -20,7 +20,7 @@ async function getData(UID, platform, guildID, discordID) {
 	const URI = `${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${UID}&platform=${platform}`;
 	return axios.get(encodeURI(URI))
 		.then(function(response) {
-			logger.info("Stats API: Succesfully returned a user: " + response.data.global.name + "/" + UID, { command: "stats", guildID: guildID, discordID: discordID });
+			logger.info("ALS API fetched user!", { command: "stats", guildID: guildID, discordID: discordID, IGN: response.data.global.name, UID: UID });
 			return response;
 		}).catch(function(error) {
 			const embed = new Discord.MessageEmbed()

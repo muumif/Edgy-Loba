@@ -9,7 +9,7 @@ async function getUserUID(IGN, platform, guildID, discordID) {
 	return await axios.get(encodeURI(URI), { transformResponse: [data => data] })
 		.then(function(response) {
 			if (platform == "PC") {
-				logger.info("API data fetched user PC!", { module: "getUID", guildID: guildID, discordID: discordID, data: response.data, IGN: IGN, platform: platform });
+				logger.info("ALS API data fetched user PC!", { module: "getUID", guildID: guildID, discordID: discordID, data: response.data, IGN: IGN, platform: platform });
 				return JSONBigInt.parse(response.data).uid;
 			}
 			logger.info("API data fetched user console!", { module: "getUID", guildID: guildID, discordID: discordID, data: response.data, IGN: IGN, platform: platform });

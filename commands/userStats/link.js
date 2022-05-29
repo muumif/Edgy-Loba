@@ -56,7 +56,7 @@ async function makeLinkEmbed(IGN, platform, guildID, userID, messageAuthor) {
 		const URI = `${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${UID}&platform=${platform}`;
 		return await axios.get(encodeURI(URI))
 			.then(async function(response) {
-				logger.info("Stats API: Succesfully returned data!", { command: "link", guildID: guildID, discordID: userID });
+				logger.info("ALS API fetched user data!", { command: "link", guildID: guildID, discordID: userID, IGN: IGN, platform: platform, UID: UID });
 				await insertNewUser(guildID, userID, UID, response.data.global.rank.rankScore, response.data.global.arena.rankScore, platform);
 
 				const embed = new Discord.MessageEmbed()

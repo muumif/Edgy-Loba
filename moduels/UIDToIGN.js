@@ -7,7 +7,7 @@ async function UIDToIGN(UID, platform, guildID, discordID) {
 	const URI = `${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${UID}&platform=${platform}&skipRank=true`;
 	return await axios.get(encodeURI(URI))
 		.then(function(response) {
-			logger.info("API fetched user!", { module: "UIDToIGN", guildID: guildID, discordID: discordID, IGN: response.data.global.name, UID: UID, platform: platform });
+			logger.info("ALS API fetched user!", { module: "UIDToIGN", guildID: guildID, discordID: discordID, IGN: response.data.global.name, UID: UID, platform: platform });
 			return response.data.global.name;
 		}).catch(function(error) {
 			const embed = new Discord.MessageEmbed()

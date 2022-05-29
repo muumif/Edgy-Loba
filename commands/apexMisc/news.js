@@ -7,7 +7,7 @@ async function getData(guildID, discordID) {
 	const URI = `${process.env.ALS_ENDPOINT}/news?auth=${process.env.ALS_TOKEN}`;
 	return await axios.get(encodeURI(URI))
 		.then(function(response) {
-			logger.info("News API: Succesfully returned data!", { command: "news", guildID: guildID, discordID: discordID });
+			logger.info("ALS API fetched news data!", { command: "news", guildID: guildID, discordID: discordID });
 			return response;
 		}).catch(error => {
 			const embed = new Discord.MessageEmbed()
@@ -56,7 +56,7 @@ async function shortenUrl(link, guildID, discordID) {
 	const URI = `${process.env.BITLY_ENDPOINT}/v4/shorten`;
 	return await axios.post(encodeURI(URI), { "long_url": link }, { headers:{ "Authorization": `Bearer ${process.env.BITLY_TOKEN}` } })
 		.then(result => {
-			logger.info("Bitly API: Succesfully returned shortened link!", { command: "news", guildID: guildID, discordID: discordID });
+			logger.info("BITLY API fetched URL!", { command: "news", guildID: guildID, discordID: discordID });
 			return result;
 		});
 }

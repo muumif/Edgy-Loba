@@ -7,7 +7,7 @@ async function getData(guildID, discordID) {
 	const URI = `${process.env.ALS_ENDPOINT}/crafting?auth=${process.env.ALS_TOKEN}`;
 	return await axios.get(encodeURI(URI))
 		.then(function(response) {
-			logger.info("Crafting API: Succesfully returned data!", { command: "crafting", guildID: guildID, discordID: discordID });
+			logger.info("API fetched crafting data!", { command: "crafting", guildID: guildID, discordID: discordID });
 			return response;
 		}).catch(error => {
 			const embed = new Discord.MessageEmbed()

@@ -7,7 +7,7 @@ async function getData(UID, platform, onUser, totalUsers) {
 	const URI = `${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${UID}&platform=${platform}`;
 	return axios.get(encodeURI(URI))
 		.then(function(response) {
-			logger.info("API fetched user!", { module: "historyUpdater", UID: UID, platform: platform, onUser: onUser + 1, totalUsers: totalUsers });
+			logger.info("ALS API fetched user!", { module: "historyUpdater", UID: UID, platform: platform, onUser: onUser + 1, totalUsers: totalUsers });
 			return response;
 		}).catch(function(error) {
 			switch (error.response.status) {
