@@ -9,7 +9,7 @@ async function getData(guildID, discordID) {
 	const URI = `${process.env.ALS_ENDPOINT}/maprotation?version=2&auth=${process.env.ALS_TOKEN}`;
 	return await axios.get(encodeURI(URI))
 		.then(function(response) {
-			logger.info("Map API: Succesfully returned data!", { command: "map", guildID: guildID, discordID: discordID });
+			logger.info("ALS API fetched map data!", { command: "map", guildID: guildID, discordID: discordID });
 			return response;
 		}).catch(error => {
 			const embed = new Discord.MessageEmbed()
@@ -234,7 +234,7 @@ async function makeMapEmbed(guildID, discordID) {
 		context.lineWidth = 30;
 		context.strokeRect(0, 0, canvas.width, canvas.height);
 		await writeFile("./temp/map.jpeg", canvas.toBuffer("image/jpeg")).then(function() {
-			logger.info("FS: Succesfully wrote map image!", { command: "map", guildID: guildID, discordID: discordID });
+			logger.info("Map image written to disk!", { command: "map", guildID: guildID, discordID: discordID });
 		});
 		const attachment = new Discord.MessageAttachment("./temp/map.jpeg", "map.jpeg");
 		const embed = new Discord.MessageEmbed()

@@ -7,7 +7,7 @@ async function getData(guildID, discordID) {
 	const URI = `${process.env.ALS_ENDPOINT}/servers?auth=${process.env.ALS_TOKEN}`;
 	return await axios.get(encodeURI(URI))
 		.then(function(response) {
-			logger.info("Servers API: Succesfully returned data!", { command: "status", guildID: guildID, discordID: discordID });
+			logger.info("ALS API fetched status data!", { command: "status", guildID: guildID, discordID: discordID });
 			return response;
 		}).catch(error => {
 			const embed = new Discord.MessageEmbed()

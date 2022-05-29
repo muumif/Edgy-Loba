@@ -8,7 +8,7 @@ const client = new Discord.Client();
 
 async function fetchUser(id, guildID) {
 	return await client.users.fetch(id).then(result => {
-		logger.info("Discord API: Succesfully fetched a user: " + result.username, { command: "stats", guildID: guildID, discordID: id });
+		logger.info("Discord API fetched user!", { command: "stats", guildID: guildID, discordID: id, user: result });
 		return result;
 	});
 }
