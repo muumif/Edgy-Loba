@@ -1,3 +1,5 @@
+[![Discord Bots](https://top.gg/api/widget/719542118955090011.svg)(https://top.gg/bot/719542118955090011)
+
 ### Purpose:
 To give Apex Legends players their stats in an easy and convenient way inside of Discord. Great for servers who like to display their users stats and achievements. At first the bot was just developed for fun in a private server but now it is being actively worked on for everyone to use.
 
@@ -7,6 +9,7 @@ To give Apex Legends players their stats in an easy and convenient way inside of
 \>**unlink** - Unlink your discord account from your Apex user.<br>
 \>**stats [Optional: Apex IGN] [Optional: PC/X1/PS4]** - Shows users stats. Must use origin username steam wont work. If you have a linked account and want to check your own stats there is no need to add [Apex IGN] or platform.<br>
 \>**top** - Shows the top 10 users in the server.<br>
+\>**gtop** - Shows the top 3 users on the bot.<br>
 \>**map** - Shows the current and next maps for Battle Royale and Arenas. Also the time remaining until the next map.<br>
 \>**crafting** - Shows the current items that can be crafted at the Replicator.<br>
 \>**news** - Shows the latest news from EA news feed about Apex Legends<br>
