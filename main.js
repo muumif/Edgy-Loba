@@ -23,6 +23,7 @@ const { makeInfoEmbed } = require("./commands/info");
 const { makeBugEmbed } = require("./commands/bug");
 
 const { insertNewGuild, deleteGuild } = require("./database/db");
+const { makeGTopEmbed } = require("./commands/userStats/globalTop");
 
 const client = new Discord.Client();
 const prefix = process.env.PREFIX;
@@ -109,6 +110,18 @@ client.on("message", async message => {
 			message.channel.send(result);
 		}).catch((error) => {
 			logger.error(new Error(error), { command: "top", guildID: message.guild.id, discordID: message.author.id });
+			message.channel.send(error);
+		});
+		message.channel.stopTyping();
+	}
+
+	if (command === "gtop" || command === "global") {
+		message.channel.startTyping();
+		await makeGTopEmbed(message.guild.id, message.author.id).then(result => {
+			logger.info("Message sent successfully!", { command: "gtop", guildID: message.guild.id, discordID: message.author.id });
+			message.channel.send(result);
+		}).catch((error) => {
+			logger.error(new Error(error), { command: "gtop", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(error);
 		});
 		message.channel.stopTyping();

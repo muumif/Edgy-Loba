@@ -98,14 +98,13 @@ async function getTopGuildUsers(guildID) {
 
 /**
  * Returns top 10 users in globaly in the DB
- * @param {String} guildID The discord guildID
  * @return {Array} Return Array of top 10 users globally in the db
  * @return {Promise} Return Promise.reject when no user data is inserted in the database
  */
 async function getTopGlobalUsers() {
 	try {
 		await client.connect();
-		const users = await client.db("EdgyLoba").collection("users").find().sort({ date: -1 }).limit(10).toArray();
+		const users = await client.db("EdgyLoba").collection("users").find().sort({ RP: -1 }).limit(3).toArray();
 
 		if (users.length == 0) {
 			logger.error(new Error("No user data has been recorded in the DB!"), { DBOP: "getTopGlobalUsers" });

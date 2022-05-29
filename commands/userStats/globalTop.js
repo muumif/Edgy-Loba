@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const { getTopGuildUsers, getGuildSettings } = require("../../database/db");
+const { getTopGlobalUsers } = require("../../database/db");
 const { logger } = require("../../moduels/logger");
 const { UIDToIGN } = require("../../moduels/UIDToIGN");
 require("dotenv").config();
@@ -8,42 +8,39 @@ const client = new Discord.Client();
 
 async function fetchUser(id, guildID) {
 	return await client.users.fetch(id).then(result => {
-		logger.info("Discord API fetched user!", { command: "top", guildID: guildID, discordID: id, user: result });
+		logger.info("Discord API fetched user!", { command: "gtop", guildID: guildID, discordID: id, user: result });
 		return result;
 	});
 }
 
-async function getData(guildID) {
-	return await getTopGuildUsers(guildID).then(result => {
+async function getData() {
+	return await getTopGlobalUsers().then(result => {
 		return result;
 	}).catch(err => {
 		return Promise.reject(err);
 	});
 }
 
-async function makeTopEmbed(guildID, discordID) {
-	return await getData(guildID).then(async result => {
+async function makeGTopEmbed(guildID, discordID) {
+	return await getData().then(async result => {
 		const embed = new Discord.MessageEmbed()
-			.setTitle("Leaderboard Server")
+			.setTitle("Bot Global Leaderboard")
 			.setColor("#e3a600")
 			.setTimestamp()
-			.setFooter("Top 10", "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256");
+			.setFooter("Top 3", "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256");
 
 		const discordIDToName = async _ => {
 			for (let i = 0; i < result.length; i++) {
-				const fetch = await fetchUser(result[i].discordID, guildID);
 				result[i].IGN = await UIDToIGN(result[i].originUID, result[i].platform, guildID, discordID);
-				result[i].discordName = fetch.username;
-				result[i].discordDiscriminator = fetch.discriminator;
-				result[i].discordImg = fetch.avatarURL();
-				await getGuildSettings(guildID).then(settings => {
-					if (settings.settings.modePref == "BR") {
-						embed.addField((i + 1) + ". " + result[i].IGN + " / " + result[i].discordName + "#" + result[i].discordDiscriminator, "RP: " + result[i].RP, false);
-					}
-					if (settings.settings.modePref == "AR") {
-						embed.addField((i + 1) + ". " + result[i].IGN + " / " + result[i].discordName + "#" + result[i].discordDiscriminator, "AP: " + result[i].AP, false);
-					}
-				});
+				if (i == 0) {
+					const fetch = await fetchUser(result[i].discordID, guildID);
+					result[i].discordImg = fetch.avatarURL();
+					embed.addField((i + 1) + ". " + result[i].IGN, "RP: " + result[i].RP, false);
+				}
+				else {
+					embed.addField((i + 1) + ". " + result[i].IGN, "RP: " + result[i].RP, false);
+				}
+
 			}
 
 			embed.setThumbnail(result[0].discordImg);
@@ -69,5 +66,5 @@ async function makeTopEmbed(guildID, discordID) {
 }
 
 module.exports = {
-	makeTopEmbed,
+	makeGTopEmbed,
 };

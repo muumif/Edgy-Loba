@@ -65,6 +65,11 @@ async function makeHelpEmbed(args) {
 					value: "Shows the top 10 users in the server.",
 					inline: false,
 				},
+				{
+					name: "`>gtop | >global`",
+					value: "Shows the top 3 global users on the bot!",
+					inline: false,
+				},
 			)
 			.setColor("#e3a600")
 			.setTimestamp()
