@@ -96,7 +96,7 @@ client.on("message", async message => {
 			logger.info("Message sent successfully!", { command: "stats", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(result);
 		}).catch(error => {
-			logger.error(new Error(error), { command: "stats", guildID: message.guild.id, discordID: message.author.id })
+			logger.error(new Error(error), { command: "stats", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(error);
 		});
 		message.channel.stopTyping();
@@ -108,7 +108,7 @@ client.on("message", async message => {
 			logger.info("Message sent successfully!", { command: "top", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(result);
 		}).catch((error) => {
-			logger.error(new Error(error), { command: "top", guildID: message.guild.id, discordID: message.author.id })
+			logger.error(new Error(error), { command: "top", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(error);
 		});
 		message.channel.stopTyping();
@@ -120,7 +120,7 @@ client.on("message", async message => {
 			logger.info("Message sent successfully!", { command: "map", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(result);
 		}).catch(error => {
-			logger.error(new Error(error), { command: "map", guildID: message.guild.id, discordID: message.author.id })
+			logger.error(new Error(error), { command: "map", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(error);
 		});
 		message.channel.stopTyping();
@@ -132,7 +132,7 @@ client.on("message", async message => {
 			logger.info("Message sent successfully!", { command: "status", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(result);
 		}).catch(error => {
-			logger.error(new Error(error), { command: "status", guildID: message.guild.id, discordID: message.author.id })
+			logger.error(new Error(error), { command: "status", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(error);
 		});
 		message.channel.stopTyping();
@@ -144,7 +144,7 @@ client.on("message", async message => {
 			logger.info("Message sent successfully!", { command: "pred", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(result);
 		}).catch(error => {
-			logger.error(new Error(error), { command: "pred", guildID: message.guild.id, discordID: message.author.id })
+			logger.error(new Error(error), { command: "pred", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(error);
 		});
 		message.channel.stopTyping();
@@ -156,7 +156,7 @@ client.on("message", async message => {
 			logger.info("Message sent successfully!", { command: "crafting", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(result);
 		}).catch(error => {
-			logger.error(new Error(error), { command: "crafting", guildID: message.guild.id, discordID: message.author.id })
+			logger.error(new Error(error), { command: "crafting", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(error);
 		});
 		message.channel.stopTyping();
@@ -168,7 +168,7 @@ client.on("message", async message => {
 			logger.info("Message sent successfully!", { command: "news", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(result);
 		}).catch(error => {
-			logger.error(new Error(error), { command: "news", guildID: message.guild.id, discordID: message.author.id })
+			logger.error(new Error(error), { command: "news", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(error);
 		});
 		message.channel.stopTyping();
@@ -180,7 +180,7 @@ client.on("message", async message => {
 			logger.info("Message sent successfully!", { command: "store", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(result);
 		}).catch(error => {
-			logger.error(new Error(error), { command: "store", guildID: message.guild.id, discordID: message.author.id })
+			logger.error(new Error(error), { command: "store", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(error);
 		});
 		message.channel.stopTyping();
@@ -192,7 +192,7 @@ client.on("message", async message => {
 			logger.info("Message sent successfully!", { command: "bug", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(result);
 		}).catch(error => {
-			logger.error(new Error(error), { command: "bug", guildID: message.guild.id, discordID: message.author.id })
+			logger.error(new Error(error), { command: "bug", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(error);
 		});
 		message.channel.stopTyping();
@@ -204,7 +204,7 @@ client.on("message", async message => {
 			logger.info("Message sent successfully!", { command: "settings", guildID: message.guild.id, discordID: message.author.id });
 			message.channel.send(result);
 		}).catch(error => {
-			logger.error(new Error(error), { command: "settings", guildID: message.guild.id, discordID: message.author.id })
+			logger.error(new Error(error), { command: "settings", guildID: message.guild.id, discordID: message.author.id });
 			console.log(error);
 		});
 		message.channel.stopTyping();
