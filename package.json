@@ -17,6 +17,7 @@
     "json-bigint": "^1.0.0",
     "mongodb": "4.4",
     "node-cron": "^3.0.0",
+    "topgg-autoposter": "^2.0.1",
     "winston": "^3.7.2"
   },
   "devDependencies": {
