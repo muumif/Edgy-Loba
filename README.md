@@ -1,4 +1,6 @@
-[![Discord Bots](https://top.gg/api/widget/719542118955090011.svg)(https://top.gg/bot/719542118955090011)
+<a href="https://top.gg/bot/719542118955090011">
+  <img src="https://top.gg/api/widget/719542118955090011.svg">
+</a>
 
 ### Purpose:
 To give Apex Legends players their stats in an easy and convenient way inside of Discord. Great for servers who like to display their users stats and achievements. At first the bot was just developed for fun in a private server but now it is being actively worked on for everyone to use.
