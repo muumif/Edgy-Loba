@@ -172,7 +172,7 @@ async function makeStatsEmbed(_IGN, _platform, userID, guildID) {
 		let apexResult;
 		const embed = new Discord.MessageEmbed();
 
-		await getUserUID(_IGN, platform, "stats", guildID, userID).then(_UID => {
+		await getUserUID(_IGN, platform, guildID, userID).then(_UID => {
 			UID = _UID;
 		}).catch(error => {
 			return Promise.reject(error);

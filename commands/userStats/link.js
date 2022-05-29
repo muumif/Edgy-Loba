@@ -51,7 +51,7 @@ async function makeLinkEmbed(IGN, platform, guildID, userID, messageAuthor) {
 		}
 
 		let UID;
-		await getUserUID(IGN, platform, "link", guildID, userID).then(_UID => UID = _UID).catch(err => {return err;});
+		await getUserUID(IGN, platform, guildID, userID).then(_UID => UID = _UID).catch(err => {return err;});
 
 		const URI = `${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${UID}&platform=${platform}`;
 		return await axios.get(encodeURI(URI))

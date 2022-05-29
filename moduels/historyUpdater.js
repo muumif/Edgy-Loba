@@ -7,24 +7,24 @@ async function getData(UID, platform, onUser, totalUsers) {
 	const URI = `${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${UID}&platform=${platform}`;
 	return axios.get(encodeURI(URI))
 		.then(function(response) {
-			logger.info("Stats API: Succesfully returned data for user  " + onUser + "/" + totalUsers, { command: "module: historyUpdater", guildID: undefined, discordID: undefined });
+			logger.info("API fetched user!", { module: "historyUpdater", UID: UID, platform: platform, onUser: onUser + 1, totalUsers: totalUsers });
 			return response;
 		}).catch(function(error) {
 			switch (error.response.status) {
 			case 400:
-				return logger.error(new Error(error), { command: "module: historyUpdater", guildID: undefined, discordID: undefined });
+				return logger.error(new Error(error), { module: "historyUpdater", UID: UID, platform: platform, onUser: onUser + 1, totalUsers: totalUsers });
 			case 403:
-				return logger.error(new Error(error), { command: "module: historyUpdater", guildID: undefined, discordID: undefined });
+				return logger.error(new Error(error), { module: "historyUpdater", UID: UID, platform: platform, onUser: onUser + 1, totalUsers: totalUsers });
 			case 404:
-				return logger.error(new Error(error), { command: "module: historyUpdater", guildID: undefined, discordID: undefined });
+				return logger.error(new Error(error), { module: "historyUpdater", UID: UID, platform: platform, onUser: onUser + 1, totalUsers: totalUsers });
 			case 405:
-				return logger.error(new Error(error), { command: "module: historyUpdater", guildID: undefined, discordID: undefined });
+				return logger.error(new Error(error), { module: "historyUpdater", UID: UID, platform: platform, onUser: onUser + 1, totalUsers: totalUsers });
 			case 410:
-				return logger.error(new Error(error), { command: "module: historyUpdater", guildID: undefined, discordID: undefined });
+				return logger.error(new Error(error), { module: "historyUpdater", UID: UID, platform: platform, onUser: onUser + 1, totalUsers: totalUsers });
 			case 429:
-				return logger.error(new Error(error), { command: "module: historyUpdater", guildID: undefined, discordID: undefined });
+				return logger.error(new Error(error), { module: "historyUpdater", UID: UID, platform: platform, onUser: onUser + 1, totalUsers: totalUsers });
 			case 500:
-				return logger.error(new Error(error), { command: "module: historyUpdater", guildID: undefined, discordID: undefined });
+				return logger.error(new Error(error), { module: "historyUpdater", UID: UID, platform: platform, onUser: onUser + 1, totalUsers: totalUsers });
 			}
 		});
 }
@@ -49,7 +49,7 @@ async function importAllUsers() {
 
 module.exports = () => {
 	cron.schedule("59 23 * * *", async function() {
-		logger.info("historyUpdater: Started history search!", { command: "module: historyUpdater", guildID: undefined, discordID: undefined });
+		logger.info("History search started!", { module: "historyUpdater" });
 		importAllUsers();
 	});
 };
