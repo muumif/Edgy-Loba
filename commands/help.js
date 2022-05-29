@@ -67,7 +67,7 @@ async function makeHelpEmbed(args) {
 				},
 				{
 					name: "`>gtop | >global`",
-					value: "Shows the top 3 global users on the bot!",
+					value: "Shows the top 3 global users on the bot.",
 					inline: false,
 				},
 			)
