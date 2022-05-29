@@ -153,6 +153,45 @@ async function makeHelpEmbed(args) {
 
 		return embed;
 	}
+
+	default: {
+		const embed = new Discord.MessageEmbed()
+			.setTitle("Help")
+			.addFields(
+				{
+					name: "`>help stats`",
+					value: "Commands to see stats and commands related to stats.",
+					inline: true,
+				},
+				{
+					name: "`>help misc`",
+					value: "Commands to see multiple things about Apex Legends.",
+					inline: true,
+				},
+				/*
+				{
+					name: "`>help settings`",
+					value: "TODO",
+					inline: false,
+				},*/
+				{
+					name: "`>help admin`",
+					value: "Commands meant for admin use.",
+					inline: false,
+				},
+				{
+					name: "Other",
+					value: "[Invite Me](https://discord.com/oauth2/authorize?client_id=719542118955090011&scope=bot) - [Vote Top.gg](https://top.gg/bot/719542118955090011/vote) - [Github](https://github.com/muumif/Edgy-Loba)",
+					inline: false,
+				},
+			)
+			.setColor("#e3a600")
+			.setTimestamp()
+			.setThumbnail("https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256")
+			.setFooter("Help - muumif", "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256");
+
+		return embed;
+	}
 	}
 
 }
