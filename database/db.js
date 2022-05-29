@@ -16,11 +16,11 @@ async function getUserExists(discordID) {
 		await client.connect();
 
 		if (await client.db("EdgyLoba").collection("users").findOne({ discordID: discordID.toString() }) == null) {
-			logger.info("getUserExists DB: Returning false!", { command: "module: DB", guildID: undefined, discordID: discordID });
+			logger.info("User doesn't exist in the DB!", { DBOP: "getUserExists", discordID: discordID });
 			return Promise.resolve(false);
 		}
 
-		logger.info("getUserExists DB: Returning true!", { command: "module: DB", guildID: undefined, discordID: discordID });
+		logger.info("Fetched user!", { DBOP: "getUserExists", discordID: discordID });
 		return Promise.resolve(true);
 	}
 	finally {
@@ -39,9 +39,9 @@ async function getAllUsers() {
 		const users = await client.db("EdgyLoba").collection("users").find({}, { discordID: 1, originUID: 1, platform: 1 }).toArray();
 
 		if (users == null) {
-			return logger.error(new Error("getAllUsers DB: No users exist in the DB!"), { command: "module: DB", guildID: undefined, discordID: undefined });
+			return logger.error(new Error("No users exist in the DB! Birzarrrre..."), { DBOP: "getAllUsers" });
 		}
-		logger.info("getAllUsers DB: Returning all users! ", { command: "module: DB", guildID: undefined, discordID: undefined });
+		logger.info("Fetched all users from the DB!", { DBOP: "getAllUsers" });
 		return Promise.resolve(users);
 	}
 	finally {
@@ -62,9 +62,9 @@ async function getUser(discordID) {
 		const user = await client.db("EdgyLoba").collection("users").findOne({ discordID: discordID });
 
 		if (user == null) {
-			return logger.error(new Error("getUser DB: User does not exist!"), { command: "module: DB", guildID: undefined, discordID: discordID });
+			return logger.error(new Error("No user exists in the DB!"), { DBOP: "getUser", discordID: discordID });
 		}
-		logger.info("getUser DB: Returning user!", { command: "module: DB", guildID: undefined, discordID: discordID });
+		logger.info("Fetched user!", { DBOP: "getUser", discordID: discordID });
 		return Promise.resolve(user);
 	}
 	finally {
@@ -85,10 +85,10 @@ async function getTopGuildUsers(guildID) {
 		const users = await client.db("EdgyLoba").collection("users").find({ guilds: guildID }).sort({ RP: -1 }).limit(10).toArray();
 
 		if (users.length == 0) {
-			logger.error(new Error("getTopGuildUsers DB: No user data has been inserted for the given server!"), { command: "module: DB", guildID: guildID, discordID: undefined });
+			logger.error(new Error("No user data has been recorded for the given server!"), { DBOP: "getTopGuildUsers", guildID: guildID });
 			return Promise.reject("No user data has been inserted for this server!");
 		}
-		logger.info("getTopGuildUsers DB: Returning top 10 guild users! ", { command: "module: DB", guildID: guildID, discordID: undefined });
+		logger.info("Fetched top 10 guild users! ", { DBOP: "getTopGuildUsers", guildID: guildID });
 		return Promise.resolve(users);
 	}
 	finally {
@@ -108,11 +108,11 @@ async function getTopGlobalUsers() {
 		const users = await client.db("EdgyLoba").collection("users").find().sort({ date: -1 }).limit(10).toArray();
 
 		if (users.length == 0) {
-			logger.error(new Error("getTopGlobalUsers DB: No user data has been inserted into the DB!"), { command: "module: DB", guildID: undefined, discordID: undefined });
+			logger.error(new Error("No user data has been recorded in the DB!"), { DBOP: "getTopGlobalUsers" });
 			return Promise.reject("No users in the database!");
 		}
 
-		logger.info("getTopGlobalUsers DB: Returning top 10 global users! ", { command: "module: DB", guildID: undefined, discordID: undefined });
+		logger.info("Fetched top 10 global users!", { DBOP: "getTopGlobalUsers" });
 		return Promise.resolve(users);
 	}
 	finally {
@@ -133,11 +133,11 @@ async function getUserHistory(discordID) {
 		const history = await client.db("EdgyLoba").collection("userHistory").find({ discordID: discordID }).sort({ date: 1 }).toArray();
 
 		if (history.length == 0) {
-			logger.error(new Error("getUserHistory DB: No history data exists for given user!"), { command: "module: DB", guildID: undefined, discordID: discordID });
+			logger.error(new Error("No history data exists for the given user!"), { DBOP: "getUserHistory", discordID: discordID });
 			return Promise.reject("No history data exists for given user!");
 		}
 
-		logger.info("getUserHistory DB: Returning history data for given user! ", { command: "module: DB", guildID: undefined, discordID: discordID });
+		logger.info("Fetched user history data!", { DBOP: "getUserHistory", discordID: discordID });
 		return Promise.resolve(history);
 	}
 	finally {
@@ -168,8 +168,8 @@ async function insertNewUser(guildID, discordID, originUID, RP, AP, platform) {
 			prefrences: { ranked: "BR" },
 			guilds: [guildID],
 		})
-			.then(res => {return logger.info("insertNewUser DB: Inserted new user to the DB succesfully: " + res.acknowledged, { command: "module: DB", guildID: guildID, discordID: discordID });})
-			.catch(err => {return logger.error(new Error(err), { command: "module: DB", guildID: guildID, discordID: discordID });});
+			.then(function() { return logger.info("New user has been inserted!", { DBOP: "insertNewUser", guildID: guildID, discordID: discordID });})
+			.catch(err => {return logger.error(new Error(err), { DBOP: "insertNewUser", guildID: guildID, discordID: discordID });});
 	}
 	finally {
 		await client.close();
@@ -193,8 +193,8 @@ async function insertHistoryData(discordID, RP, AP) {
 			RP: RP,
 			AP: AP,
 		})
-			.then(res => {return logger.info("insertHistoryData DB: Inserted history data for the given user to the DB succesfully: " + res.acknowledged, { command: "module: DB", guildID: undefined, discordID: discordID });})
-			.catch(err => {return logger.error(new Error(err), { command: "module: DB", guildID: undefined, discordID: discordID });});
+			.then(function() {return logger.info("New history data has been inserted!", { DBOP: "insertHistoryData", discordID: discordID });})
+			.catch(err => {return logger.error(new Error(err), { DBOP: "insertHistoryData", discordID: discordID });});
 	}
 	finally {
 		await client.close();
@@ -213,8 +213,8 @@ async function updateUserRPAP(discordID, RP, AP) {
 		await client.connect();
 
 		return await client.db("EdgyLoba").collection("users").updateOne({ discordID: discordID }, { $set:{ RP: RP, AP: AP } })
-			.then(res => {return logger.info("updateUserRPAP DB: Updated user RPAP in the DB successfully: " + res.acknowledged, { command: "module: DB", guildID: undefined, discordID: discordID });})
-			.catch(err => {return logger.error(new Error(err), { command: "module: DB", guildID: undefined, discordID: discordID });});
+			.then(function() {return logger.info("User RP/AP has been updated!", { DBOP: "updateUserRPAP", discordID: discordID });})
+			.catch(err => {return logger.error(new Error(err), { DBOP: "updateUserRPAP", discordID: discordID });});
 	}
 	finally {
 		await client.close();
@@ -232,8 +232,8 @@ async function deleteUserData(discordID) {
 		await client.connect();
 
 		return await client.db("EdgyLoba").collection("users").deleteOne({ discordID: discordID })
-			.then(res => {return logger.info("deleteUserData DB: Deleted user from the DB succesfully: " + res.acknowledged, { command: "module: DB", guildID: undefined, discordID: discordID });})
-			.catch(err => {return logger.error(new Error(err), { command: "module: DB", guildID: undefined, discordID: discordID });});
+			.then(function() {return logger.info("User has been deleted!", { DBOP: "deleteUserData", discordID: discordID });})
+			.catch(err => {return logger.error(new Error(err), { DBOP: "deleteUserData", discordID: discordID });});
 	}
 	finally {
 		await client.close();
@@ -255,8 +255,8 @@ async function insertNewGuild(guild) {
 			guildName: guild.name,
 			settings: { modePref: "BR", defaultPlatform: "PC", notifyNews: false, newsRole: undefined },
 		})
-			.then(res => {return logger.info("insertNewGuild DB: Inserted a new guild into the DB successfully: " + res.acknowledged, { command: "module: DB", guildID: guild.id, discordID: undefined });})
-			.catch(err => {return logger.error(new Error(err), { command: "module: DB", guildID: guild.id, discordID: undefined });});
+			.then(res => {return logger.info("New guild has been inserted!", { DBOP: "insertNewGuild", guildID: guild.id });})
+			.catch(err => {return logger.error(new Error(err), { DBOP: "insertNewGuild", guildID: guild.id });});
 	}
 	finally {
 		await client.close();
@@ -278,26 +278,26 @@ async function updateGuildSettings(guildID, setting, value) {
 		switch (setting) {
 		case "modePref": {
 			return await client.db("EdgyLoba").collection("guilds").updateOne({ guildID: guildID }, { $set: { "settings.modePref": value } })
-				.then(res => {return logger.info("updateGuildSettings DB: Updated guild settings in the DB succesfully: " + res.acknowledged, { command: "module: DB", guildID: guildID, discordID: undefined });})
-				.catch(err => {return logger.error(new Error(err), { command: "module: DB", guildID: guildID, discordID: undefined });});
+				.then(function() {return logger.info("Guild modePref setting updated!", { DBOP: "updateGuildSettings", guildID: guildID });})
+				.catch(err => {return logger.error(new Error(err), { DBOP: "updateGuildSettings", guildID: guildID });});
 		}
 
 		case "defaultPlatform": {
 			return await client.db("EdgyLoba").collection("guilds").updateOne({ guildID: guildID }, { $set: { "settings.defaultPlatform": value } })
-				.then(res => {return logger.info("updateGuildSettings DB: Updated guild settings in the DB succesfully: " + res.acknowledged, { command: "module: DB", guildID: guildID, discordID: undefined });})
-				.catch(err => {return logger.error(new Error(err), { command: "module: DB", guildID: guildID, discordID: undefined });});
+				.then(function() {return logger.info("Guild defaultPlatform setting updated!", { DBOP: "updateGuildSettings", guildID: guildID });})
+				.catch(err => {return logger.error(new Error(err), { DBOP: "updateGuildSettings", guildID: guildID });});
 		}
 
 		case "notifyNews": {
 			return await client.db("EdgyLoba").collection("guilds").updateOne({ guildID: guildID }, { $set: { "settings.notifyNews": value } })
-				.then(res => {return logger.info("updateGuildSettings DB: Updated guild settings in the DB succesfully: " + res.acknowledged, { command: "module: DB", guildID: guildID, discordID: undefined });})
-				.catch(err => {return logger.error(new Error(err), { command: "module: DB", guildID: guildID, discordID: undefined });});
+				.then(function() {return logger.info("Guild notifyNews setting updated!", { DBOP: "updateGuildSettings", guildID: guildID });})
+				.catch(err => {return logger.error(new Error(err), { DBOP: "updateGuildSettings", guildID: guildID });});
 		}
 
 		case "newsRole": {
 			return await client.db("EdgyLoba").collection("guilds").updateOne({ guildID: guildID }, { $set: { "settings.newsRole": value } })
-				.then(res => {return logger.info("updateGuildSettings DB: Updated guild settings in the DB succesfully: " + res.acknowledged, { command: "module: DB", guildID: guildID, discordID: undefined });})
-				.catch(err => {return logger.error(new Error(err), { command: "module: DB", guildID: guildID, discordID: undefined });});
+				.then(function() {return logger.info("Guild newsRole setting updated!", { DBOP: "updateGuildSettings", guildID: guildID });})
+				.catch(err => {return logger.error(new Error(err), { DBOP: "updateGuildSettings", guildID: guildID });});
 		}
 		}
 	}
@@ -312,7 +312,7 @@ async function getGuildSettings(guildID) {
 
 		const settings = await client.db("EdgyLoba").collection("guilds").findOne({ guildID: guildID }, { settings: 1 });
 
-		logger.info("getGuildSettings DB: Returning guild settings!", { command: "module: DB", guildID: guildID, discordID: undefined });
+		logger.info("Fetched guild settings!", { DBOP: "getGuildSettings", guildID: guildID });
 		return Promise.resolve(settings);
 	}
 	finally {
@@ -342,8 +342,8 @@ async function insertNewBug(guild, userID, command, message) {
 				message: message,
 			},
 		})
-			.then(res => {return logger.info("insertNewBug DB: Inserted a new bug to the DB! " + res.acknowledged, { command: "module: DB", guildID: guild.id, discordID: undefined });})
-			.catch(err => {return logger.error(new Error(err), { command: "module: DB", guildID: guild.id, discordID: undefined });});
+			.then(function() {return logger.info("New bug inserted!", { DBOP: "insertNewBug", guildID: guild.id });})
+			.catch(err => {return logger.error(new Error(err), { DBOP: "insertNewBug", guildID: guild.id });});
 	}
 	finally {
 		await client.close();
@@ -361,8 +361,8 @@ async function deleteGuild(guild) {
 		await client.connect();
 
 		return await client.db("EdgyLoba").collection("guilds").deleteOne({ guildID: guild.id })
-			.then(res => {return logger.info("deleteGuild DB: Deleted a guild from the DB! " + res.acknowledged, { command: "module: DB", guildID: guild.id, discordID: undefined });})
-			.catch(err => {return logger.error(new Error(err), { command: "module: DB", guildID: guild.id, discordID: undefined });});
+			.then(function() {return logger.info("Guild has been deleted!", { DBOP: "deleteGuild", guildID: guild.id });})
+			.catch(err => {return logger.error(new Error(err), { DBOP: "deleteGuild", guildID: guild.id });});
 	}
 	finally {
 		await client.close();
@@ -381,8 +381,8 @@ async function insertUserGuild(discordID, guildID) {
 		await client.connect();
 
 		return await client.db("EdgyLoba").collection("users").updateOne({ discordID: discordID }, { $push: { guilds: guildID } })
-			.then(res => {return logger.info("insertUserGuild DB: Inserted new guild for the given user to the DB! " + res.acknowledged, { command: "module: DB", guildID: guildID, discordID: undefined });})
-			.catch(err => {return logger.error(new Error(err), { command: "module: DB", guildID: guildID, discordID: undefined });});
+			.then(function() {return logger.info("New guild inserted!", { DBOP: "insertUserGuild", guildID: guildID });})
+			.catch(err => {return logger.error(new Error(err), { DBOP: "insertUserGuild", guildID: guildID });});
 	}
 	finally {
 		await client.close();
