@@ -1,9 +1,19 @@
 const Discord = require("discord.js");
 require("dotenv").config();
+const axios = require("axios");
+const { fstat } = require("fs");
+const { logger } = require("../moduels/logger");
+const sharp = require("sharp");
+const { readFile, writeFile } = require("fs").promises;
 
 async function makeHelpEmbed(args) {
 	switch (args) {
 	case undefined: {
+		const input = (await axios({ url: "https://top.gg/api/widget/719542118955090011.svg", responseType: "arraybuffer" })).data;
+		sharp(input)
+			.jpeg()
+			.toFile("./temp/topggwidget.jpeg");
+		const attachment = new Discord.MessageAttachment("./temp/topggwidget.jpeg", "topggwidget.jpeg");
 		const embed = new Discord.MessageEmbed()
 			.setTitle("Help")
 			.addFields(
@@ -36,7 +46,9 @@ async function makeHelpEmbed(args) {
 			)
 			.setColor("#e3a600")
 			.setTimestamp()
+			.attachFiles(attachment)
 			.setThumbnail("https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256")
+			.setImage("attachment://topggwidget.jpeg")
 			.setFooter("Help - muumif", "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256");
 
 		return embed;

@@ -1,5 +1,4 @@
 const Discord = require("discord.js");
-const { AutoPoster } = require("topgg-autoposter");
 require("dotenv").config();
 const { logger } = require("./moduels/logger");
 
@@ -27,15 +26,10 @@ const { insertNewGuild, deleteGuild } = require("./database/db");
 const { makeGTopEmbed } = require("./commands/userStats/globalTop");
 
 const client = new Discord.Client();
-const ap = AutoPoster(process.env.TOPGG_TOKEN, client);
 const prefix = process.env.PREFIX;
 
-ap.on("posted", () => {
-	logger.info("Posted stats to Top.GG", { module: "ap.on" });
-});
-
 client.once("ready", () => {
-	logger.info("Bot is now online!", { module: "client.once" });
+	console.log("Online!");
 	client.user.setPresence({ activity: { name: ">help", type: "LISTENING" }, status: "online" });
 });
 
