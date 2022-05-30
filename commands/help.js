@@ -1,10 +1,7 @@
 const Discord = require("discord.js");
 require("dotenv").config();
 const axios = require("axios");
-const { fstat } = require("fs");
-const { logger } = require("../moduels/logger");
 const sharp = require("sharp");
-const { readFile, writeFile } = require("fs").promises;
 
 async function makeHelpEmbed(args) {
 	switch (args) {
