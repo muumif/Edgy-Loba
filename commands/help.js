@@ -7,7 +7,7 @@ async function makeHelpEmbed(args) {
 	switch (args) {
 	case undefined: {
 		const input = (await axios({ url: "https://top.gg/api/widget/719542118955090011.svg", responseType: "arraybuffer" })).data;
-		sharp(input)
+		await sharp(input)
 			.jpeg()
 			.toFile("./temp/topggwidget.jpeg");
 		const attachment = new Discord.MessageAttachment("./temp/topggwidget.jpeg", "topggwidget.jpeg");

@@ -230,12 +230,17 @@ async function makeMapEmbed(guildID, discordID) {
 		context.drawImage(brMap, 900, 0, brMap.width, brMap.height, 0, 0, canvas.width, canvas.height);
 		context.drawImage(arenasMap, 900, 0, arenasMap.width, arenasMap.height, canvas.width / 3, 0, canvas.width, canvas.height);
 		context.drawImage(rankedArenasMap, 900, 0, rankedArenasMap.width, rankedArenasMap.height, (canvas.width / 3) * 2, 0, canvas.width, canvas.height);
+		context.fillStyle = "rgba(0, 0, 0, 0.25)";
+		context.fillRect(0, 0, canvas.width, canvas.height);
 		context.strokeStyle = "#e3a600";
 		context.lineWidth = 30;
 		context.strokeRect(0, 0, canvas.width, canvas.height);
+
+
 		await writeFile("./temp/map.jpeg", canvas.toBuffer("image/jpeg")).then(function() {
 			logger.info("Map image written to disk!", { command: "map", guildID: guildID, discordID: discordID });
 		});
+
 		const attachment = new Discord.MessageAttachment("./temp/map.jpeg", "map.jpeg");
 		const embed = new Discord.MessageEmbed()
 			.setTitle("Map Rotation")
