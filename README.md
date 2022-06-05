@@ -32,6 +32,13 @@ To give Apex Legends players their stats in an easy and convenient way inside of
 | >settings default | [PC/XBOX/PS] | Set the default platform so that when checking stats you wont need to enter platform if the user exists on that platform.
 
 # Previews:
+## New User:
+![>Link command](http://images.muumi.xyz/EdgyLoba/previewLink.PNG ">link")
+![>Statsf command](http://images.muumi.xyz/EdgyLoba/previewStatsNotDB.PNG ">stats NotDB")
+
+## User that exists:
 ![>Stats command](http://images.muumi.xyz/EdgyLoba/previewStats.PNG ">stats")
+
+## Some misc commands:
 ![>Map command](http://images.muumi.xyz/EdgyLoba/previewMap.PNG ">map")
 ![>Pred command](http://images.muumi.xyz/EdgyLoba/previewPred.PNG ">pred")
