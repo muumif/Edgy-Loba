@@ -33,7 +33,7 @@ const { makeGTopEmbed } = require("./commands/userStats/globalTop");
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 const prefix = process.env.PREFIX;
-const ap = AutoPoster(process.env.TOPGG_TOKEN, client);
+//const ap = AutoPoster(process.env.TOPGG_TOKEN, client);
 
 client.commands = new Collection();
 

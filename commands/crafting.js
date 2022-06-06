@@ -54,19 +54,10 @@ async function getData(guildID, discordID) {
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName("help")
-		.setDescription("Show all commands!")
-		.addStringOption(option =>
-			option.setName("category")
-				.setDescription("The help category!")
-				.setRequired(true)
-				.addChoices(
-					{ name: "misc", value: "help_misc" },
-					{ name: "stats", value: "help_stats" },
-					{ name: "admin", value: "help_admin" },
-				)),
+		.setName("crafting")
+		.setDescription("Shows the current items that can be crafted at the replicator!"),
 	async execute(interaction) {
 		if (!interaction.isCommand()) return;
-
+		interaction.reply("Crafting");
 	},
 };

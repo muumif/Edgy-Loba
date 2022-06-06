@@ -29,7 +29,7 @@ module.exports = {
 				.addFields(
 					{
 						name: "`/crafting`",
-						value: "Shows the current items that can be crafted at the Replicator.",
+						value: "Shows the current items that can be crafted at the replicator.",
 						inline: false,
 					},
 					{
