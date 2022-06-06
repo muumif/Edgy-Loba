@@ -18,6 +18,7 @@ module.exports = {
 					{ name: "admin", value: "help_admin" },
 				)),
 	async execute(interaction) {
+		if (!interaction.isCommand()) return;
 		const chosenString = interaction.options.getString("category");
 		switch (chosenString) {
 		case "help_misc": {

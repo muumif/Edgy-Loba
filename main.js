@@ -4,6 +4,7 @@ require("dotenv").config();
 const { logger } = require("./moduels/logger");
 const fs = require("node:fs");
 const path = require("node:path");
+const { insertNewBug } = require("./database/db");
 
 require("./moduels/historyUpdater")();
 
@@ -53,7 +54,6 @@ ap.on("posted", () => {
 
 client.once("ready", () => {
 	logger.info("Bot is now online!", { module: "client.once" });
-	client.user.setPresence({ activity: { name: ">help", type: "LISTENING" }, status: "online" });
 });
 
 client.on("interactionCreate", async interaction => {
@@ -72,6 +72,19 @@ client.on("interactionCreate", async interaction => {
 	}
 
 });
+
+client.on("interactionCreate", async interaction => {
+	if (!interaction.isModalSubmit()) return;
+
+	if (interaction.customId === "bugReport") {
+		const commandInput = interaction.fields.getTextInputValue("commandInput");
+		const messageInput = interaction.fields.getTextInputValue("messageInput");
+
+		await insertNewBug(interaction.guild, interaction.user.id, commandInput, messageInput);
+		interaction.reply({ content: "Bug reported!", ephemeral: true });
+	}
+});
+
 
 /*
 client.on("guildCreate", guild => {
