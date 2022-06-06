@@ -64,7 +64,7 @@ module.exports = {
 					text: "Help Misc - muumif",
 					iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256",
 				});
-			interaction.reply({ embeds: [embed] });
+			interaction.reply({ embeds: [embed], ephemeral: true });
 			break;
 		}
 
@@ -111,7 +111,7 @@ module.exports = {
 					text: "Help Stats - muumif",
 					iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256",
 				});
-			interaction.reply({ embeds: [embed] });
+			interaction.reply({ embeds: [embed], ephemeral: true });
 			break;
 		}
 
@@ -149,7 +149,7 @@ module.exports = {
 					text: "Help Admin - muumif",
 					iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256",
 				});
-			interaction.reply({ embeds: [embed] });
+			interaction.reply({ embeds: [embed], ephemeral: true });
 			break;
 		}
 		}
