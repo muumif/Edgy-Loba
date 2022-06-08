@@ -49,7 +49,7 @@ module.exports = {
 					},
 					{
 						name: "`/status`",
-						value: "Shows the EA servers status also the response time.",
+						value: "Shows the EA servers status and the response time.",
 						inline: false,
 					},
 					{
