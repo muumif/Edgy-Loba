@@ -62,6 +62,7 @@ module.exports = {
 	async execute(interaction) {
 		if (!interaction.isCommand()) return;
 
+		interaction.deferReply();
 
 		const mapData = await getData(interaction.guildId, interaction.user.id);
 		const canvas = Canvas.createCanvas(2000, 800);
@@ -273,6 +274,6 @@ module.exports = {
 			.setImage("attachment://map.jpeg")
 			.setFooter({ text: "Bugs can be reported with >bug", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" })
 			.setTimestamp();
-		await interaction.reply({ embeds: [embed], files:[attachment] });
+		await interaction.editReply({ embeds: [embed], files:[attachment] });
 	},
 };

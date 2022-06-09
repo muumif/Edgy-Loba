@@ -8,7 +8,7 @@ async function getData(guildID, discordID) {
 	const URI = `${process.env.ALS_ENDPOINT}/news?auth=${process.env.ALS_TOKEN}`;
 	return await axios.get(encodeURI(URI))
 		.then(function(response) {
-			logger.info("API fetched crafting data!", { command: "crafting", guildID: guildID, discordID: discordID });
+			logger.info("API fetched news data!", { command: "news", guildID: guildID, discordID: discordID });
 			return response;
 		}).catch(error => {
 			const embed = new MessageEmbed()
@@ -17,36 +17,36 @@ async function getData(guildID, discordID) {
 			case 400:
 				embed.setTitle("Something went wrong.");
 				embed.setDescription("Try again in a few minutes.");
-				logger.error(new Error(error), { command: "crafting", guildID: guildID, discordID: discordID });
+				logger.error(new Error(error), { command: "news", guildID: guildID, discordID: discordID });
 				return Promise.reject(embed);
 			case 403:
 				embed.setTitle("Unauthorized / Unknown API key.");
 				embed.setDescription("The bot might be worked on at this moment. If this continues to happen report it with /bug.");
-				logger.error(new Error(error), { command: "crafting", guildID: guildID, discordID: discordID });
+				logger.error(new Error(error), { command: "news", guildID: guildID, discordID: discordID });
 				return Promise.reject(embed);
 			case 404:
 				embed.setTitle("Player could not be found.");
 				embed.setDescription("If this continues to happen check that you are using your origin username or report the bug with /bug.");
-				logger.error(new Error(error), { command: "crafting", guildID: guildID, discordID: discordID });
+				logger.error(new Error(error), { command: "news", guildID: guildID, discordID: discordID });
 				return Promise.reject(embed);
 			case 405:
 				embed.setTitle("External API error.");
 				embed.setDescription("Try again in a few seconds.");
-				logger.error(new Error(error), { command: "crafting", guildID: guildID, discordID: discordID });
+				logger.error(new Error(error), { command: "news", guildID: guildID, discordID: discordID });
 				return Promise.reject(embed);
 			case 410:
 				embed.setTitle("Unknown platform provided.");
 				embed.setDescription("If this continues to happen report it as a bug with /bug");
-				logger.error(new Error(error), { command: "crafting", guildID: guildID, discordID: discordID });
+				logger.error(new Error(error), { command: "news", guildID: guildID, discordID: discordID });
 				return Promise.reject(embed);
 			case 429:
 				embed.setTitle("API Rate limit reached.");
 				embed.setDescription("Try again in a few seconds.");
-				logger.error(new Error(error), { command: "crafting", guildID: guildID, discordID: discordID });
+				logger.error(new Error(error), { command: "news", guildID: guildID, discordID: discordID });
 				return Promise.reject(embed);
 			case 500:
 				embed.setTitle("API Internal error.");
-				logger.error(new Error(error), { command: "crafting", guildID: guildID, discordID: discordID });
+				logger.error(new Error(error), { command: "news", guildID: guildID, discordID: discordID });
 				return Promise.reject(embed);
 			}
 		});
@@ -56,7 +56,6 @@ async function shortenUrl(link, guildID, discordID) {
 	const URI = `${process.env.BITLY_ENDPOINT}/v4/shorten`;
 	return await axios.post(encodeURI(URI), { "long_url": link }, { headers:{ "Authorization": `Bearer ${process.env.BITLY_TOKEN}` } })
 		.then(result => {
-			logger.info("BITLY API fetched URL!", { command: "news", guildID: guildID, discordID: discordID });
 			return result;
 		});
 }
@@ -67,6 +66,8 @@ module.exports = {
 		.setDescription("Shows the latest news from EA news feed about Apex Legends."),
 	async execute(interaction) {
 		if (!interaction.isCommand()) return;
+		interaction.deferReply();
+
 		const newsData = await getData(interaction.guildId, interaction.user.id);
 
 		const linkToShorten = async _ => {
@@ -87,7 +88,7 @@ module.exports = {
 				newsData.data[i].link = (await shortenUrl(newsData.data[i].link, interaction.guildId, interaction.user.id)).data.link;
 				embed.addField(`${i + 1}. ` + newsData.data[i].title, newsData.data[i].short_desc + "\n **Link: " + newsData.data[i].link + "**", true);
 			}
-			interaction.reply({ embeds: [embed] });
+			interaction.editReply({ embeds: [embed] });
 		};
 
 		linkToShorten();

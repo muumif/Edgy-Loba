@@ -7,8 +7,7 @@ const { UIDToIGN } = require("../moduels/UIDToIGN");
 
 async function fetchUser(client, id, guildID) {
 	return await client.users.fetch(id).then(result => {
-		console.log(result.username);
-		//logger.info("Discord API fetched user!", { command: "top", guildID: guildID, discordID: id, user: result });
+		logger.info("Discord API fetched user!", { command: "top", guildID: guildID, discordID: id, user: result });
 		return result;
 	});
 }
@@ -53,7 +52,6 @@ module.exports = {
 					embed.addField((i + 1) + ". " + topData[i].IGN + " / " + topData[i].discordName + "#" + topData[i].discordDiscriminator, "AP: " + topData[i].AP, false);
 				}
 			});
-			console.log(topData[i]);
 		}
 
 		embed.setThumbnail(topData[0].discordImg);

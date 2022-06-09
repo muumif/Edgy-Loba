@@ -1,8 +1,6 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 require("dotenv").config();
-const axios = require("axios");
 const { MessageEmbed } = require("discord.js");
-const sharp = require("sharp");
 
 module.exports = {
 	data: new SlashCommandBuilder()

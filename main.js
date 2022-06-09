@@ -66,9 +66,10 @@ client.on("interactionCreate", async interaction => {
 
 	try {
 		await command.execute(interaction);
+		logger.info("Sent message!", { command: interaction.commandName, guildID: interaction.guildId, discordID: interaction.user.id });
 	}
 	catch (error) {
-		console.error(error);
+		logger.error(new Error(error), { command: interaction.commandName, guildID: interaction.guildId, discordID: interaction.user.id });
 		await interaction.reply({ content: "There was an error while executing this command!", ephemeral: true });
 	}
 
