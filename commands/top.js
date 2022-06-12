@@ -31,6 +31,10 @@ module.exports = {
 		const embed = new MessageEmbed()
 			.setTitle("Server Leaderboard")
 			.setColor("#e3a600")
+			.setFooter({
+				text: "Top 10",
+				iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256",
+			})
 			.setTimestamp();
 		for (let i = 0; i < topData.length; i++) {
 			const fetch = await fetchUser(interaction.client, topData[i].discordID, interaction.guildId);
