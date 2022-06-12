@@ -86,7 +86,7 @@ module.exports = {
 				}
 
 				newsData.data[i].link = (await shortenUrl(newsData.data[i].link, interaction.guildId, interaction.user.id)).data.link;
-				embed.addField(`${i + 1}. ` + newsData.data[i].title, newsData.data[i].short_desc + "\n **Link: " + newsData.data[i].link + "**", true);
+				embed.addField(`${i + 1}. ` + newsData.data[i].title, newsData.data[i].short_desc + "\n **Read More: " + newsData.data[i].link + "**", true);
 			}
 			interaction.editReply({ embeds: [embed] });
 		};

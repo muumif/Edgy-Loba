@@ -58,6 +58,24 @@ module.exports = {
 		.setDescription("Shows the current items that can be crafted at the replicator!"),
 	async execute(interaction) {
 		if (!interaction.isCommand()) return;
-		interaction.reply("Crafting");
+		const craftingData = await getData();
+		const embed = new MessageEmbed()
+			.setTitle("Crafting Rotation")
+			.addFields(
+				{
+					name: "__Daily__",
+					value: "**1. " + craftingData.data[0].bundleContent[0].itemType.rarity + " " + craftingData.data[0].bundleContent[0].itemType.name + "**\nCost: " + craftingData.data[0].bundleContent[0].cost + " CM\n**2. " + craftingData.data[0].bundleContent[1].itemType.rarity + " " + craftingData.data[0].bundleContent[1].itemType.name + "**\nCost: " + craftingData.data[0].bundleContent[1].cost + " CM",
+					inline: true,
+				},
+				{
+					name: "__Weekly__",
+					value: "**1. " + craftingData.data[1].bundleContent[0].itemType.rarity + " " + craftingData.data[1].bundleContent[0].itemType.name + "**\nCost: " + craftingData.data[1].bundleContent[0].cost + " CM\n**2. " + craftingData.data[1].bundleContent[1].itemType.rarity + " " + craftingData.data[1].bundleContent[1].itemType.name + "**\nCost: " + craftingData.data[1].bundleContent[1].cost + " CM",
+					inline: true,
+				},
+			)
+			.setColor("#e3a600")
+			.setFooter({ text: "Bugs can be reported with >bug", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" })
+			.setTimestamp();
+		interaction.reply({ embeds: [embed] });
 	},
 };
