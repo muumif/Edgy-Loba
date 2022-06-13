@@ -7,7 +7,8 @@ module.exports = {
 		.setName("help")
 		.setDescription("Show all commands!")
 		.addStringOption(option =>
-			option.setName("category")
+			option
+				.setName("category")
 				.setDescription("The help category!")
 				.setRequired(true)
 				.addChoices(
@@ -72,12 +73,12 @@ module.exports = {
 				.setTitle("Help Stats")
 				.addFields(
 					{
-						name: "`/stats [Apex IGN] [PC | XBOX | PS | Switch]`",
+						name: "`/stats [Apex IGN] [PC | XBOX | PS]`",
 						value: "Shows users stats. Must use origin username steam wont work. If you have a linked account and want to check your own stats there is no need to add [Apex IGN] or platform.",
 						inline: false,
 					},
 					{
-						name: "`/link [Apex IGN] [PC | XBOX | PS | Switch]`",
+						name: "`/link`",
 						value: "Link your Discord account to your Apex username. Doing this allows you to see history graphs, collaborate in the leaderboard and much more.",
 						inline: false,
 					},
