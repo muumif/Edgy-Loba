@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 require("dotenv").config();
 const { MessageEmbed } = require("discord.js");
-const { getUserExists, deleteUserData } = require("../database/db");
+const { getUserExistsDiscord, deleteUserData } = require("../database/db");
 
 
 module.exports = {
@@ -12,7 +12,7 @@ module.exports = {
 		if (!interaction.isCommand()) return;
 		await interaction.deferReply();
 
-		const userExists = await getUserExists(interaction.user.id);
+		const userExists = await getUserExistsDiscord(interaction.user.id);
 		if (userExists) {
 			deleteUserData(interaction.user.id);
 			const embed = new MessageEmbed()

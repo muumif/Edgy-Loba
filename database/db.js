@@ -11,17 +11,35 @@ const client = new MongoClient(URI);
  * @param {String} discordID The discordID of user
  * @returns {boolean} A boolean if the user exists or not
  */
-async function getUserExists(discordID) {
+async function getUserExistsDiscord(discordID) {
 	try {
 		await client.connect();
 
 		if (await client.db("EdgyLoba").collection("users").findOne({ discordID: discordID.toString() }) == null) {
-			logger.info("User doesn't exist in the DB!", { DBOP: "getUserExists", discordID: discordID });
+			logger.info("User doesn't exist in the DB!", { DBOP: "getUserExistsDiscord", discordID: discordID });
 			return Promise.resolve(false);
 		}
 
-		logger.info("Fetched user!", { DBOP: "getUserExists", discordID: discordID });
+		logger.info("Fetched user!", { DBOP: "getUserExistsDiscord", discordID: discordID });
 		return Promise.resolve(true);
+	}
+	finally {
+		await client.close();
+	}
+}
+
+async function getUserExistsGame(UID) {
+	try {
+		await client.connect();
+
+		if (await client.db("EdgyLoba").collection("users").findOne({ originUID: UID.toString() }) == null) {
+			logger.info("User doesn't exist in the DB!", { DBOP: "getUserExistsGame", UID: UID });
+			return Promise.resolve(false);
+		}
+
+		logger.info("Fetched user!", { DBOP: "getUserExistsGame", UID: UID });
+		return Promise.resolve(true);
+
 	}
 	finally {
 		await client.close();
@@ -65,6 +83,23 @@ async function getUser(discordID) {
 			return logger.error(new Error("No user exists in the DB!"), { DBOP: "getUser", discordID: discordID });
 		}
 		logger.info("Fetched user!", { DBOP: "getUser", discordID: discordID });
+		return Promise.resolve(user);
+	}
+	finally {
+		await client.close();
+	}
+}
+
+async function getUserOrigin(UID) {
+	try {
+		await client.connect();
+
+		const user = await client.db("EdgyLoba").collection("users").findOne({ originUID: UID });
+
+		if (user == null) {
+			return logger.error(new Error("No user exists in the DB!"), { DBOP: "getUserOrigin", originUID: UID });
+		}
+		logger.info("Fetched user!", { DBOP: "getUserOrigin", originUID: UID });
 		return Promise.resolve(user);
 	}
 	finally {
@@ -389,7 +424,7 @@ async function insertUserGuild(discordID, guildID) {
 }
 
 module.exports = {
-	getUserExists,
+	getUserExistsDiscord,
 	getUserHistory,
 	getUser,
 	getAllUsers,
@@ -405,4 +440,6 @@ module.exports = {
 	insertUserGuild,
 	updateGuildSettings,
 	getGuildSettings,
+	getUserExistsGame,
+	getUserOrigin,
 };

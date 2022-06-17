@@ -3,7 +3,7 @@ const axios = require("axios");
 require("dotenv").config();
 const { MessageEmbed } = require("discord.js");
 const { getUserUID } = require("../moduels/getUID");
-const { insertNewUser, getUserExists } = require("../database/db");
+const { insertNewUser, getUserExistsDiscord } = require("../database/db");
 const { logger } = require("../moduels/logger");
 
 module.exports = {
@@ -36,9 +36,9 @@ module.exports = {
 		let platform = interaction.options.getString("platform");
 		if (platform == "link_pc") { platform = "PC"; }
 		if (platform == "link_x1") { platform = "X1";}
-		if (platform == "link_ps") { platform = "PS";}
+		if (platform == "link_ps") { platform = "PS4";}
 
-		const userExists = await getUserExists(interaction.user.id);
+		const userExists = await getUserExistsDiscord(interaction.user.id);
 		if (userExists) {
 			const embed = new MessageEmbed()
 				.setTitle("Username already linked!")
