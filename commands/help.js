@@ -54,6 +54,11 @@ module.exports = {
 						inline: false,
 					},
 					{
+						name: "`/about`",
+						value: "Almost everything about the bot!",
+						inline: false,
+					},
+					{
 						name: "Other",
 						value: "[Invite Me](https://discord.com/oauth2/authorize?client_id=719542118955090011&scope=bot) - [Vote Top.gg](https://top.gg/bot/719542118955090011/vote) - [Github](https://github.com/muumif/Edgy-Loba)",
 						inline: false,
