@@ -5,18 +5,9 @@ const { logger } = require("../moduels/logger");
 const { UIDToIGN } = require("../moduels/UIDToIGN");
 require("dotenv").config();
 
-async function fetchUser(client, id, guildID) {
+async function fetchUser(client, id) {
 	return await client.users.fetch(id).then(result => {
-		logger.info("Discord API fetched user!", { command: "gtop", guildID: guildID, discordID: id, user: result });
 		return result;
-	});
-}
-
-async function getData() {
-	return await getTopGlobalUsers().then(result => {
-		return result;
-	}).catch(err => {
-		return Promise.reject(err);
 	});
 }
 
@@ -25,39 +16,42 @@ module.exports = {
 		.setName("gtop")
 		.setDescription("Shows the top 3 global users on the bot."),
 	async execute(interaction) {
-		interaction.deferReply();
+		if (!interaction.isCommand()) return;
+		await interaction.deferReply();
 
-		const gtopData = await getData();
+		try {
+			const gtopData = await getTopGlobalUsers();
+			const embed = new MessageEmbed()
+				.setTitle("Bot Global Leaderboard")
+				.setColor("#e3a600")
+				.setTimestamp()
+				.setFooter({
+					text: "Top 3 Global",
+					iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256",
+				});
 
-		const embed = new MessageEmbed()
-			.setTitle("Bot Global Leaderboard")
-			.setColor("#e3a600")
-			.setTimestamp()
-			.setFooter({
-				text: "Top 3",
-				iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256",
-			});
+			const discordIDToName = async _ => {
+				for (let i = 0; i < gtopData.length; i++) {
+					const user = await fetchUser(interaction.client, gtopData[i].discordID, interaction.guildId);
+					if (i == 0) {
+						gtopData[i].discordImg = user.avatarURL();
+						embed.addField((i + 1) + ". " + user.username, "RP: " + gtopData[i].RP, false);
+					}
+					else {
+						embed.addField((i + 1) + ". " + user.username, "RP: " + gtopData[i].RP, false);
+					}
 
-
-		const discordIDToName = async _ => {
-			for (let i = 0; i < gtopData.length; i++) {
-				gtopData[i].IGN = await UIDToIGN(gtopData[i].originUID, gtopData[i].platform, interaction.guildId, gtopData[i].discordID);
-				if (i == 0) {
-					const fetch = await fetchUser(interaction.client, gtopData[i].discordID, interaction.guildId);
-					gtopData[i].discordImg = fetch.avatarURL();
-					embed.addField((i + 1) + ". " + gtopData[i].IGN, "RP: " + gtopData[i].RP, false);
 				}
-				else {
-					embed.addField((i + 1) + ". " + gtopData[i].IGN, "RP: " + gtopData[i].RP, false);
-				}
 
-			}
+				embed.setThumbnail(gtopData[0].discordImg);
+			};
 
-			embed.setThumbnail(gtopData[0].discordImg);
-
-			interaction.editReply({ embeds: [embed] });
-		};
-
-		discordIDToName();
+			await discordIDToName();
+			return await interaction.editReply({ embeds: [embed] });
+		}
+		catch (error) {
+			logger.error(new Error(error), { command: "link", guildID: interaction.guildId, discordID:  interaction.user.id });
+			return await interaction.editReply("An unknown error accured!");
+		}
 	},
 };

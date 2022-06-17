@@ -58,53 +58,71 @@ module.exports = {
 		.setDescription("Shows the EA servers status and the response time."),
 	async execute(interaction) {
 		if (!interaction.isCommand()) return;
-		const statusData = await getData(interaction.guildId, interaction.user.id);
-		const embed = new MessageEmbed()
-			.setTitle("Server Status")
-			.setDescription("Data from https://apexlegendsstatus.com")
-			.addFields(
-				{
-					name: ":flag_eu: EU-West",
-					value: "Status: " + statusData.data.EA_novafusion["EU-West"].Status + "\nPing: " + statusData.data.EA_novafusion["EU-West"].ResponseTime,
-					inline: true,
-				},
-				{
-					name: ":flag_eu: EU-East",
-					value: "Status: " + statusData.data.EA_novafusion["EU-East"].Status + "\nPing: " + statusData.data.EA_novafusion["EU-East"].ResponseTime,
-					inline: true,
-				},
-				{
-					name: ":flag_us: US-West",
-					value: "Status: " + statusData.data.EA_novafusion["US-West"].Status + "\nPing: " + statusData.data.EA_novafusion["US-West"].ResponseTime,
-					inline: true,
-				},
-				{
-					name: ":flag_us: US-Central",
-					value: "Status: " + statusData.data.EA_novafusion["US-Central"].Status + "\nPing: " + statusData.data.EA_novafusion["US-Central"].ResponseTime,
-					inline: true,
-				},
-				{
-					name: ":flag_us: US-East",
-					value: "Status: " + statusData.data.EA_novafusion["EU-East"].Status + "\nPing: " + statusData.data.EA_novafusion["EU-East"].ResponseTime,
-					inline: true,
-				},
-				{
-					name: ":flag_br: South America",
-					value: "Status: " + statusData.data.EA_novafusion.SouthAmerica.Status + "\nPing: " + statusData.data.EA_novafusion.SouthAmerica.ResponseTime,
-					inline: true,
-				},
-				{
-					name: ":flag_jp: Asia",
-					value:"Status: " + statusData.data.EA_novafusion.Asia.Status + "\nPing: " + statusData.data.EA_novafusion.Asia.ResponseTime,
-					inline: true,
-				},
-			)
-			.setColor("#e3a600")
-			.setFooter({
-				text: "Help Misc - muumif",
-				iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256",
-			})
-			.setTimestamp();
-		interaction.reply({ embeds: [embed] });
+		await interaction.deferReply();
+
+		try {
+			const statusData = await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/servers?auth=${process.env.ALS_TOKEN}`));
+			const embed = new MessageEmbed()
+				.setTitle("Server Status")
+				.setDescription("Data from https://apexlegendsstatus.com")
+				.addFields(
+					{
+						name: ":flag_eu: EU-West",
+						value: "Status: " + statusData.data.EA_novafusion["EU-West"].Status + "\nPing: " + statusData.data.EA_novafusion["EU-West"].ResponseTime,
+						inline: true,
+					},
+					{
+						name: ":flag_eu: EU-East",
+						value: "Status: " + statusData.data.EA_novafusion["EU-East"].Status + "\nPing: " + statusData.data.EA_novafusion["EU-East"].ResponseTime,
+						inline: true,
+					},
+					{
+						name: ":flag_us: US-West",
+						value: "Status: " + statusData.data.EA_novafusion["US-West"].Status + "\nPing: " + statusData.data.EA_novafusion["US-West"].ResponseTime,
+						inline: true,
+					},
+					{
+						name: ":flag_us: US-Central",
+						value: "Status: " + statusData.data.EA_novafusion["US-Central"].Status + "\nPing: " + statusData.data.EA_novafusion["US-Central"].ResponseTime,
+						inline: true,
+					},
+					{
+						name: ":flag_us: US-East",
+						value: "Status: " + statusData.data.EA_novafusion["EU-East"].Status + "\nPing: " + statusData.data.EA_novafusion["EU-East"].ResponseTime,
+						inline: true,
+					},
+					{
+						name: ":flag_br: South America",
+						value: "Status: " + statusData.data.EA_novafusion.SouthAmerica.Status + "\nPing: " + statusData.data.EA_novafusion.SouthAmerica.ResponseTime,
+						inline: true,
+					},
+					{
+						name: ":flag_jp: Asia",
+						value:"Status: " + statusData.data.EA_novafusion.Asia.Status + "\nPing: " + statusData.data.EA_novafusion.Asia.ResponseTime,
+						inline: true,
+					},
+				)
+				.setColor("#e3a600")
+				.setFooter({
+					text: "Server status",
+					iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256",
+				})
+				.setTimestamp();
+			return await interaction.editReply({ embeds: [embed] });
+		}
+		catch (error) {
+			logger.error(new Error(error), { command: "status", guildID: interaction.guildId, discordID:  interaction.user.id });
+			const embed = new MessageEmbed()
+				.setTitle("An error accured")
+				.setDescription(error)
+				.setColor("#e3a600")
+				.setTimestamp()
+				.setFooter({
+					text: "Error page",
+					iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256",
+				});
+			return await interaction.editReply({ embeds: [embed] });
+		}
+
 	},
 };
