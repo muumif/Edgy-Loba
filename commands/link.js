@@ -13,14 +13,14 @@ module.exports = {
 		.addStringOption(option => {
 			option
 				.setName("username")
-				.setDescription("The username for user! PC must use Origin name!")
+				.setDescription("The username for user! PC users must use Origin name!")
 				.setRequired(true);
 			return option;
 		})
 		.addStringOption(option => {
 			option
 				.setName("platform")
-				.setDescription("User platform!")
+				.setDescription("The platform for user!")
 				.setRequired(true)
 				.addChoices(
 					{ name: "PC", value: "link_pc" },
@@ -30,6 +30,8 @@ module.exports = {
 			return option;
 		}),
 	async execute(interaction) {
+		if (!interaction.isCommand()) return;
+
 		const user = interaction.options.getString("username");
 		let platform = interaction.options.getString("platform");
 		if (platform == "link_pc") { platform = "PC"; }
@@ -40,7 +42,7 @@ module.exports = {
 		if (userExists) {
 			const embed = new MessageEmbed()
 				.setTitle("Username already linked!")
-				.setDescription("Use command **/unlink** to unlink your account!")
+				.setDescription("Use command `/unlink` to unlink your account!")
 				.setColor("#e3a600")
 				.setTimestamp()
 				.setFooter({
@@ -68,7 +70,7 @@ module.exports = {
 						iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256",
 					});
 
-				return interaction.editReply({ embeds: [embed] });
+				return await interaction.editReply({ embeds: [embed] });
 			}
 			catch (error) {
 				logger.error(new Error(error), { command: "link", guildID: interaction.guildId, discordID:  interaction.user.id, IGN: user, platform: platform });
@@ -81,7 +83,7 @@ module.exports = {
 						text: "Error page",
 						iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256",
 					});
-				return interaction.editReply({ embeds: [embed] });
+				return await interaction.editReply({ embeds: [embed] });
 			}
 		}
 	},

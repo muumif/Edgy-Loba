@@ -26,7 +26,8 @@ module.exports = {
 		.setDescription("Shows the top 10 users in the server."),
 	async execute(interaction) {
 		if (!interaction.isCommand()) return;
-		interaction.deferReply();
+		await interaction.deferReply();
+
 		const topData = await getData(interaction.guildId);
 		const embed = new MessageEmbed()
 			.setTitle("Server Leaderboard")
@@ -60,6 +61,6 @@ module.exports = {
 
 		embed.setThumbnail(topData[0].discordImg);
 
-		interaction.editReply({ embeds: [embed] });
+		return await interaction.editReply({ embeds: [embed] });
 	},
 };

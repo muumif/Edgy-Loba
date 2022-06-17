@@ -72,6 +72,8 @@ module.exports = {
 				)),
 	async execute(interaction) {
 		if (!interaction.isCommand()) return;
+		await interaction.deferReply();
+
 		const chosenString = interaction.options.getString("platform");
 		const mapData = await getData(interaction.guildId, interaction.user.id);
 
@@ -93,11 +95,9 @@ module.exports = {
 				)
 				.setThumbnail("https://api.mozambiquehe.re/assets/ranks/apexpredator1.png")
 				.setColor("#e3a600")
-				.setFooter({ text: "Bugs can be reported with >bug", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" })
+				.setFooter({ text: "Bugs can be reported with /bug", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" })
 				.setTimestamp();
-			interaction.reply({ embeds: [embed] });
-
-			break;
+			return await interaction.editReply({ embeds: [embed] });
 		}
 
 		case "pred_pc": {
@@ -133,11 +133,9 @@ module.exports = {
 			)
 				.setThumbnail("https://api.mozambiquehe.re/assets/ranks/apexpredator1.png")
 				.setColor("#e3a600")
-				.setFooter({ text: "Bugs can be reported with >bug", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" })
+				.setFooter({ text: "Bugs can be reported with /bug", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" })
 				.setTimestamp();
-			interaction.reply({ embeds: [embed] });
-
-			break;
+			return await interaction.editReply({ embeds: [embed] });
 		}
 
 		case "pred_xbox": {
@@ -173,11 +171,9 @@ module.exports = {
 				)
 				.setThumbnail("https://api.mozambiquehe.re/assets/ranks/apexpredator1.png")
 				.setColor("#e3a600")
-				.setFooter({ text: "Bugs can be reported with >bug", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" })
+				.setFooter({ text: "Bugs can be reported with /bug", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" })
 				.setTimestamp();
-			interaction.reply({ embeds: [embed] });
-
-			break;
+			return await interaction.editReply({ embeds: [embed] });
 		}
 
 		case "pred_ps": {
@@ -213,11 +209,9 @@ module.exports = {
 				)
 				.setThumbnail("https://api.mozambiquehe.re/assets/ranks/apexpredator1.png")
 				.setColor("#e3a600")
-				.setFooter({ text: "Bugs can be reported with >bug", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" })
+				.setFooter({ text: "Bugs can be reported with /bug", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" })
 				.setTimestamp();
-			interaction.reply({ embeds: [embed] });
-
-			break;
+			return await interaction.editReply({ embeds: [embed] });
 		}
 
 		case "pred_switch": {
@@ -253,11 +247,9 @@ module.exports = {
 				)
 				.setThumbnail("https://api.mozambiquehe.re/assets/ranks/apexpredator1.png")
 				.setColor("#e3a600")
-				.setFooter({ text: "Bugs can be reported with >bug", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" })
+				.setFooter({ text: "Bugs can be reported with /bug", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" })
 				.setTimestamp();
-			interaction.reply({ embeds: [embed] });
-
-			break;
+			return await interaction.editReply({ embeds: [embed] });
 		}
 
 		}

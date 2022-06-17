@@ -18,6 +18,8 @@ module.exports = {
 				)),
 	async execute(interaction) {
 		if (!interaction.isCommand()) return;
+		await interaction.deferReply();
+
 		const chosenString = interaction.options.getString("category");
 		switch (chosenString) {
 		case "help_misc": {
@@ -42,7 +44,7 @@ module.exports = {
 						inline: false,
 					},
 					{
-						name: "`/pred`",
+						name: "`/predator`",
 						value: "Shows how much RP/AP is needed to reach Predator on all platforms.",
 						inline: false,
 					},
@@ -63,8 +65,7 @@ module.exports = {
 					text: "Help Misc - muumif",
 					iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256",
 				});
-			interaction.reply({ embeds: [embed], ephemeral: true });
-			break;
+			return await interaction.editReply({ embeds: [embed], ephemeral: true });
 		}
 
 
@@ -73,8 +74,8 @@ module.exports = {
 				.setTitle("Help Stats")
 				.addFields(
 					{
-						name: "`/stats [Apex IGN] [PC | XBOX | PS]`",
-						value: "Shows users stats. Must use origin username steam wont work. If you have a linked account and want to check your own stats there is no need to add [Apex IGN] or platform.",
+						name: "`/stats`",
+						value: "Shows users stats. Must use origin username steam wont work.",
 						inline: false,
 					},
 					{
@@ -110,8 +111,7 @@ module.exports = {
 					text: "Help Stats - muumif",
 					iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256",
 				});
-			interaction.reply({ embeds: [embed], ephemeral: true });
-			break;
+			return await interaction.editReply({ embeds: [embed], ephemeral: true });
 		}
 
 		case "help_admin": {
@@ -148,8 +148,7 @@ module.exports = {
 					text: "Help Admin - muumif",
 					iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256",
 				});
-			interaction.reply({ embeds: [embed], ephemeral: true });
-			break;
+			return await interaction.editReply({ embeds: [embed], ephemeral: true });
 		}
 		}
 	},

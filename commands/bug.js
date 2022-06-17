@@ -30,6 +30,6 @@ module.exports = {
 
 		modal.addComponents(firstActionRow, secondActionRow);
 
-		await interaction.showModal(modal);
+		return await interaction.showModal(modal);
 	},
 };
