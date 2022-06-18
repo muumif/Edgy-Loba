@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 require("dotenv").config();
 const axios = require("axios");
 const { getUserUID } = require("../moduels/getUID");
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, MessageAttachment } = require("discord.js");
 const { logger } = require("../moduels/logger");
 const { getUserExistsDiscord, updateUserRPAP, getUserHistory, getUser, getUserExistsGame, getUserOrigin } = require("../database/db");
 const { makeStatsChart } = require("../moduels/charts");
@@ -34,7 +34,7 @@ module.exports = {
 		if (!interaction.isCommand()) return;
 		await interaction.deferReply();
 
-		let platformEmoji, stateEmoji, rankBR, rankAR, rankIMG, currentState;
+		let platformEmoji, stateEmoji, rankBR, rankAR, rankIMG, currentState, statsFile;
 
 		const username = interaction.options.getString("username");
 		let platform = interaction.options.getString("platform");
@@ -125,7 +125,9 @@ module.exports = {
 				}
 
 				const discordUser = await interaction.client.users.fetch(userDB.discordID);
-				embed.setImage(makeStatsChart(labels, data))
+				await makeStatsChart(labels, data, userDB.discordID);
+				statsFile = new MessageAttachment(`./temp/history_${userDB.discordID}.png`);
+				embed.setImage(`attachment://history_${userDB.discordID}.png`)
 					.setDescription(`${stateEmoji} ${currentState} \n Linked to **${discordUser.username}#${discordUser.discriminator}**`);
 
 				if (interaction.user.id == userDB.discordID) {
@@ -133,7 +135,7 @@ module.exports = {
 				}
 			}
 
-			return await interaction.editReply({ embeds: [embed] });
+			return await interaction.editReply({ embeds: [embed], files: [statsFile] });
 		}
 		catch (error) {
 			logger.error(new Error(error), { command: "stats", guildID: interaction.guildId, discordID:  interaction.user.id });
