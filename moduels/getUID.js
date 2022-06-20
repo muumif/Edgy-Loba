@@ -7,9 +7,9 @@ const JSONBigInt = require("json-bigint")({ "storeAsString": true });
 async function getUserUID(IGN, platform, guildID, discordID) {
 	try {
 		const response = await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/nametouid?auth=${process.env.ALS_TOKEN}&player=${IGN}&platform=${platform}`), { transformResponse: [data => data] });
-		if (response.data.Error != undefined) {
-			logger.error(new Error(response.data.Error), { module: "getUID", guildID: guildID, discordID: discordID, data: response.data, IGN: IGN, platform: platform });
-			return Promise.reject(response.data.Error);
+		if (response.data.includes("Error")) {
+			logger.error(new Error(response.data), { module: "getUID", guildID: guildID, discordID: discordID, data: response.data, IGN: IGN, platform: platform });
+			return Promise.reject({ isGetUidError: true, message: response.data });
 		}
 		if (platform == "PC") {
 			logger.info("ALS API data fetched user PC!", { module: "getUID", guildID: guildID, discordID: discordID, data: response.data, IGN: IGN, platform: platform });
@@ -19,7 +19,7 @@ async function getUserUID(IGN, platform, guildID, discordID) {
 		return JSONBigInt.parse(response.data).result;
 	}
 	catch (error) {
-		//Cant do anything until new headears from the API
+		//Cant do anything until new headears from the API if statment error checking
 	}
 
 }

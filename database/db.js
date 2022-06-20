@@ -180,6 +180,31 @@ async function getUserHistory(discordID) {
 }
 
 /**
+ * Get users history
+ * @param {String} discordID The discordID of user
+ * @return {Array} Return Array of history objects ordered by date
+ * @return {Promise} Returns Promise.reject when no history data is inserted in the database
+ */
+async function getUserHistoryGame(originUID) {
+	try {
+		await client.connect();
+
+		const history = await client.db("EdgyLoba").collection("userHistory").find({ originUID: originUID }).sort({ date: 1 }).toArray();
+
+		if (history.length == 0) {
+			logger.error(new Error("No history data exists for the given user!"), { DBOP: "getUserHistory", originUID: originUID });
+			return Promise.reject("No history data exists for given user!");
+		}
+
+		logger.info("Fetched user history data!", { DBOP: "getUserHistory", originUID: originUID });
+		return Promise.resolve(history);
+	}
+	finally {
+		await client.close();
+	}
+}
+
+/**
  * Inserts new user to the DB
  * @param {String} guildID The guildID of the user to set
  * @param {String} discordID The discordID of the user to set
@@ -442,4 +467,5 @@ module.exports = {
 	getGuildSettings,
 	getUserExistsGame,
 	getUserOrigin,
+	getUserHistoryGame,
 };

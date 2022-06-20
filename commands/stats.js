@@ -2,9 +2,9 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 require("dotenv").config();
 const axios = require("axios");
 const { getUserUID } = require("../moduels/getUID");
-const { MessageEmbed, MessageAttachment } = require("discord.js");
+const { MessageEmbed, MessageAttachment, DiscordAPIError } = require("discord.js");
 const { logger } = require("../moduels/logger");
-const { getUserExistsDiscord, updateUserRPAP, getUserHistory, getUser, getUserExistsGame, getUserOrigin } = require("../database/db");
+const { updateUserRPAP, getUserHistory, getUserExistsGame, getUserOrigin } = require("../database/db");
 const { makeStatsChart } = require("../moduels/charts");
 
 module.exports = {
@@ -138,17 +138,19 @@ module.exports = {
 			return await interaction.editReply({ embeds: [embed], files: [statsFile] });
 		}
 		catch (error) {
-			logger.error(new Error(error), { command: "stats", guildID: interaction.guildId, discordID:  interaction.user.id });
-			const embed = new MessageEmbed()
-				.setTitle("An error accured")
-				.setDescription("Check your username! Or if this continues to happen use /bug")
-				.setColor("#e3a600")
-				.setTimestamp()
-				.setFooter({
-					text: "Error page",
-					iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256",
-				});
-			return await interaction.editReply({ embeds: [embed] });
+			/*
+			if (DiscordAPIError) {
+				return logger.error(new Error(error), { command: "stats", guildID: interaction.guildId });
+			}*/
+			if (error.isGetUidError == true) {
+				logger.error(new Error(`Module Error: ${error.isGetUidError} | Message: ${error.message}`), { command: "stats", guildID: interaction.guildId });
+				return await interaction.editReply({ embeds: [new MessageEmbed().setColor("#e3a600").setTitle("An error accrued!").setDescription(error.message).setTimestamp().setFooter({ text: "Error page", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" })] });
+			}
+			if (error.response) {
+				logger.error(new Error(error), { command: "stats", guildID: interaction.guildId });
+				return await interaction.editReply({ embeds: [new MessageEmbed().setColor("#e3a600").setTitle("An error accrued!").setDescription(error.response.request.res.statusMessage.toString()).setTimestamp().setFooter({ text: "Error page", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" })] });
+			}
+
 		}
 	},
 };
