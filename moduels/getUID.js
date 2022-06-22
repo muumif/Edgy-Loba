@@ -12,6 +12,10 @@ async function getUserUID(IGN, platform, guildID, discordID) {
 			return Promise.reject({ isGetUidError: true, message: response.data });
 		}
 		if (platform == "PC") {
+			if (JSONBigInt.parse(response.data).uid == undefined) {
+				logger.error(new Error(response.data), { module: "getUID", guildID: guildID, discordID: discordID, data: response.data, IGN: IGN, platform: platform });
+				return Promise.reject({ isGetUidError: true, message: "Error: Unknown user! Please use Origin username!" });
+			}
 			logger.info("ALS API data fetched user PC!", { module: "getUID", guildID: guildID, discordID: discordID, data: response.data, IGN: IGN, platform: platform });
 			return JSONBigInt.parse(response.data).uid;
 		}

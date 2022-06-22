@@ -73,17 +73,18 @@ module.exports = {
 				return await interaction.editReply({ embeds: [embed] });
 			}
 			catch (error) {
-				logger.error(new Error(error), { command: "link", guildID: interaction.guildId, discordID:  interaction.user.id, IGN: user, platform: platform });
-				const embed = new MessageEmbed()
-					.setTitle("An error accured")
-					.setDescription(error)
-					.setColor("#e3a600")
-					.setTimestamp()
-					.setFooter({
-						text: "Error page",
-						iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256",
-					});
-				return await interaction.editReply({ embeds: [embed] });
+				if (error.isGetUidError == true) {
+					logger.error(new Error(`Module Error: ${error.isGetUidError} | Message: ${error.message}`), { command: "link", guildID: interaction.guildId });
+					return await interaction.editReply({ embeds: [new MessageEmbed().setColor("#e3a600").setTitle("An error accrued!").setDescription(error.message).setTimestamp().setFooter({ text: "Error page", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" })] });
+				}
+				if (error.response) {
+					logger.error(new Error(error), { command: "link", guildID: interaction.guildId });
+					return await interaction.editReply({ embeds: [new MessageEmbed().setColor("#e3a600").setTitle("An error accrued!").setDescription(error.response.request.res.statusMessage.toString()).setTimestamp().setFooter({ text: "Error page", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" })] });
+				}
+				if (error) {
+					logger.error(new Error(error), { command: "link", guildID: interaction.guildId });
+					return await interaction.editReply({ embeds: [new MessageEmbed().setColor("#e3a600").setTitle("An error accrued!").setDescription("Please try again later!").setTimestamp().setFooter({ text: "Error page", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" })] });
+				}
 			}
 		}
 	},

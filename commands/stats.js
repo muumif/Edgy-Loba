@@ -133,15 +133,14 @@ module.exports = {
 				if (interaction.user.id == userDB.discordID) {
 					await updateUserRPAP(interaction.user.id, user.data.global.rank.rankScore, user.data.global.arena.rankScore);
 				}
-			}
+				return await interaction.editReply({ embeds: [embed], files: [statsFile] });
 
-			return await interaction.editReply({ embeds: [embed], files: [statsFile] });
+			}
+			else {
+				return await interaction.editReply({ embeds: [embed] });
+			}
 		}
 		catch (error) {
-			/*
-			if (DiscordAPIError) {
-				return logger.error(new Error(error), { command: "stats", guildID: interaction.guildId });
-			}*/
 			if (error.isGetUidError == true) {
 				logger.error(new Error(`Module Error: ${error.isGetUidError} | Message: ${error.message}`), { command: "stats", guildID: interaction.guildId });
 				return await interaction.editReply({ embeds: [new MessageEmbed().setColor("#e3a600").setTitle("An error accrued!").setDescription(error.message).setTimestamp().setFooter({ text: "Error page", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" })] });
@@ -150,7 +149,10 @@ module.exports = {
 				logger.error(new Error(error), { command: "stats", guildID: interaction.guildId });
 				return await interaction.editReply({ embeds: [new MessageEmbed().setColor("#e3a600").setTitle("An error accrued!").setDescription(error.response.request.res.statusMessage.toString()).setTimestamp().setFooter({ text: "Error page", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" })] });
 			}
-
+			if (error) {
+				logger.error(new Error(error), { command: "stats", guildID: interaction.guildId });
+				return await interaction.editReply({ embeds: [new MessageEmbed().setColor("#e3a600").setTitle("An error accrued!").setDescription("Please try again later!").setTimestamp().setFooter({ text: "Error page", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" })] });
+			}
 		}
 	},
 };

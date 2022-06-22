@@ -82,12 +82,13 @@ module.exports = {
 			return await interaction.editReply({ embeds: [embed] });
 		}
 		catch (error) {
-			if (DiscordAPIError) {
-				logger.error(new Error(error), { command: "top", guildID: interaction.guildId });
-			}
 			if (error.response) {
 				logger.error(new Error(error), { command: "top", guildID: interaction.guildId });
-				return await interaction.editReply({ embeds: [new MessageEmbed.setColor("#e3a600").setTitle("An error accured!").setDescription(error.response.data.Error)] });
+				return await interaction.editReply({ embeds: [new MessageEmbed().setColor("#e3a600").setTitle("An error accrued!").setDescription(error.response.request.res.statusMessage.toString()).setTimestamp().setFooter({ text: "Error page", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" })] });
+			}
+			if (error) {
+				logger.error(new Error(error), { command: "top", guildID: interaction.guildId });
+				return await interaction.editReply({ embeds: [new MessageEmbed().setColor("#e3a600").setTitle("An error accrued!").setDescription("Please try again later!").setTimestamp().setFooter({ text: "Error page", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" })] });
 			}
 		}
 
