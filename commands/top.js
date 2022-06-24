@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 require("dotenv").config();
-const { MessageEmbed, DiscordAPIError } = require("discord.js");
+const { MessageEmbed, DiscordAPIError, MessageAttachment } = require("discord.js");
 const { getTopGuildUsers, getGuildSettings, getUserHistoryGame, getUserHistory } = require("../database/db");
 const { makeTopChart } = require("../moduels/charts");
 const { logger } = require("../moduels/logger");
@@ -63,7 +63,6 @@ module.exports = {
 					}
 				});
 
-				/*
 				const historyData = await getUserHistory(topData[i].discordID);
 				const labels = [], data = [];
 				for (let j = 0; j < historyData.length; j++) {
@@ -71,15 +70,16 @@ module.exports = {
 					labels.push(date);
 					data.push(historyData[j].RP);
 				}
-				usersHistory.push({ dates: labels, rps: data });*/
+				usersHistory.push([ labels, data ]);
 			}
 
 			embed.setThumbnail(topData[0].discordImg);
-			/*
-			await makeTopChart(usersHistory, users, interaction.guildId);
-			console.log(usersHistory[0].rps + " | " + users);*/
+			await makeTopChart(usersHistory, interaction.guildId);
+			const topFile = new MessageAttachment(`./temp/top_${interaction.guildId}.png`);
+			embed.setImage(`attachment://top_${interaction.guildId}.png`);
 
-			return await interaction.editReply({ embeds: [embed] });
+
+			return await interaction.editReply({ embeds: [embed], files: [topFile] });
 		}
 		catch (error) {
 			if (error.response) {

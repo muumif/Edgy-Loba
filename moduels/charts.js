@@ -22,7 +22,7 @@ async function makeStatsChart(dates = [], rps = [], discordID) {
 						{
 							label: "RP",
 							backgroundColor: "rgba(44,47,51,0)",
-							borderColor: "rgb(277,166,0)",
+							borderColor: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
 							data: rps,
 						},
 					],
@@ -153,7 +153,7 @@ async function makeStatsChart(dates = [], rps = [], discordID) {
 	}
 }
 
-async function makeTopChart(usersHistory, users, guildID) {
+async function makeTopChart(usersHistory, guildID) {
 	try {
 		const exists = existsSync(`./temp/top_${guildID}.png`);
 
@@ -161,12 +161,27 @@ async function makeTopChart(usersHistory, users, guildID) {
 			return `./temp/top_${guildID}.png`;
 		}
 		else {
-			const chartJSNodeCanvas = new ChartJSNodeCanvas({ width: 800, height: 400, backgroundColour: "#36393f", plugins: { modern: ["chartjs-plugin-annotation"] } });
+			const _labels = [], datasets = [];
+			for (let i = 0; i < usersHistory.length; i++) {
+				usersHistory[i][0].map(dates => {
+					if (!_labels.includes(dates)) {
+						_labels.push(dates);
+					}
+				});
+
+				datasets.push({
+					label: i + 1,
+					data: usersHistory[i][1],
+					backgroundColor: "rgba(44,47,51,0)",
+					borderColor: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
+				});
+			}
+			const chartJSNodeCanvas = new ChartJSNodeCanvas({ width: 800, height: 400, backgroundColour : "#36393f", plugins: { modern: ["chartjs-plugin-annotation"] } });
 			const config = {
 				type: "line",
 				data: {
-					labels: [],
-					datasets:[],
+					labels: _labels,
+					datasets: datasets,
 				},
 				options:{
 					fontSize: 50,
