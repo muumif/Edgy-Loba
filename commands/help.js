@@ -35,7 +35,7 @@ module.exports = {
 					},
 					{
 						name: "`/map`",
-						value: "Shows the current and next maps for Battle Royale and Arenas. Also the time remaining until the next map.",
+						value: "Shows the current and next maps for Battle Royal and Arenas. Also the time remaining until the next map.",
 						inline: false,
 					},
 					{
@@ -80,17 +80,17 @@ module.exports = {
 				.addFields(
 					{
 						name: "`/stats`",
-						value: "Shows users stats. Must use origin username steam wont work.",
+						value: "Shows users stats. Must use Origin username Steam wont work.",
 						inline: false,
 					},
 					{
 						name: "`/link`",
-						value: "Link your Discord account to your Apex username. Doing this allows you to see history graphs, collaborate in the leaderboard and much more.",
+						value: "Link your Discord account to your Origin username. Doing this allows you to see history graphs, collaborate in the leaderboard and much more.",
 						inline: false,
 					},
 					{
 						name: "`/unlink`",
-						value: "Unlink your discord account from your Apex username.",
+						value: "Unlink your discord account from your Origin username.",
 						inline: false,
 					},
 					{
@@ -133,7 +133,7 @@ module.exports = {
 					},
 					{
 						name: "`/settings [Mode] [BR | AR]`",
-						value: "Set the default gamemode that will be used in top and other commands.\n`BR - Battle Royale`\n`AR - Arenas`",
+						value: "Set the default game-mode that will be used in top and other commands.\n`BR - Battle Royal`\n`AR - Arenas`",
 						inline: false,
 					},
 					{

@@ -1,9 +1,9 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const axios = require("axios");
 const { MessageEmbed, MessageAttachment } = require("discord.js");
-const { getUserExistsDiscord, getUser, getUserHistory, updateUserRPAP } = require("../database/db");
-const { makeStatsChart } = require("../moduels/charts");
-const { logger } = require("../moduels/logger");
+const { getUserExistsDiscord, getUser, getUserHistory, updateUserRPAP } = require("../misc/internal/db");
+const { makeStatsChart } = require("../misc/charts");
+const { logger } = require("../misc/internal/logger");
 require("dotenv").config();
 
 module.exports = {
@@ -77,7 +77,7 @@ module.exports = {
 							inline: true,
 						},
 						{
-							name: "__Battle Royale__",
+							name: "__Battle Royal__",
 							value: `${rankBR} \nRP: ${user.data.global.rank.rankScore}`,
 							inline: true,
 						},

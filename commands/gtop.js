@@ -1,8 +1,8 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageEmbed } = require("discord.js");
-const { getTopGlobalUsers } = require("../database/db");
-const { logger } = require("../moduels/logger");
-const { UIDToIGN } = require("../moduels/UIDToIGN");
+const { getTopGlobalUsers } = require("../misc/internal/db");
+const { logger } = require("../misc/internal/logger");
+const { UIDToIGN } = require("../misc/UIDToIGN");
 require("dotenv").config();
 
 async function fetchUser(client, id) {

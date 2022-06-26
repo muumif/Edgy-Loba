@@ -1,7 +1,7 @@
 const axios = require("axios");
 require("dotenv").config();
 const Discord = require("discord.js");
-const { logger } = require("./logger");
+const { logger } = require("./internal/logger");
 
 async function UIDToIGN(UID, platform, guildID, discordID) {
 	const URI = `${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${UID}&platform=${platform}&skipRank=true`;

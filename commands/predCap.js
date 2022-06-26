@@ -2,7 +2,7 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { default: axios } = require("axios");
 const { MessageEmbed } = require("discord.js");
-const { logger } = require("../moduels/logger");
+const { logger } = require("../misc/internal/logger");
 require("dotenv").config();
 
 
@@ -83,7 +83,7 @@ module.exports = {
 				.setTitle("All Platforms!")
 				.addFields(
 					{
-						name: "Battle Royale",
+						name: "Battle Royal",
 						value: "PC: **" + mapData.data.RP.PC.val + " RP**\nPlaystation: **" + mapData.data.RP.PS4.val + " RP**\nXbox: **" + mapData.data.RP.X1.val + " RP**\nSwitch: **" + mapData.data.RP.SWITCH.val + " RP**",
 						inline: true,
 					},
@@ -102,7 +102,7 @@ module.exports = {
 
 		case "pred_pc": {
 			const embed = new MessageEmbed()
-				.setTitle("Platfrom PC!");
+				.setTitle("Platform PC!");
 			function totalMastersPCBR() {
 				if (mapData.data.RP.PC.totalMastersAndPreds >= 750) {
 					return mapData.data.RP.PC.totalMastersAndPreds - 750;
@@ -121,7 +121,7 @@ module.exports = {
 			}
 			embed.addFields(
 				{
-					name: "Battle Royale",
+					name: "Battle Royal",
 					value: "PC: **" + mapData.data.RP.PC.val + ` RP**\nTotal Masters: **${totalMastersPCBR()}**`,
 					inline: true,
 				},
@@ -156,10 +156,10 @@ module.exports = {
 				}
 			}
 			const embed = new MessageEmbed()
-				.setTitle("Platfrom XBOX!")
+				.setTitle("Platform XBOX!")
 				.addFields(
 					{
-						name: "Battle Royale",
+						name: "Battle Royal",
 						value: "Xbox: **" + mapData.data.RP.X1.val + ` RP**\nTotal Masters: **${totalMastersX1BR()}**`,
 						inline: true,
 					},
@@ -194,10 +194,10 @@ module.exports = {
 				}
 			}
 			const embed = new MessageEmbed()
-				.setTitle("Platfrom Playstation!")
+				.setTitle("Platform Playstation!")
 				.addFields(
 					{
-						name: "Battle Royale",
+						name: "Battle Royal",
 						value: "Playstation: **" + mapData.data.RP.PS4.val + ` RP**\nTotal Masters: **${totalMastersPS4BR()}**`,
 						inline: true,
 					},
@@ -232,10 +232,10 @@ module.exports = {
 				}
 			}
 			const embed = new MessageEmbed()
-				.setTitle("Platfrom Switch!")
+				.setTitle("Platform Switch!")
 				.addFields(
 					{
-						name: "Battle Royale",
+						name: "Battle Royal",
 						value: "Swtich: **" + mapData.data.RP.SWITCH.val + ` RP**\nTotal Masters: **${totalMastersSWITCHBR()}**`,
 						inline: true,
 					},

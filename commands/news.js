@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const axios = require("axios");
 require("dotenv").config();
 const { MessageEmbed } = require("discord.js");
-const { logger } = require("../moduels/logger");
+const { logger } = require("../misc/internal/logger");
 
 async function shortenUrl(link) {
 	const URI = `${process.env.BITLY_ENDPOINT}/v4/shorten`;

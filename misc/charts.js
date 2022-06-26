@@ -2,7 +2,7 @@ const { default: axios } = require("axios");
 const { ChartJSNodeCanvas } = require("chartjs-node-canvas");
 const { existsSync } = require("fs");
 const { writeFile } = require("fs").promises;
-const { logger } = require("./logger");
+const { logger } = require("./internal/logger");
 
 async function makeStatsChart(dates = [], rps = [], discordID) {
 	try {

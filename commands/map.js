@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const axios = require("axios");
 require("dotenv").config();
 const { MessageEmbed, MessageAttachment } = require("discord.js");
-const { logger } = require("../moduels/logger");
+const { logger } = require("../misc/internal/logger");
 const { readFile, writeFile } = require("fs").promises;
 const Canvas = require("@napi-rs/canvas");
 
@@ -58,7 +58,7 @@ async function getData(guildID, discordID) {
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("map")
-		.setDescription("Shows the current and next maps for Battle Royale and Arenas!"),
+		.setDescription("Shows the current and next maps for Battle Royal and Arenas!"),
 	async execute(interaction) {
 		if (!interaction.isCommand()) return;
 		await interaction.deferReply();
@@ -71,7 +71,7 @@ module.exports = {
 		const arenasMap = new Canvas.Image();
 		const rankedArenasMap = new Canvas.Image();
 
-		switch (mapData.data.battle_royale.current.code) { // Battle royale map setter
+		switch (mapData.data.battle_royale.current.code) { // Battle Royal map setter
 		case "olympus_rotation": {
 			const brMapFile = await readFile("./images/maps/Olympus.jpg");
 			brMap.src = brMapFile;
@@ -97,7 +97,7 @@ module.exports = {
 		}
 		}
 
-		switch (mapData.data.ranked.current.code) { // Ranked Battle royale map setter
+		switch (mapData.data.ranked.current.code) { // Ranked Battle Royal map setter
 		case "olympus_rotation": {
 			const brMapFile = await readFile("./images/maps/Olympus.jpg");
 			rankedBrMap.src = brMapFile;
@@ -254,7 +254,7 @@ module.exports = {
 			.setTitle("Map Rotation")
 			.addFields(
 				{
-					name: "__Battle Royale__",
+					name: "__Battle Royal__",
 					value: `Current map: **${mapData.data.battle_royale.current.map}**\nNext Map: **${mapData.data.battle_royale.next.map}**\nRemaining: **${mapData.data.battle_royale.current.remainingTimer}**`,
 					inline: true,
 				},

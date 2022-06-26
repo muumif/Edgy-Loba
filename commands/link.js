@@ -2,9 +2,9 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const axios = require("axios");
 require("dotenv").config();
 const { MessageEmbed } = require("discord.js");
-const { getUserUID } = require("../moduels/getUID");
-const { insertNewUser, getUserExistsDiscord } = require("../database/db");
-const { logger } = require("../moduels/logger");
+const { getUserUID } = require("../misc/getUID");
+const { insertNewUser, getUserExistsDiscord } = require("../misc/internal/db");
+const { logger } = require("../misc/internal/logger");
 
 module.exports = {
 	data: new SlashCommandBuilder()

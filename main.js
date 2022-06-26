@@ -1,12 +1,11 @@
 const { Client, Intents, Collection } = require("discord.js");
 const { AutoPoster } = require("topgg-autoposter");
 require("dotenv").config();
-const { logger } = require("./moduels/logger");
+const { logger } = require("./misc/internal/logger");
 const fs = require("node:fs");
 const path = require("node:path");
-const { insertNewBug } = require("./database/db");
-
-require("./moduels/historyUpdater")();
+const { insertNewBug } = require("./misc/internal/db");
+require("./misc/historyUpdater")();
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 //const ap = AutoPoster(process.env.TOPGG_TOKEN, client);

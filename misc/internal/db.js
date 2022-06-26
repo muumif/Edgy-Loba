@@ -1,5 +1,5 @@
 const { MongoClient } = require("mongodb");
-const { logger } = require("../moduels/logger");
+const { logger } = require("./logger");
 require("dotenv").config();
 
 const URI = `mongodb://muumi:${process.env.MONGO_PASSWORD}@192.168.0.13:27017/?authMechanism=DEFAULT`;
@@ -68,10 +68,10 @@ async function getAllUsers() {
 }
 
 /**
- * Get the user from database
+ * Get the user from misc
  * @param {String} discordID The discordID of user
  * @return {Object} Return user data
- * @return {Promise} Return Promise.reject when no user data is inserted in the database
+ * @return {Promise} Return Promise.reject when no user data is inserted in the misc
  */
 async function getUser(discordID) {
 	try {
@@ -111,7 +111,7 @@ async function getUserOrigin(UID) {
  * Returns top 10 users in given guild
  * @param {String} guildID The discord guildID
  * @return {Array} Return Array of top 10 guild users
- * @return {Promise} Return Promise.reject when no user data is inserted in the database
+ * @return {Promise} Return Promise.reject when no user data is inserted in the misc
  */
 async function getTopGuildUsers(guildID) {
 	try {
@@ -134,7 +134,7 @@ async function getTopGuildUsers(guildID) {
 /**
  * Returns top 10 users in globaly in the DB
  * @return {Array} Return Array of top 10 users globally in the db
- * @return {Promise} Return Promise.reject when no user data is inserted in the database
+ * @return {Promise} Return Promise.reject when no user data is inserted in the misc
  */
 async function getTopGlobalUsers() {
 	try {
@@ -143,7 +143,7 @@ async function getTopGlobalUsers() {
 
 		if (users.length == 0) {
 			logger.error(new Error("No user data has been recorded in the DB!"), { DBOP: "getTopGlobalUsers" });
-			return Promise.reject("No users in the database!");
+			return Promise.reject("No users in the misc!");
 		}
 
 		logger.info("Fetched top 10 global users!", { DBOP: "getTopGlobalUsers" });
@@ -158,7 +158,7 @@ async function getTopGlobalUsers() {
  * Get users history
  * @param {String} discordID The discordID of user
  * @return {Array} Return Array of history objects ordered by date
- * @return {Promise} Returns Promise.reject when no history data is inserted in the database
+ * @return {Promise} Returns Promise.reject when no history data is inserted in the misc
  */
 async function getUserHistory(discordID) {
 	try {
@@ -183,7 +183,7 @@ async function getUserHistory(discordID) {
  * Get users history
  * @param {String} discordID The discordID of user
  * @return {Array} Return Array of history objects ordered by date
- * @return {Promise} Returns Promise.reject when no history data is inserted in the database
+ * @return {Promise} Returns Promise.reject when no history data is inserted in the misc
  */
 async function getUserHistoryGame(originUID) {
 	try {

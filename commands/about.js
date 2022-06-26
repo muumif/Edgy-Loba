@@ -21,7 +21,7 @@ module.exports = {
 			.setTimestamp()
 			.setFooter({ text: "About - muumif", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" })
 			.setThumbnail("https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256")
-			.setDescription("This bot was created to give Apex Legends players their stats in an easy and convenient way inside of Discord.\n\n At first the bot was just developed for fun in a private server but now it is being actively worked on for everyone to use. \n\nAll of the data comes from https://apexlegendsstatus.com a great project definitely check them out aswell. Thanks Hugo :) \n\nTo see what I have planned for the future of the bot check out the Github issues and milestones to get the latest information!")
+			.setDescription("This bot was created to give Apex Legends players their stats in an easy and convenient way inside of Discord.\n\n At first the bot was just developed for fun in a private server but now it is being actively worked on for everyone to use. \n\nAll of the data comes from https://apexlegendsstatus.com a great project definitely check them out as well. Thanks Hugo :) \n\nTo see what I have planned for the future of the bot check out the Github issues and milestones to get the latest information!")
 			.addFields(
 				{
 					name: "Statistics",
@@ -36,7 +36,7 @@ module.exports = {
 				{
 					name: "Features",
 					value: `
-						Latest Featrue: **Slash commands (/)**
+						Latest Feature: **Slash commands (/)**
 						Next Planned Feature: **Data caching with Redis**
 						`,
 					inline:false,

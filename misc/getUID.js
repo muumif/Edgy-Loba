@@ -1,6 +1,6 @@
 const axios = require("axios");
 require("dotenv").config();
-const { logger } = require("./logger");
+const { logger } = require("./internal/logger");
 const JSONBigInt = require("json-bigint")({ "storeAsString": true });
 
 
@@ -9,6 +9,9 @@ async function getUserUID(IGN, platform, guildID, discordID) {
 		const response = await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/nametouid?auth=${process.env.ALS_TOKEN}&player=${IGN}&platform=${platform}`), { transformResponse: [data => data] });
 		if (response.data.includes("Error")) {
 			logger.error(new Error(response.data), { module: "getUID", guildID: guildID, discordID: discordID, data: response.data, IGN: IGN, platform: platform });
+			if (response.data.includes("Slow down !")) {
+				return Promise.reject({ isGetUidError: true, message: "Try again in a few seconds!" });
+			}
 			return Promise.reject({ isGetUidError: true, message: response.data });
 		}
 		if (platform == "PC") {
