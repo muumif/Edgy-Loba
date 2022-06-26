@@ -30,4 +30,4 @@ To give Apex Legends players their stats in an easy and convenient way inside of
 ![/me command](http://images.muumi.xyz/EdgyLoba/previewMe.PNG "/me")
 
 ## /stats command:
-![/stats command](http://images.muumi.xyz/EdgyLoba/previewStats.PNG "/stats")
+![/stats command](http://images.muumi.xyz/EdgyLoba/previewStatsNew.PNG "/stats")
