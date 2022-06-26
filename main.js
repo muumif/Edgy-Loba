@@ -2,8 +2,8 @@ const { Client, Intents, Collection } = require("discord.js");
 const { AutoPoster } = require("topgg-autoposter");
 require("dotenv").config();
 const { logger } = require("./misc/internal/logger");
-const fs = require("node:fs");
-const path = require("node:path");
+const fs = require("fs");
+const path = require("path");
 const { insertNewBug, insertNewGuild, deleteGuild } = require("./misc/internal/db");
 require("./misc/internal/scheduler")();
 
@@ -14,10 +14,8 @@ client.commands = new Collection();
 const commandsPath = path.join(__dirname, "commands");
 const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith(".js"));
 
-
 for (const file of commandFiles) {
-	const filePath = path.join(commandsPath, file);
-	const command = require(filePath);
+	const command = require(path.join(commandsPath, file));
 	client.commands.set(command.data.name, command);
 }
 
@@ -49,33 +47,30 @@ if (process.env.NODE_ENV == "production") {
 }
 
 client.on("interactionCreate", async interaction => {
-	if (!interaction.isCommand()) return;
+	if (interaction.isCommand()) {
+		const command = client.commands.get(interaction.commandName);
 
-	const command = client.commands.get(interaction.commandName);
+		if (!command) return;
 
-	if (!command) return;
-
-	try {
-		await command.execute(interaction);
-		logger.info("Sent message!", { command: interaction.commandName, guildID: interaction.guildId, discordID: interaction.user.id });
+		try {
+			await command.execute(interaction);
+			logger.info("Sent message!", { command: interaction.commandName, guildID: interaction.guildId, discordID: interaction.user.id });
+		}
+		catch (error) {
+			logger.error(new Error(error), { command: interaction.commandName, guildID: interaction.guildId, discordID: interaction.user.id });
+			await interaction.reply({ content: "There was an error while executing this command!", ephemeral: true });
+		}
 	}
-	catch (error) {
-		logger.error(new Error(error), { command: interaction.commandName, guildID: interaction.guildId, discordID: interaction.user.id });
-		await interaction.reply({ content: "There was an error while executing this command!", ephemeral: true });
+	if (interaction.isModalSubmit()) {
+		if (interaction.customId === "bugReport") {
+			const commandInput = interaction.fields.getTextInputValue("commandInput");
+			const messageInput = interaction.fields.getTextInputValue("messageInput");
+
+			await insertNewBug(interaction.guild, interaction.user.id, commandInput, messageInput);
+			interaction.reply({ content: "Bug reported!", ephemeral: true });
+		}
 	}
 
-});
-
-client.on("interactionCreate", async interaction => {
-	if (!interaction.isModalSubmit()) return;
-
-	if (interaction.customId === "bugReport") {
-		const commandInput = interaction.fields.getTextInputValue("commandInput");
-		const messageInput = interaction.fields.getTextInputValue("messageInput");
-
-		await insertNewBug(interaction.guild, interaction.user.id, commandInput, messageInput);
-		interaction.reply({ content: "Bug reported!", ephemeral: true });
-	}
 });
 
 client.login(process.env.DISCORD_TOKEN);
