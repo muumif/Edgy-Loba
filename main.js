@@ -2,7 +2,7 @@ const { Client, Intents, Collection } = require("discord.js");
 const { AutoPoster } = require("topgg-autoposter");
 require("dotenv").config();
 const { logger } = require("./misc/internal/logger");
-const fs = require("fs");
+const { readdirSync, existsSync, mkdir } = require("fs");
 const path = require("path");
 const { insertNewBug, insertNewGuild, deleteGuild } = require("./misc/internal/db");
 require("./misc/internal/scheduler")();
@@ -12,11 +12,20 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_
 client.commands = new Collection();
 
 const commandsPath = path.join(__dirname, "commands");
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith(".js"));
+const commandFiles = readdirSync(commandsPath).filter(file => file.endsWith(".js"));
 
 for (const file of commandFiles) {
 	const command = require(path.join(commandsPath, file));
 	client.commands.set(command.data.name, command);
+}
+
+if (!existsSync(path.join(__dirname, "temp"))) {
+	mkdir(path.join(__dirname, "temp"), (err) => {
+		if (err) {
+			logger.error(new Error(err), { module: "main" });
+		}
+		logger.info("Made temp directory!", { module: "main" });
+	});
 }
 
 client.once("ready", () => {
