@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const axios = require("axios");
 require("dotenv").config();
 const { MessageEmbed } = require("discord.js");
-const { getUserUID } = require("../misc/getUID");
+const { getUserUID } = require("../misc/uid");
 const { insertNewUser, getUserExistsDiscord } = require("../misc/internal/db");
 const { logger } = require("../misc/internal/logger");
 
