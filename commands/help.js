@@ -60,7 +60,7 @@ module.exports = {
 					},
 					{
 						name: "Other",
-						value: "[Invite Me](https://discord.com/oauth2/authorize?client_id=719542118955090011&scope=bot) - [Vote Top.gg](https://top.gg/bot/719542118955090011/vote) - [Github](https://github.com/muumif/Edgy-Loba)",
+						value: "[Invite Me](https://discord.com/api/oauth2/authorize?client_id=719542118955090011&permissions=0&scope=bot%20applications.commands) - [Vote Top.gg](https://top.gg/bot/719542118955090011/vote) - [Github](https://github.com/muumif/Edgy-Loba)",
 						inline: false,
 					},
 				)
@@ -105,7 +105,7 @@ module.exports = {
 					},
 					{
 						name: "Other",
-						value: "[Invite Me](https://discord.com/oauth2/authorize?client_id=719542118955090011&scope=bot) - [Vote Top.gg](https://top.gg/bot/719542118955090011/vote) - [Github](https://github.com/muumif/Edgy-Loba)",
+						value: "[Invite Me](https://discord.com/api/oauth2/authorize?client_id=719542118955090011&permissions=0&scope=bot%20applications.commands) - [Vote Top.gg](https://top.gg/bot/719542118955090011/vote) - [Github](https://github.com/muumif/Edgy-Loba)",
 						inline: false,
 					},
 				)
@@ -143,7 +143,7 @@ module.exports = {
 					},
 					{
 						name: "Other",
-						value: "[Invite Me](https://discord.com/oauth2/authorize?client_id=719542118955090011&scope=bot) - [Vote Top.gg](https://top.gg/bot/719542118955090011/vote) - [Github](https://github.com/muumif/Edgy-Loba)",
+						value: "[Invite Me](https://discord.com/api/oauth2/authorize?client_id=719542118955090011&permissions=0&scope=bot%20applications.commands) - [Vote Top.gg](https://top.gg/bot/719542118955090011/vote) - [Github](https://github.com/muumif/Edgy-Loba)",
 						inline: false,
 					},
 				)

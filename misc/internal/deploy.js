@@ -20,14 +20,14 @@ if (process.env.NODE_ENV == "development") {
 	const guildId = "812033742419001355";
 	(async () => {
 		try {
-			logger.info("Global command refreshing started!", { module: "deploy" });
+			logger.info("Testing server command refreshing started!", { module: "deploy" });
 
 			await rest.put(
 				Routes.applicationGuildCommands(clientId, guildId),
 				{ body: commands },
 			);
 
-			logger.info("Global command refreshing was successful!", { module: "deploy" });
+			logger.info("Testing server command refreshing was successful!", { module: "deploy" });
 		}
 		catch (error) {
 			logger.error(new Error(error), { module: "deploy" });
@@ -37,7 +37,6 @@ if (process.env.NODE_ENV == "development") {
 
 if (process.env.NODE_ENV == "production") {
 	const clientId = "719542118955090011";
-
 	(async () => {
 		try {
 			logger.info("Global command refreshing started!", { module: "deploy" });
