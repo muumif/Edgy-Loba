@@ -14,7 +14,7 @@ module.exports = {
 				.addChoices(
 					{ name: "misc", value: "help_misc" },
 					{ name: "stats", value: "help_stats" },
-					{ name: "admin", value: "help_admin" },
+					/*{ name: "admin", value: "help_admin" },*/
 				)),
 	async execute(interaction) {
 		if (!interaction.isCommand()) return;
@@ -118,7 +118,7 @@ module.exports = {
 				});
 			return await interaction.editReply({ embeds: [embed], ephemeral: true });
 		}
-
+		/*
 		case "help_admin": {
 			const embed = new MessageEmbed()
 				.setTitle("Help Admin")
@@ -154,7 +154,7 @@ module.exports = {
 					iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256",
 				});
 			return await interaction.editReply({ embeds: [embed], ephemeral: true });
-		}
+		}*/
 		}
 	},
 };
