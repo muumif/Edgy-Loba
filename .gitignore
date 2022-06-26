@@ -129,9 +129,7 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-# Development stuff
-/development
-.eslintrc.json
-
 # Temp file storage
 /temp
+
+.vscode
