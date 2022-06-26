@@ -27,7 +27,7 @@ To give Apex Legends players their stats in an easy and convenient way inside of
 
 # Previews:
 ## /me command:
-![/me command]("/me")
+![/me command](http://images.muumi.xyz/EdgyLoba/previewMe.PNG "/me")
 
 ## /stats command:
-![/stats command](http://images.muumi.xyz/EdgyLoba/previewStats.PNG "/me")
+![/stats command](http://images.muumi.xyz/EdgyLoba/previewStats.PNG "/stats")
