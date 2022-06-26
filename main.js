@@ -4,11 +4,10 @@ require("dotenv").config();
 const { logger } = require("./misc/internal/logger");
 const fs = require("node:fs");
 const path = require("node:path");
-const { insertNewBug } = require("./misc/internal/db");
-require("./misc/historyUpdater")();
+const { insertNewBug, insertNewGuild, deleteGuild } = require("./misc/internal/db");
+require("./misc/internal/scheduler")();
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
-//const ap = AutoPoster(process.env.TOPGG_TOKEN, client);
 
 client.commands = new Collection();
 
@@ -22,16 +21,32 @@ for (const file of commandFiles) {
 	client.commands.set(command.data.name, command);
 }
 
-/*
-ap.on("posted", () => {
-	logger.info("Posted stats to Top.GG", { module: "ap.on" });
-});
-*/
-
 client.once("ready", () => {
-	logger.info("Bot is now online!", { module: "client.once" });
-	client.user.setPresence({ activities: [{ name: `${client.guilds.cache.size} servers`, type: "LISTENING" }], status: "online" });
+	logger.info("Bot is now online!", { module: "main" });
+	if (process.env.NODE_ENV == "production") {
+		client.user.setPresence({ activities: [{ name: `${client.guilds.cache.size} servers`, type: "LISTENING" }], status: "online" });
+	}
+	else {
+		client.user.setPresence({ activities: [{ name: "Internal build!" }], status: "dnd" });
+
+	}
 });
+
+if (process.env.NODE_ENV == "production") {
+	const ap = AutoPoster(process.env.TOPGG_TOKEN, client);
+
+	ap.on("posted", () => {
+		logger.info("Posted stats to Top.GG", { module: "main" });
+	});
+
+	client.on("guildCreate", guild => {
+		insertNewGuild(guild);
+	});
+
+	client.on("guildDelete", guild => {
+		deleteGuild(guild);
+	});
+}
 
 client.on("interactionCreate", async interaction => {
 	if (!interaction.isCommand()) return;
@@ -62,16 +77,5 @@ client.on("interactionCreate", async interaction => {
 		interaction.reply({ content: "Bug reported!", ephemeral: true });
 	}
 });
-
-
-/*
-client.on("guildCreate", guild => {
-	insertNewGuild(guild);
-});
-
-client.on("guildDelete", guild => {
-	deleteGuild(guild);
-});
-*/
 
 client.login(process.env.DISCORD_TOKEN);
