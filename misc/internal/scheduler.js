@@ -3,7 +3,7 @@ const { insertHistoryData, getAllUsers } = require("./db");
 const axios = require("axios");
 const { logger } = require("./logger");
 const { unlink, readdir } = require("fs");
-const path = require("node:path");
+const path = require("path");
 
 async function historyUpdater() {
 	try {
@@ -31,13 +31,16 @@ function deleteHistory() {
 		const files = readdir(tempPath);
 		files.forEach(file => {
 			if (file.includes("history")) {
-				unlink(`${tempPath}/${file}`);
+				unlink(`${tempPath}/${file}`, err => {
+					if (err) {throw err;}
+					else {logger.info("Deleting TEMP history images!", { module: "deleteHistory" });}
+				});
 			}
 		});
 
 	}
 	catch (error) {
-		return logger.error(new Error(error), { module: "historyUpdater" });
+		return logger.error(new Error(error), { module: "deleteHistory" });
 	}
 }
 
@@ -47,24 +50,30 @@ async function deleteTop() {
 		const files = readdir(tempPath);
 		files.forEach(file => {
 			if (file.includes("top")) {
-				unlink(`${tempPath}/${file}`);
+				unlink(`${tempPath}/${file}`, err => {
+					if (err) {throw err;}
+					else {logger.info("Deleting TEMP top images!", { module: "deleteTop" });}
+				});
 			}
 		});
 
 	}
 	catch (error) {
-		return logger.error(new Error(error), { module: "historyUpdater" });
+		return logger.error(new Error(error), { module: "deleteTop" });
 	}
 }
 
 async function clearLogs() {
 	try {
 		const logsPath = path.join(__dirname, "logs");
-		unlink(`${logsPath}/combined.log`);
+		unlink(`${logsPath}/combined.log`, err => {
+			if (err) {throw err;}
+			else {logger.info("Clearing log file!", { module: "clearLogs" });}
+		});
 
 	}
 	catch (error) {
-		return logger.error(new Error(error), { module: "historyUpdater" });
+		return logger.error(new Error(error), { module: "clearLogs" });
 	}
 }
 
@@ -75,17 +84,14 @@ module.exports = () => {
 	});
 
 	cron.schedule("00 00 * * *", function() {
-		logger.info("Deleting TEMP history images!", { module: "historyUpdater" });
 		deleteHistory();
 	});
 
 	cron.schedule("00 */6 * * *", async function() {
-		logger.info("Deleting TEMP top images!", { module: "historyUpdater" });
 		deleteTop();
 	});
 
 	cron.schedule("* * * * 5", async function() {
-		logger.info("Clearing log file!", { module: "historyUpdater" });
 		clearLogs();
 	});
 };
