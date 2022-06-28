@@ -168,7 +168,7 @@ async function getUserHistory(discordID) {
 
 		if (history.length == 0) {
 			logger.error(new Error("No history data exists for the given user!"), { DBOP: "getUserHistory", discordID: discordID });
-			return Promise.reject("No history data exists for given user!");
+			return Promise.resolve("No history data exists for given user!");
 		}
 
 		logger.info("Fetched user history data!", { DBOP: "getUserHistory", discordID: discordID });

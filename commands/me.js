@@ -92,20 +92,31 @@ module.exports = {
 					.setFooter({ text: "Bugs can be reported with /bug", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" });
 
 				const historyData = await getUserHistory(userDB.discordID);
-				const labels = [], data = [];
-				for (let i = 0; i < historyData.length; i++) {
-					const date = new Date(historyData[i].date).getUTCDate() + "/" + (new Date(historyData[i].date).getUTCMonth() + 1) + "/" + new Date(historyData[i].date).getUTCFullYear();
-					labels.push(date);
-					data.push(historyData[i].RP);
-				}
+				if (historyData != "No history data exists for given user!") {
+					console.log(historyData);
+					const labels = [], data = [];
+					for (let i = 0; i < historyData.length; i++) {
+						const date = new Date(historyData[i].date).getUTCDate() + "/" + (new Date(historyData[i].date).getUTCMonth() + 1) + "/" + new Date(historyData[i].date).getUTCFullYear();
+						labels.push(date);
+						data.push(historyData[i].RP);
+					}
 
-				const discordUser = await interaction.client.users.fetch(userDB.discordID);
-				await makeStatsChart(labels, data, userDB.discordID);
-				const statsFile = new MessageAttachment(`./temp/history_${userDB.discordID}.png`);
-				embed.setImage(`attachment://history_${userDB.discordID}.png`)
-					.setDescription(`${stateEmoji} ${currentState} \n Linked to **${discordUser.username}#${discordUser.discriminator}**`);
-				await updateUserRPAP(interaction.user.id, user.data.global.rank.rankScore, user.data.global.arena.rankScore);
-				return await interaction.editReply({ embeds: [embed], files: [statsFile] });
+					await makeStatsChart(labels, data, userDB.discordID);
+					const statsFile = new MessageAttachment(`./temp/history_${userDB.discordID}.png`);
+					embed.setImage(`attachment://history_${userDB.discordID}.png`);
+					const discordUser = await interaction.client.users.fetch(userDB.discordID);
+					embed.setDescription(`${stateEmoji} ${currentState} \n Linked to **${discordUser.username}#${discordUser.discriminator}**`);
+
+					if (interaction.user.id == userDB.discordID) {
+						await updateUserRPAP(interaction.user.id, user.data.global.rank.rankScore, user.data.global.arena.rankScore);
+					}
+					return await interaction.editReply({ embeds: [embed], files: [statsFile] });
+				}
+				else {
+					const discordUser = await interaction.client.users.fetch(userDB.discordID);
+					embed.setDescription(`${stateEmoji} ${currentState} \n Linked to **${discordUser.username}#${discordUser.discriminator}**`);
+					return await interaction.editReply({ embeds: [embed] });
+				}
 			}
 			else {
 				const embed = new MessageEmbed()
