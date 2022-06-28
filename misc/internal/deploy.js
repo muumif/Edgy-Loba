@@ -20,17 +20,17 @@ if (process.env.NODE_ENV == "development") {
 	const guildId = "812033742419001355";
 	(async () => {
 		try {
-			logger.info("Testing server command refreshing started!", { module: "deploy" });
+			console.log("Testing server command refreshing started!");
 
 			await rest.put(
 				Routes.applicationGuildCommands(clientId, guildId),
 				{ body: commands },
 			);
 
-			logger.info("Testing server command refreshing was successful!", { module: "deploy" });
+			console.log("Testing server command refreshing was successful!");
 		}
 		catch (error) {
-			logger.error(new Error(error), { module: "deploy" });
+			console.log(error);
 		}
 	})();
 }
@@ -39,17 +39,17 @@ if (process.env.NODE_ENV == "production") {
 	const clientId = "719542118955090011";
 	(async () => {
 		try {
-			logger.info("Global command refreshing started!", { module: "deploy" });
+			console.log("Global command refreshing started!");
 
 			await rest.put(
 				Routes.applicationCommands(clientId),
 				{ body: commands },
 			);
 
-			logger.info("Global command refreshing was successful!", { module: "deploy" });
+			console.log("Global command refreshing was successful!");
 		}
 		catch (error) {
-			logger.error(new Error(error), { module: "deploy" });
+			console.log(error);
 		}
 	})();
 }

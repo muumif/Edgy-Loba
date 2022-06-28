@@ -4,8 +4,7 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "node main.js",
-    "test": "mocha --timeout 5000 --exit"
+    "start": "node main.js"
   },
   "author": "muumif",
   "license": "ISC",
@@ -24,14 +23,10 @@
     "json-bigint": "^1.0.0",
     "mongodb": "4.4",
     "node-cron": "^3.0.0",
-    "sharp": "^0.30.6",
     "topgg-autoposter": "^2.0.1",
     "winston": "^3.7.2"
   },
   "devDependencies": {
-    "chai": "^4.3.6",
-    "chai-as-promised": "^7.1.1",
-    "eslint": "^8.14.0",
-    "mocha": "^10.0.0"
+    "eslint": "^8.14.0"
   }
 }

@@ -44,6 +44,7 @@ module.exports = {
 
 		try {
 			const UID = await getUserUID(username, platform, interaction.guildId, interaction.user.id);
+			await new Promise(resolve => setTimeout(resolve, 400));
 			const user = await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${UID}&platform=${platform}`));
 
 			switch (user.data.realtime.currentState) {
