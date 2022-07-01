@@ -120,7 +120,6 @@ module.exports = {
 
 				const historyData = await getUserHistory(userDB.discordID);
 				if (historyData != "No history data exists for given user!") {
-					console.log(historyData);
 					const labels = [], data = [];
 					for (let i = 0; i < historyData.length; i++) {
 						const date = new Date(historyData[i].date).getUTCDate() + "/" + (new Date(historyData[i].date).getUTCMonth() + 1) + "/" + new Date(historyData[i].date).getUTCFullYear();

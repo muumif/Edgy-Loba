@@ -27,7 +27,7 @@ async function historyUpdater() {
 
 function deleteHistory() {
 	try {
-		const tempPath = path.join(__dirname, "temp");
+		const tempPath = path.join("../../temp");
 		const files = readdir(tempPath);
 		files.forEach(file => {
 			if (file.includes("history")) {
@@ -46,7 +46,7 @@ function deleteHistory() {
 
 async function deleteTop() {
 	try {
-		const tempPath = path.join(__dirname, "temp");
+		const tempPath = path.join();
 		const files = readdir(tempPath);
 		files.forEach(file => {
 			if (file.includes("top")) {
@@ -63,19 +63,6 @@ async function deleteTop() {
 	}
 }
 
-async function clearLogs() {
-	try {
-		const logsPath = path.join(__dirname, "logs");
-		unlink(`${logsPath}/combined.log`, err => {
-			if (err) {throw err;}
-			else {logger.info("Clearing log file!", { module: "clearLogs" });}
-		});
-
-	}
-	catch (error) {
-		return logger.error(new Error(error), { module: "clearLogs" });
-	}
-}
 
 module.exports = () => {
 	cron.schedule("55 23 * * *", async function() {
@@ -89,9 +76,5 @@ module.exports = () => {
 
 	cron.schedule("00 */6 * * *", async function() {
 		deleteTop();
-	});
-
-	cron.schedule("* * * * 5", async function() {
-		clearLogs();
 	});
 };
