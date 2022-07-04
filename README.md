@@ -1,12 +1,41 @@
-<a href="https://top.gg/bot/719542118955090011">
-  <img src="https://top.gg/api/widget/719542118955090011.svg">
-</a>
+<p float="left">
+  <img src = "https://badgen.net/github/release/muumif/Edgy-Loba" alt="Version" />
+  <img src="https://badgen.net/github/open-issues/muumif/Edgy-Loba" alt="Open Issues"/>
+  <img src="https://badgen.net/github/commits/muumif/Edgy-Loba" alt="Commits"/>
+  <br>
+  <img src = "https://top.gg/api/widget/servers/719542118955090011.svg" alt="Servers" />
+  <img src = "https://top.gg/api/widget/upvotes/719542118955090011.svg" alt="Upvotes" />
+</p>
 
-# Info:
+Table of Contents
+=================
+<!--ts-->
+   * [Info](#info)
+      * [Description](#description)
+      * [Preview](#previews)
+   * [Commands](#commands)
+   * [Tech Stack](#tech-stack)
+   * [Legal](#legal)
+      * [Terms of Service](TOS.md)
+      * [Privacy Policy](PRIVACY.md)
+<!--te-->
+
+Info
+====
+Description
+------------
 To give Apex Legends players their stats in an easy and convenient way inside of Discord. Great for servers who like to display their users stats and achievements. At first the bot was just developed for fun in a private server but now it is being actively worked on for everyone to use.
 
+Previews
+-------
+<p float="left">
+  <img src="http://images.muumi.xyz/EdgyLoba/previewMe.PNG" alt="/me" style="width:360px; height:310px;"/>
+  <img src="http://images.muumi.xyz/EdgyLoba/previewStatsNew.PNG" alt="/stats" />
+</p>
 
-# Commands: 
+Commands
+========
+
 | Misc Commands | Description 
 |  ---          |     ---
 | /help         | See the commands for the bot.                                  
@@ -25,9 +54,16 @@ To give Apex Legends players their stats in an easy and convenient way inside of
 | /top              | Shows the top 10 users in the server.
 | /gtop             | Shows the top 3 users on the bot.
 
-# Previews:
-## /me command:
-![/me command](http://images.muumi.xyz/EdgyLoba/previewMe.PNG "/me")
+Tech Stack
+==========
+* [Node.js](https://nodejs.org/en/) - A JavaScript runtime <br>
+* [Discord.js](https://discord.js.org/#/) - A module that allows you to interact with the Discord API through Node.js <br>
+* [MongoDB](https://www.mongodb.com) - Database for storing user and Server/Guild data <br>
+* [Chart.js](https://www.chartjs.org) - A charting module for Node.js
 
-## /stats command:
-![/stats command](http://images.muumi.xyz/EdgyLoba/previewStatsNew.PNG "/stats")
+Legal
+=====
+* [Terms of Service](TOS.md)
+* [Privacy Policy](PRIVACY.md)
+
+
