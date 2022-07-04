@@ -1,3 +1,13 @@
+/**
+ * Some of theses commands are unused and some are duplicates. 
+ * This file should be reworked at some point probably when Redis caching is implemented.
+ * MongoDB should also be secured better but for now it works.
+
+ * @file Contains every command needed to interact with MongoDB.
+ * @author muumif
+ * @version 1.0.0
+*/
+
 const { MongoClient } = require("mongodb");
 const { logger } = require("./logger");
 require("dotenv").config();
@@ -57,7 +67,7 @@ async function getAllUsers() {
 		const users = await client.db("EdgyLoba").collection("users").find({}, { discordID: 1, originUID: 1, platform: 1 }).toArray();
 
 		if (users == null) {
-			return logger.error(new Error("No users exist in the DB! Birzarrrre..."), { DBOP: "getAllUsers" });
+			return logger.error(new Error("No users exist in the DB! Bizarre..."), { DBOP: "getAllUsers" });
 		}
 		logger.info("Fetched all users from the DB!", { DBOP: "getAllUsers" });
 		return Promise.resolve(users);
@@ -132,7 +142,7 @@ async function getTopGuildUsers(guildID) {
 }
 
 /**
- * Returns top 10 users in globaly in the DB
+ * Returns top 10 users in globally in the DB
  * @return {Array} Return Array of top 10 users globally in the db
  * @return {Promise} Return Promise.reject when no user data is inserted in the misc
  */
@@ -302,7 +312,7 @@ async function deleteUserData(discordID) {
 /**
  * Inserts new guild data to the DB
  * @param {Guild} guild The guild object
- * @return {Promise} Return Promise.resolve when guild was created succesfully
+ * @return {Promise} Return Promise.resolve when guild was created successfully
  * @return {Promise} Return Promise.reject when something went wrong
  */
 async function insertNewGuild(guild) {
@@ -327,7 +337,7 @@ async function insertNewGuild(guild) {
  * @param {String} guildID The guildID
  * @param {String} setting The setting to change
  * @param {String} value The value to change the setting to
- * @return {Promise} Return Promise.resolve when settings were updated succesfully
+ * @return {Promise} Return Promise.resolve when settings were updated successfully
  * @return {Promise} Return Promise.reject when something went wrong
  */
 async function updateGuildSettings(guildID, setting, value) {
@@ -385,7 +395,7 @@ async function getGuildSettings(guildID) {
  * @param {String} userID The userID of user that reported
  * @param {String} command The command that there are issues with
  * @param {String} message The message of bug report
- * @return {Promise} Return Promise.resolve when bug report was created succesfully
+ * @return {Promise} Return Promise.resolve when bug report was created successfully
  * @return {Promise} Return Promise.reject when something went wrong
  */
 async function insertNewBug(guild, userID, command, message) {
@@ -412,7 +422,7 @@ async function insertNewBug(guild, userID, command, message) {
 /**
  * Deletes new guild data to the DB
  * @param {Guild} guild The guild object
- * @return {Promise} Return Promise.resolve when guild was deleted succesfully
+ * @return {Promise} Return Promise.resolve when guild was deleted successfully
  * @return {Promise} Return Promise.reject when something went wrong
  */
 async function deleteGuild(guild) {
@@ -432,7 +442,7 @@ async function deleteGuild(guild) {
  * Insert new guild to user data
  * @param {String} discordID The id of the user
  * @param {String} guildID The id of the guild
- * @return {Promise} Return Promise.resolve when guild was inserted succesfully
+ * @return {Promise} Return Promise.resolve when guild was inserted successfully
  * @return {Promise} Return Promise.reject when something went wrong
  */
 async function insertUserGuild(discordID, guildID) {

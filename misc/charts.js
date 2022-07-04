@@ -1,9 +1,20 @@
+/**
+ * @file Makes charts for user and top commands.
+ * @author muumif
+ * @version 1.0.0
+*/
+
 const { default: axios } = require("axios");
 const { ChartJSNodeCanvas } = require("chartjs-node-canvas");
 const { existsSync } = require("fs");
 const { writeFile } = require("fs").promises;
 const { logger } = require("./internal/logger");
-
+/**
+ * @param  {Array} dates=[]
+ * @param  {Array} rps=[]
+ * @param  {string} discordID User discordID
+ * @return {string} The path to the file
+ */
 async function makeStatsChart(dates = [], rps = [], discordID) {
 	try {
 		const exists = existsSync(`./temp/history_${discordID}.png`);
@@ -152,7 +163,11 @@ async function makeStatsChart(dates = [], rps = [], discordID) {
 		return logger.error(new Error(error), { module: "canvas", discordID: discordID });
 	}
 }
-
+/**
+ * @param  {Array} usersHistory All users history data
+ * @param  {string} guildID GuildID where the command was ran
+ * @return {string} The path to the file
+ */
 async function makeTopChart(usersHistory, guildID) {
 	try {
 		const exists = existsSync(`./temp/top_${guildID}.png`);

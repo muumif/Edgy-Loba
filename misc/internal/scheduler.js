@@ -1,3 +1,9 @@
+/**
+ * @file Manages all time related updating and data deleting.
+ * @author muumif
+ * @version 1.0.0
+*/
+
 const cron = require("node-cron");
 const { insertHistoryData, getAllUsers } = require("./db");
 const axios = require("axios");
@@ -65,16 +71,16 @@ async function deleteTop() {
 
 
 module.exports = () => {
-	cron.schedule("55 23 * * *", async function() {
+	cron.schedule("55 23 * * *", async function() { // Runs historyUpdater at 23:55 UTC
 		logger.info("History updating started!", { module: "historyUpdater" });
 		await historyUpdater();
 	});
 
-	cron.schedule("00 00 * * *", function() {
+	cron.schedule("00 00 * * *", function() { // Runs deleteHistory at 00:00 UTC
 		deleteHistory();
 	});
 
-	cron.schedule("00 */6 * * *", async function() {
-		deleteTop();
+	cron.schedule("00 */6 * * *", async function() { // Runs deleteTop every 6 hours
+		deleteTop();					// Should change to every 2 hours
 	});
 };
