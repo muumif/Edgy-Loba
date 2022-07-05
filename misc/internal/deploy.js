@@ -9,12 +9,14 @@ const { Routes } = require("discord-api-types/v9");
 const fs = require("fs");
 require("dotenv").config({ path: "../../.env" }); // This path has to be defined because deploy.js is ran only once and initiated by the user
 const commands = [];
-const commandFiles = fs.readdirSync("../../commands").filter(file => file.endsWith(".js"));
+const folders = fs.readdirSync("../../commands");
 
-
-for (const file of commandFiles) {
-	const command = require(`../../commands/${file}`);
-	commands.push(command.data.toJSON());
+for (const folder of folders) {
+	const files = fs.readdirSync(`../../commands/${folder}`).filter(file => file.endsWith(".js"));
+	for (const file of files) {
+		const command = require(`../../commands/${folder}/${file}`);
+		commands.push(command.data.toJSON());
+	}
 }
 
 const rest = new REST({ version: "9" }).setToken(process.env.DISCORD_TOKEN);

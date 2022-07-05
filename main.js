@@ -17,12 +17,14 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_
 
 client.commands = new Collection();
 
-const commandsPath = path.join(__dirname, "commands");
-const commandFiles = readdirSync(commandsPath).filter(file => file.endsWith(".js"));
+const commandFolders = readdirSync("./commands");
 
-for (const file of commandFiles) {
-	const command = require(path.join(commandsPath, file));
-	client.commands.set(command.data.name, command);
+for (const folder of commandFolders) {
+	const files = readdirSync(`./commands/${folder}`).filter(file => file.endsWith(".js"));
+	for (const file of files) {
+		const command = require(`./commands/${folder}/${file}`);
+		client.commands.set(command.data.name, command);
+	}
 }
 
 if (!existsSync(path.join(__dirname, "temp"))) {

@@ -6,10 +6,10 @@
 
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageEmbed, MessageAttachment } = require("discord.js");
-const { getTopGuildUsers, getGuildSettings, getUserHistory } = require("../misc/internal/db");
-const { makeTopChart } = require("../misc/charts");
-const { logger } = require("../misc/internal/logger");
-const { UIDToIGN } = require("../misc/uid");
+const { getTopGuildUsers, getGuildSettings, getUserHistory } = require("../../misc/internal/db");
+const { makeTopChart } = require("../../misc/charts");
+const { logger } = require("../../misc/internal/logger");
+const { UIDToIGN } = require("../../misc/uid");
 require("dotenv").config();
 
 async function fetchUser(client, id, guildID) {

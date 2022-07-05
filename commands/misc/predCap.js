@@ -6,7 +6,7 @@
 
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageEmbed } = require("discord.js");
-const { logger } = require("../misc/internal/logger");
+const { logger } = require("../../misc/internal/logger");
 const axios = require("axios");
 require("dotenv").config();
 

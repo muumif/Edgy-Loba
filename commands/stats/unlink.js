@@ -6,7 +6,7 @@
 
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageEmbed } = require("discord.js");
-const { getUserExistsDiscord, deleteUserData } = require("../misc/internal/db");
+const { getUserExistsDiscord, deleteUserData } = require("../../misc/internal/db");
 require("dotenv").config();
 
 module.exports = {

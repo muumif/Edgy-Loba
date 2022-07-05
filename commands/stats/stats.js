@@ -5,11 +5,11 @@
 */
 
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { getUserUID } = require("../misc/uid");
+const { getUserUID } = require("../../misc/uid");
 const { MessageEmbed, MessageAttachment } = require("discord.js");
-const { logger } = require("../misc/internal/logger");
-const { updateUserRPAP, getUserHistory, getUserExistsGame, getUserOrigin } = require("../misc/internal/db");
-const { makeStatsChart } = require("../misc/charts");
+const { logger } = require("../../misc/internal/logger");
+const { updateUserRPAP, getUserHistory, getUserExistsGame, getUserOrigin } = require("../../misc/internal/db");
+const { makeStatsChart } = require("../../misc/charts");
 const axios = require("axios");
 require("dotenv").config();
 

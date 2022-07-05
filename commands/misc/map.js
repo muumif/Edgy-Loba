@@ -6,7 +6,7 @@
 
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageEmbed, MessageAttachment } = require("discord.js");
-const { logger } = require("../misc/internal/logger");
+const { logger } = require("../../misc/internal/logger");
 const { readFile, writeFile } = require("fs").promises;
 const axios = require("axios");
 const Canvas = require("@napi-rs/canvas");

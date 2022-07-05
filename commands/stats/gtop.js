@@ -6,8 +6,8 @@
 
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageEmbed } = require("discord.js");
-const { getTopGlobalUsers } = require("../misc/internal/db");
-const { logger } = require("../misc/internal/logger");
+const { getTopGlobalUsers } = require("../../misc/internal/db");
+const { logger } = require("../../misc/internal/logger");
 require("dotenv").config();
 
 async function fetchUser(client, id) {
