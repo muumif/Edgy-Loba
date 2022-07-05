@@ -1,5 +1,5 @@
 <p float="left">
-  <img src = "https://badgen.net/github/release/muumif/Edgy-Loba" alt="Version" />
+  <img src = "https://badgen.net/github/release/muumif/Edgy-Loba/stable" alt="Version" />
   <img src="https://badgen.net/github/open-issues/muumif/Edgy-Loba" alt="Open Issues"/>
   <img src="https://badgen.net/github/commits/muumif/Edgy-Loba" alt="Commits"/>
   <br>
