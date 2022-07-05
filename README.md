@@ -1,7 +1,7 @@
 <p float="left">
-  <img src = "https://badgen.net/github/release/muumif/Edgy-Loba/stable" alt="Version" />
-  <img src="https://badgen.net/github/open-issues/muumif/Edgy-Loba" alt="Open Issues"/>
-  <img src="https://badgen.net/github/commits/muumif/Edgy-Loba" alt="Commits"/>
+  <img src = "https://badgen.net/github/release/muumif/Edgy-Loba/stable/?cache=360" alt="Version" />
+  <img src="https://badgen.net/github/open-issues/muumif/Edgy-Loba/?cache=360" alt="Open Issues"/>
+  <img src="https://badgen.net/github/commits/muumif/Edgy-Loba/?cache=360" alt="Commits"/>
   <br>
   <img src = "https://top.gg/api/widget/servers/719542118955090011.svg" alt="Servers" />
   <img src = "https://top.gg/api/widget/upvotes/719542118955090011.svg" alt="Upvotes" />
