@@ -1,6 +1,12 @@
+/**
+ * @file Bot /help command.
+ * @author muumif
+ * @version 1.0.0
+*/
+
 const { SlashCommandBuilder } = require("@discordjs/builders");
-require("dotenv").config();
 const { MessageEmbed } = require("discord.js");
+require("dotenv").config();
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -22,7 +28,7 @@ module.exports = {
 
 		const chosenString = interaction.options.getString("category");
 		switch (chosenString) {
-		case "help_misc": {
+		case "help_misc": { // Multiple pages for /help
 			const embed = new MessageEmbed()
 				.setTitle("Help Misc")
 				.setColor("#e3a600")

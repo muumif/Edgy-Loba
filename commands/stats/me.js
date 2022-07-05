@@ -1,9 +1,15 @@
+/**
+ * @file Bot /me command.
+ * @author muumif
+ * @version 1.0.0
+*/
+
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const axios = require("axios");
 const { MessageEmbed, MessageAttachment } = require("discord.js");
-const { getUserExistsDiscord, getUser, getUserHistory, updateUserRPAP } = require("../misc/internal/db");
-const { makeStatsChart } = require("../misc/charts");
-const { logger } = require("../misc/internal/logger");
+const { getUserExistsDiscord, getUser, getUserHistory, updateUserRPAP } = require("../../misc/internal/db");
+const { makeStatsChart } = require("../../misc/charts");
+const { logger } = require("../../misc/internal/logger");
+const axios = require("axios");
 require("dotenv").config();
 
 module.exports = {
@@ -25,7 +31,7 @@ module.exports = {
 				if (userDB.platform == "PS4") { platformEmoji = interaction.client.emojis.cache.get("987422521680855100");}
 				if (userDB.platform == "PC") { platformEmoji = interaction.client.emojis.cache.get("987422520363868251");}
 
-				switch (user.data.realtime.currentState) {
+				switch (user.data.realtime.currentState) { // Emoji for player real time status
 				case "offline":
 					if (user.data.realtime.lobbyState == "invite") {
 						stateEmoji = interaction.client.emojis.cache.get("987439560856334356");
@@ -45,20 +51,20 @@ module.exports = {
 					break;
 				}
 
-				if (user.data.global.rank.rankName == "Apex Predator") {
+				if (user.data.global.rank.rankName == "Apex Predator") { // Check if the user is an Apex Predator
 					rankBR = `#${user.data.global.rank.ladderPosPlatform} Predator`;
 				}
 				else {
 					rankBR = `${user.data.global.rank.rankName} ${user.data.global.rank.rankDiv}`;
 				}
-				if (user.data.global.arena.rankName == "Apex Predator") {
+				if (user.data.global.arena.rankName == "Apex Predator") { // Check if the user is an Apex Predator
 					rankAR = `#${user.data.global.arena.ladderPosPlatform} Predator`;
 				}
 				else {
 					rankAR = `${user.data.global.arena.rankName} ${user.data.global.arena.rankDiv}`;
 				}
 
-				if (user.data.global.rank.rankScore >= user.data.global.arena.rankScore) {
+				if (user.data.global.rank.rankScore >= user.data.global.arena.rankScore) { // Show the img for which the player has more score for
 					rankIMG = user.data.global.rank.rankImg;
 				}
 				else {
@@ -91,6 +97,8 @@ module.exports = {
 					.setTimestamp()
 					.setFooter({ text: "Bugs can be reported with /bug", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" });
 
+
+				
 				const historyData = await getUserHistory(userDB.discordID);
 				if (historyData != "No history data exists for given user!") {
 					const labels = [], data = [];

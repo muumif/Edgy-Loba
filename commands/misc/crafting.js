@@ -1,8 +1,15 @@
+/**
+ * @file Bot /crafting command.
+ * @author muumif
+ * @version 1.0.0
+*/
+
 const { SlashCommandBuilder } = require("@discordjs/builders");
+const { MessageEmbed } = require("discord.js");
+const { logger } = require("../../misc/internal/logger");
 const axios = require("axios");
 require("dotenv").config();
-const { MessageEmbed } = require("discord.js");
-const { logger } = require("../misc/internal/logger");
+
 
 module.exports = {
 	data: new SlashCommandBuilder()

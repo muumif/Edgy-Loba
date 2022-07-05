@@ -1,8 +1,14 @@
+/**
+ * @file Bot /news command.
+ * @author muumif
+ * @version 1.0.0
+*/
+
 const { SlashCommandBuilder } = require("@discordjs/builders");
+const { MessageEmbed } = require("discord.js");
+const { logger } = require("../../misc/internal/logger");
 const axios = require("axios");
 require("dotenv").config();
-const { MessageEmbed } = require("discord.js");
-const { logger } = require("../misc/internal/logger");
 
 async function shortenUrl(link) {
 	const URI = `${process.env.BITLY_ENDPOINT}/v4/shorten`;

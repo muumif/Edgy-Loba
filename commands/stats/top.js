@@ -1,10 +1,16 @@
+/**
+ * @file Bot /top command.
+ * @author muumif
+ * @version 1.0.0
+*/
+
 const { SlashCommandBuilder } = require("@discordjs/builders");
-require("dotenv").config();
 const { MessageEmbed, MessageAttachment } = require("discord.js");
-const { getTopGuildUsers, getGuildSettings, getUserHistory } = require("../misc/internal/db");
-const { makeTopChart } = require("../misc/charts");
-const { logger } = require("../misc/internal/logger");
-const { UIDToIGN } = require("../misc/uid");
+const { getTopGuildUsers, getGuildSettings, getUserHistory } = require("../../misc/internal/db");
+const { makeTopChart } = require("../../misc/charts");
+const { logger } = require("../../misc/internal/logger");
+const { UIDToIGN } = require("../../misc/uid");
+require("dotenv").config();
 
 async function fetchUser(client, id, guildID) {
 	return await client.users.fetch(id).then(result => {
@@ -13,7 +19,7 @@ async function fetchUser(client, id, guildID) {
 	});
 }
 
-async function getData(guildID) {
+async function getData(guildID) { // This doesn't have to be a function
 	return await getTopGuildUsers(guildID).then(result => {
 		return result;
 	}).catch(err => {

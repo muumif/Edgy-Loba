@@ -1,9 +1,16 @@
-const cron = require("node-cron");
+/**
+ * @file Manages all time related updating and data deleting.
+ * @author muumif
+ * @version 1.0.0
+*/
+
 const { insertHistoryData, getAllUsers } = require("./db");
-const axios = require("axios");
 const { logger } = require("./logger");
 const { unlink, readdir } = require("fs");
 const path = require("path");
+const cron = require("node-cron");
+const axios = require("axios");
+const tempPath = "../../temp";
 
 async function historyUpdater() {
 	try {
@@ -27,17 +34,17 @@ async function historyUpdater() {
 
 function deleteHistory() {
 	try {
-		const tempPath = path.join("../../temp");
-		const files = readdir(tempPath);
-		files.forEach(file => {
-			if (file.includes("history")) {
-				unlink(`${tempPath}/${file}`, err => {
-					if (err) {throw err;}
-					else {logger.info("Deleting TEMP history images!", { module: "deleteHistory" });}
-				});
-			}
+		readdir(tempPath, (err, data) => { // Read temp directory
+			if (err) throw err;
+			data.forEach(file => { // Loop through each file in the directory
+				if (file.includes("history")) { // If the file contains history
+					unlink(`${tempPath}/${file}`, err => { // Delete the file that contains history
+						if (err) {throw err;}
+						else {logger.info("Deleting TEMP history images!", { module: "deleteHistory" });}
+					});
+				}
+			});
 		});
-
 	}
 	catch (error) {
 		return logger.error(new Error(error), { module: "deleteHistory" });
@@ -46,35 +53,34 @@ function deleteHistory() {
 
 async function deleteTop() {
 	try {
-		const tempPath = path.join();
-		const files = readdir(tempPath);
-		files.forEach(file => {
-			if (file.includes("top")) {
-				unlink(`${tempPath}/${file}`, err => {
-					if (err) {throw err;}
-					else {logger.info("Deleting TEMP top images!", { module: "deleteTop" });}
-				});
-			}
+		readdir(tempPath, (err, data) => { // Read temp directory
+			if (err) {throw err;}
+			data.forEach(file => { // Loop through each file in the directory
+				if (file.includes("top")) { // If the file contains top
+					unlink(`${tempPath}/${file}`, err => { // Delete the file that contains top
+						if (err) {throw err;}
+						else {logger.info("Deleting TEMP top images!", { module: "deleteTop" });}
+					});
+				}
+			});
 		});
-
 	}
 	catch (error) {
-		return logger.error(new Error(error), { module: "deleteTop" });
+		return logger.error(error, { module: "deleteTop" });
 	}
 }
 
-
 module.exports = () => {
-	cron.schedule("55 23 * * *", async function() {
+	cron.schedule("55 23 * * *", async function() { // Runs historyUpdater at 23:55 UTC
 		logger.info("History updating started!", { module: "historyUpdater" });
 		await historyUpdater();
 	});
 
-	cron.schedule("00 00 * * *", function() {
+	cron.schedule("0 0 * * *", function() { // Runs deleteHistory at 00:00 UTC
 		deleteHistory();
 	});
 
-	cron.schedule("00 */6 * * *", async function() {
+	cron.schedule("0 */2 * * *", async function() { // Runs deleteTop every 2 hours
 		deleteTop();
 	});
 };

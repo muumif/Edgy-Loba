@@ -1,7 +1,15 @@
+/**
+ * @file Exports a custom logger function.
+ * @author muumif
+ * @version 1.0.0
+*/
+
+
 const { format } = require("winston");
 const winston = require("winston");
 
 const customFormat = winston.format.printf(({ level, message, timestamp, command, DBOP, module }) => {
+	// Check for which type of log it is
 	if (command != undefined) {
 		return `[${level}][${command}][${timestamp}]: ${message}`;
 	}
@@ -26,7 +34,7 @@ const logger = winston.createLogger({
 	),
 
 	transports: [
-		new winston.transports.Console({
+		new winston.transports.Console({ // Print logs to the console with a customFormat
 			format: format.combine(
 				winston.format.timestamp({
 					format: "HH:mm:ss",
@@ -35,7 +43,7 @@ const logger = winston.createLogger({
 				customFormat,
 			),
 		}),
-		new winston.transports.File({ filename: "./logs/combined.log" }),
+		new winston.transports.File({ filename: "./logs/combined.log" }), // Save logs to a file combined.log
 	],
 });
 

@@ -1,6 +1,12 @@
+/**
+ * @file Bot /bug command.
+ * @author muumif
+ * @version 1.0.0
+*/
+
 const { SlashCommandBuilder } = require("@discordjs/builders");
-require("dotenv").config();
 const { MessageActionRow, Modal, TextInputComponent } = require("discord.js");
+require("dotenv").config();
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -9,11 +15,11 @@ module.exports = {
 	async execute(interaction) {
 		if (!interaction.isCommand()) return;
 
-		const modal = new Modal()
+		const modal = new Modal() // Make a pop-up for the but report
 			.setCustomId("bugReport")
 			.setTitle("Bug Report");
 
-		const commandInput = new TextInputComponent()
+		const commandInput = new TextInputComponent() // Could use dropdown to see all the commands
 			.setCustomId("commandInput")
 			.setLabel("What commands has the issue?")
 			.setStyle("SHORT")
