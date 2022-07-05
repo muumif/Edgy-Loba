@@ -1,11 +1,17 @@
+/**
+ * @file Bot /stats command.
+ * @author muumif
+ * @version 1.0.0
+*/
+
 const { SlashCommandBuilder } = require("@discordjs/builders");
-require("dotenv").config();
-const axios = require("axios");
 const { getUserUID } = require("../misc/uid");
 const { MessageEmbed, MessageAttachment } = require("discord.js");
 const { logger } = require("../misc/internal/logger");
 const { updateUserRPAP, getUserHistory, getUserExistsGame, getUserOrigin } = require("../misc/internal/db");
 const { makeStatsChart } = require("../misc/charts");
+const axios = require("axios");
+require("dotenv").config();
 
 module.exports = {
 	data: new SlashCommandBuilder()

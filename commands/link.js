@@ -1,10 +1,16 @@
+/**
+ * @file Bot /link command.
+ * @author muumif
+ * @version 1.0.0
+*/
+
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const axios = require("axios");
-require("dotenv").config();
 const { MessageEmbed } = require("discord.js");
 const { getUserUID } = require("../misc/uid");
 const { insertNewUser, getUserExistsDiscord } = require("../misc/internal/db");
 const { logger } = require("../misc/internal/logger");
+const axios = require("axios");
+require("dotenv").config();
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -35,8 +41,8 @@ module.exports = {
 		const user = interaction.options.getString("username");
 		let platform = interaction.options.getString("platform");
 		if (platform == "link_pc") { platform = "PC"; }
-		if (platform == "link_x1") { platform = "X1";}
-		if (platform == "link_ps") { platform = "PS4";}
+		if (platform == "link_x1") { platform = "X1"; }
+		if (platform == "link_ps") { platform = "PS4"; }
 
 		const userExists = await getUserExistsDiscord(interaction.user.id);
 		if (userExists) {

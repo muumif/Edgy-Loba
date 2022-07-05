@@ -1,8 +1,13 @@
-/* eslint-disable no-inner-declarations */
+/**
+ * @file Bot /predator command.
+ * @author muumif
+ * @version 1.0.0
+*/
+
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { default: axios } = require("axios");
 const { MessageEmbed } = require("discord.js");
 const { logger } = require("../misc/internal/logger");
+const axios = require("axios");
 require("dotenv").config();
 
 

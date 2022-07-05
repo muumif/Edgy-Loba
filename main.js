@@ -1,11 +1,17 @@
+/**
+ * @file The main file for all entry points/commands/monitoring.
+ * @author muumif
+ * @version 1.0.0
+*/
+
 const { Client, Intents, Collection } = require("discord.js");
 const { AutoPoster } = require("topgg-autoposter");
-require("dotenv").config();
 const { logger } = require("./misc/internal/logger");
 const { readdirSync, existsSync, mkdir } = require("fs");
-const path = require("path");
 const { insertNewBug, insertNewGuild, deleteGuild } = require("./misc/internal/db");
+const path = require("path");
 require("./misc/internal/scheduler")();
+require("dotenv").config();
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
@@ -67,7 +73,7 @@ client.on("interactionCreate", async interaction => {
 		}
 		catch (error) {
 			logger.error(new Error(error), { command: interaction.commandName, guildID: interaction.guildId, discordID: interaction.user.id });
-			await interaction.reply({ content: "There was an error while executing this command!", ephemeral: true });
+			await interaction.editReply({ content: "There was an error while executing this command!", ephemeral: true });
 		}
 	}
 	if (interaction.isModalSubmit()) {

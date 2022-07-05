@@ -1,12 +1,19 @@
+/**
+ * @file Bot /map command.
+ * @author muumif
+ * @version 1.0.0
+*/
+
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const axios = require("axios");
-require("dotenv").config();
 const { MessageEmbed, MessageAttachment } = require("discord.js");
 const { logger } = require("../misc/internal/logger");
 const { readFile, writeFile } = require("fs").promises;
+const axios = require("axios");
 const Canvas = require("@napi-rs/canvas");
+require("dotenv").config();
 
-async function getData(guildID, discordID) {
+
+async function getData(guildID, discordID) { // This is an old way to get the data should change to the new way
 	const URI = `${process.env.ALS_ENDPOINT}/maprotation?version=2&auth=${process.env.ALS_TOKEN}`;
 	return await axios.get(encodeURI(URI))
 		.then(function(response) {

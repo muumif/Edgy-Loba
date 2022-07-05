@@ -1,9 +1,14 @@
-const { SlashCommandBuilder } = require("@discordjs/builders");
-require("dotenv").config();
-const { MessageEmbed } = require("discord.js");
-const Topgg = require("@top-gg/sdk");
-const ggClient = new Topgg.Api(process.env.TOPGG_TOKEN);
+/**
+ * @file Bot /about command.
+ * @author muumif
+ * @version 1.0.0
+*/
 
+const { SlashCommandBuilder } = require("@discordjs/builders");
+const { MessageEmbed } = require("discord.js");
+const { Api } = require("@top-gg/sdk");
+const topApiInstance = new Api(process.env.TOPGG_TOKEN);
+require("dotenv").config();
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -13,7 +18,7 @@ module.exports = {
 		if (!interaction.isCommand()) return;
 		const sent = await interaction.deferReply({ fetchReply: true });
 
-		const topggdata = await ggClient.getBot("719542118955090011");
+		const topData = await topApiInstance.getBot("719542118955090011");
 
 		const embed = new MessageEmbed()
 			.setTitle("About")
@@ -27,9 +32,9 @@ module.exports = {
 					name: "Statistics",
 					value: `
 						Ping: **${sent.createdTimestamp - interaction.createdTimestamp}ms** 
-						Servers: **${topggdata.server_count}**
-						Monthly Votes: **${topggdata.monthlyPoints}**
-						Total Votes: **${topggdata.points}**
+						Servers: **${topData.server_count}**
+						Monthly Votes: **${topData.monthlyPoints}**
+						Total Votes: **${topData.points}**
 						`,
 					inline: false,
 				},

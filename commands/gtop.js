@@ -1,8 +1,13 @@
+/**
+ * @file Bot /gtop command.
+ * @author muumif
+ * @version 1.0.0
+*/
+
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageEmbed } = require("discord.js");
 const { getTopGlobalUsers } = require("../misc/internal/db");
 const { logger } = require("../misc/internal/logger");
-const { UIDToIGN } = require("../misc/uid");
 require("dotenv").config();
 
 async function fetchUser(client, id) {
@@ -31,7 +36,7 @@ module.exports = {
 				});
 
 			const discordIDToName = async _ => {
-				for (let i = 0; i < gtopData.length; i++) {
+				for (let i = 0; i < gtopData.length; i++) { // Loop through every user and fetch their Discord name
 					const user = await fetchUser(interaction.client, gtopData[i].discordID, interaction.guildId);
 					if (i == 0) {
 						gtopData[i].discordImg = user.avatarURL();
