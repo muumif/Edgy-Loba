@@ -131,6 +131,11 @@ module.exports = {
 						const date = new Date(historyData[i].date).getUTCDate() + "/" + (new Date(historyData[i].date).getUTCMonth() + 1) + "/" + new Date(historyData[i].date).getUTCFullYear();
 						labels.push(date);
 						data.push(historyData[i].RP);
+						if (i == historyData.length - 1) {
+							const today = new Date();
+							labels.push(today.getUTCDate() + "/" + (today.getUTCMonth() + 1) + "/" + today.getUTCFullYear());
+							data.push(user.data.global.rank.rankScore);
+						}
 					}
 
 					await makeStatsChart(labels, data, userDB.discordID);

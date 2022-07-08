@@ -98,7 +98,6 @@ module.exports = {
 					.setFooter({ text: "Bugs can be reported with /bug", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" });
 
 
-				
 				const historyData = await getUserHistory(userDB.discordID);
 				if (historyData != "No history data exists for given user!") {
 					const labels = [], data = [];
@@ -106,6 +105,11 @@ module.exports = {
 						const date = new Date(historyData[i].date).getUTCDate() + "/" + (new Date(historyData[i].date).getUTCMonth() + 1) + "/" + new Date(historyData[i].date).getUTCFullYear();
 						labels.push(date);
 						data.push(historyData[i].RP);
+						if (i == historyData.length - 1) {
+							const today = new Date();
+							labels.push(today.getUTCDate() + "/" + (today.getUTCMonth() + 1) + "/" + today.getUTCFullYear());
+							data.push(user.data.global.rank.rankScore);
+						}
 					}
 
 					await makeStatsChart(labels, data, userDB.discordID);
