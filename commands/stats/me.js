@@ -25,7 +25,7 @@ module.exports = {
 			if (exists) {
 				let platformEmoji, stateEmoji, rankBR, rankAR, rankIMG, currentState;
 				const userDB = await getUser(interaction.user.id);
-				const user = await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${userDB.originUID}&platform=${userDB.platform}`));
+				const user = await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${userDB.originUID}&platform=${userDB.platform}&merge=false`));
 
 				if (userDB.platform == "X1") { platformEmoji = interaction.client.emojis.cache.get("987422524654641252");}
 				if (userDB.platform == "PS4") { platformEmoji = interaction.client.emojis.cache.get("987422521680855100");}
@@ -52,10 +52,10 @@ module.exports = {
 				}
 
 				if (user.data.global.rank.rankName == "Apex Predator") { // Check if the user is an Apex Predator
-					rankBR = `#${user.data.global.rank.ladderPosPlatform} Predator`;
+					rankBR = `\u001b[0;37m#${user.data.global.rank.ladderPosPlatform} \u001b[0;31mPredator`;
 				}
 				else {
-					rankBR = `${user.data.global.rank.rankName} ${user.data.global.rank.rankDiv}`;
+					rankBR = `\u001b[0;37m${user.data.global.rank.rankName} \u001b[0;33m${user.data.global.rank.rankDiv}`;
 				}
 				if (user.data.global.arena.rankName == "Apex Predator") { // Check if the user is an Apex Predator
 					rankAR = `#${user.data.global.arena.ladderPosPlatform} Predator`;
@@ -71,6 +71,8 @@ module.exports = {
 					rankIMG = user.data.global.arena.rankImg;
 				}
 
+				const selectedLegend = user.data.legends.all[user.data.legends.selected.LegendName];
+
 
 				const embed = new MessageEmbed()
 					.setTitle(`${platformEmoji}  ${user.data.global.name}`)
@@ -78,24 +80,31 @@ module.exports = {
 					.setDescription(`${stateEmoji} ${currentState}`)
 					.addFields(
 						{
-							name: "__Level__",
-							value: `${user.data.global.level} \n ${user.data.global.toNextLevelPercent}%`,
+							name: "**Level**",
+							value: `${"```ansi"}\n\u001b[0;33m${user.data.global.level} \n${user.data.global.toNextLevelPercent}\u001b[0;37m% /\u001b[0;33m 100\u001b[0;37m%${"```"}`,
 							inline: true,
 						},
 						{
-							name: "__Battle Royal__",
-							value: `${rankBR} \nRP: ${user.data.global.rank.rankScore}`,
+							name: "**Battle Royale**",
+							value: `${"```ansi"}\n\u001b[0;33m${rankBR} \n\u001b[0;37mRP: \u001b[0;33m${user.data.global.rank.rankScore}${"```"}`,
 							inline: true,
 						},
 						{
-							name: "__Arenas__",
-							value: `${rankAR} \nAP: ${user.data.global.arena.rankScore}`,
-							inline: true,
+							name: `Selected Legend: ${user.data.legends.selected.LegendName}`,
+							value: `${"```ansi"}\n\u001b[0;37m${selectedLegend.data[0].name}: \u001b[0;33m${selectedLegend.data[0].value} \u001b[0;37m(\u001b[0;33m${selectedLegend.data[0].rank.topPercent}\u001b[0;37m%)\n${selectedLegend.data[1].name}: \u001b[0;33m${selectedLegend.data[1].value} \u001b[0;37m(\u001b[0;33m${selectedLegend.data[1].rank.topPercent}\u001b[0;37m%)\n${selectedLegend.data[2].name}: \u001b[0;33m${selectedLegend.data[2].value} \u001b[0;37m(\u001b[0;33m${selectedLegend.data[2].rank.topPercent}\u001b[0;37m%)${"```"}`,
+							inline: false,
 						},
 					)
 					.setColor("#e3a600")
 					.setTimestamp()
 					.setFooter({ text: "Bugs can be reported with /bug", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" });
+				if (user.data.global.arena.rankScore != 0) {
+					embed.addField({
+						name: "**Arenas**",
+						value: `${"```"}\n${rankAR} \nAP: ${user.data.global.arena.rankScore}${"```"}`,
+						inline: false,
+					});
+				}
 
 
 				const historyData = await getUserHistory(userDB.discordID);
@@ -116,7 +125,7 @@ module.exports = {
 					const statsFile = new MessageAttachment(`./temp/history_${userDB.discordID}.png`);
 					embed.setImage(`attachment://history_${userDB.discordID}.png`);
 					const discordUser = await interaction.client.users.fetch(userDB.discordID);
-					embed.setDescription(`${stateEmoji} ${currentState} \n Linked to **${discordUser.username}#${discordUser.discriminator}**`);
+					embed.setDescription(`${stateEmoji} ${currentState} \n Linked to ${"**"}${discordUser.username}#${discordUser.discriminator}${"**"}`);
 
 					if (interaction.user.id == userDB.discordID) {
 						await updateUserRPAP(interaction.user.id, user.data.global.rank.rankScore, user.data.global.arena.rankScore);
