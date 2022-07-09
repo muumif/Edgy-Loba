@@ -25,7 +25,7 @@ module.exports = {
 			if (exists) {
 				let platformEmoji, stateEmoji, rankBR, rankAR, rankIMG, currentState;
 				const userDB = await getUser(interaction.user.id);
-				const user = await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${userDB.originUID}&platform=${userDB.platform}&merge=false`));
+				const user = await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${userDB.originUID}&platform=${userDB.platform}&merge=true&removeMerged=true`));
 
 				if (userDB.platform == "X1") { platformEmoji = interaction.client.emojis.cache.get("987422524654641252");}
 				if (userDB.platform == "PS4") { platformEmoji = interaction.client.emojis.cache.get("987422521680855100");}
