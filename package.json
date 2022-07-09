@@ -4,7 +4,8 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "node main.js"
+    "start": "node main.js",
+    "deploy": "cd ./misc/internal && node deploy.js && rm -r ./logs"
   },
   "author": "muumif",
   "license": "ISC",
