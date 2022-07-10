@@ -57,11 +57,11 @@ module.exports = {
 				else {
 					rankBR = `\u001b[0;37m${user.data.global.rank.rankName} \u001b[0;33m${user.data.global.rank.rankDiv}`;
 				}
-				if (user.data.global.arena.rankName == "Apex Predator") { // Check if the user is an Apex Predator
-					rankAR = `#${user.data.global.arena.ladderPosPlatform} Predator`;
+				if (user.data.global.arena.rankName == "Apex Predator") {
+					rankAR = `\u001b[0;31m#${user.data.global.arena.ladderPosPlatform} Predator`;
 				}
 				else {
-					rankAR = `${user.data.global.arena.rankName} ${user.data.global.arena.rankDiv}`;
+					rankAR = `\u001b[0;37m${user.data.global.arena.rankName} \u001b[0;33m${user.data.global.arena.rankDiv}`;
 				}
 
 				if (user.data.global.rank.rankScore >= user.data.global.arena.rankScore) { // Show the img for which the player has more score for
@@ -99,10 +99,10 @@ module.exports = {
 					.setTimestamp()
 					.setFooter({ text: "Bugs can be reported with /bug", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" });
 				if (user.data.global.arena.rankScore != 0) {
-					embed.addField({
+					embed.addFields({
 						name: "**Arenas**",
-						value: `${"```"}\n${rankAR} \nAP: ${user.data.global.arena.rankScore}${"```"}`,
-						inline: false,
+						value: `${"```ansi"}\n${rankAR} \n\u001b[0;37mAP: \u001b[0;33m${user.data.global.arena.rankScore}${"```"}`,
+						inline: true,
 					});
 				}
 
