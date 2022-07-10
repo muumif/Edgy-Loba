@@ -164,6 +164,48 @@ async function makeStatsChart(dates = [], rps = [], discordID) {
 	}
 }
 /**
+ * @param  {Object} data Total count of users in each rank
+ * @return {string} The path to the file
+ */
+async function makeDistribChart(distData) {
+	try {
+
+		const labels = [], data = [], colors = [];
+		for (let i = 1; i < distData.length; i++) {
+			labels.push(distData[i].name);
+			data.push(distData[i].totalCount);
+			colors.push(distData[i].color);
+		}
+		const chartJSNodeCanvas = new ChartJSNodeCanvas({ width: 1280, height: 720, backgroundColour : "#36393f" });
+		const config = {
+			type: "doughnut",
+			data: {
+				labels: labels,
+				datasets: [
+					{
+						label: labels,
+						data: data,
+						backgroundColor: colors,
+						borderWidth: 0,
+					},
+				],
+			},
+			options:{
+			},
+		};
+
+		const imageBuffer = await chartJSNodeCanvas.renderToBuffer(config, "image/png");
+		await writeFile("./temp/distChart.png", imageBuffer);
+		logger.info("Distribution chart image written to disk!", { module: "canvas" });
+		return "./temp/distChart.png";
+
+	}
+	catch (error) {
+		return logger.error(error, { module: "canvas" });
+	}
+}
+
+/**
  * @param  {Array} usersHistory All users history data
  * @param  {string} guildID GuildID where the command was ran
  * @return {string} The path to the file
@@ -195,11 +237,9 @@ async function makeTopChart(usersHistory, guildID) {
 			const config = {
 				type: "line",
 				data: {
-					labels: _labels,
 					datasets: datasets,
 				},
 				options:{
-					fontSize: 50,
 					plugins: {
 						annotation: {
 							annotations: [
@@ -340,4 +380,5 @@ async function makeTopChart(usersHistory, guildID) {
 module.exports = {
 	makeStatsChart,
 	makeTopChart,
+	makeDistribChart,
 };
