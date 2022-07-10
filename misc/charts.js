@@ -180,7 +180,6 @@ async function makeDistribChart(distData) {
 		const config = {
 			type: "doughnut",
 			data: {
-				labels: labels,
 				datasets: [
 					{
 						label: labels,
@@ -237,9 +236,11 @@ async function makeTopChart(usersHistory, guildID) {
 			const config = {
 				type: "line",
 				data: {
+					labels: _labels,
 					datasets: datasets,
 				},
 				options:{
+					fontSize: 50,
 					plugins: {
 						annotation: {
 							annotations: [
