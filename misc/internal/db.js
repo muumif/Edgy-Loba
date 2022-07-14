@@ -1,5 +1,5 @@
 /**
- * Some of theses commands are unused and some are duplicates. 
+ * Some of theses commands are unused and some are duplicates.
  * This file should be reworked at some point probably when Redis caching is implemented.
  * MongoDB should also be secured better but for now it works.
 
