@@ -10,7 +10,7 @@ const { unlink, readdir } = require("fs");
 const path = require("path");
 const cron = require("node-cron");
 const axios = require("axios");
-const tempPath = "../../temp";
+const tempPath = "./temp";
 
 async function historyUpdater() {
 	try {

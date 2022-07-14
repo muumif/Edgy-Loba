@@ -51,7 +51,7 @@ module.exports = {
 		try {
 			const UID = await getUserUID(username, platform, interaction.guildId, interaction.user.id);
 			await new Promise(resolve => setTimeout(resolve, 400));
-			const user = await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${UID}&platform=${platform}`));
+			const user = await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${UID}&platform=${platform}&merge=true&removeMerged=true`));
 
 			switch (user.data.realtime.currentState) {
 			case "offline":
@@ -74,16 +74,16 @@ module.exports = {
 			}
 
 			if (user.data.global.rank.rankName == "Apex Predator") {
-				rankBR = `#${user.data.global.rank.ladderPosPlatform} Predator`;
+				rankBR = `\u001b[0;31m#${user.data.global.rank.ladderPosPlatform} Predator`;
 			}
 			else {
-				rankBR = `${user.data.global.rank.rankName} ${user.data.global.rank.rankDiv}`;
+				rankBR = `\u001b[0;37m${user.data.global.rank.rankName} \u001b[0;33m${user.data.global.rank.rankDiv}`;
 			}
 			if (user.data.global.arena.rankName == "Apex Predator") {
-				rankAR = `#${user.data.global.arena.ladderPosPlatform} Predator`;
+				rankAR = `\u001b[0;31m#${user.data.global.arena.ladderPosPlatform} Predator`;
 			}
 			else {
-				rankAR = `${user.data.global.arena.rankName} ${user.data.global.arena.rankDiv}`;
+				rankAR = `\u001b[0;37m${user.data.global.arena.rankName} \u001b[0;33m${user.data.global.arena.rankDiv}`;
 			}
 
 			if (user.data.global.rank.rankScore >= user.data.global.arena.rankScore) {
@@ -93,6 +93,7 @@ module.exports = {
 				rankIMG = user.data.global.arena.rankImg;
 			}
 
+			const selectedLegend = user.data.legends.all[user.data.legends.selected.LegendName];
 
 			const embed = new MessageEmbed()
 				.setTitle(`${platformEmoji}  ${user.data.global.name}`)
@@ -100,25 +101,31 @@ module.exports = {
 				.setDescription(`${stateEmoji} ${currentState}`)
 				.addFields(
 					{
-						name: "__Level__",
-						value: `${user.data.global.level} \n ${user.data.global.toNextLevelPercent}%`,
+						name: "**Level**",
+						value: `${"```ansi"}\n\u001b[0;33m${user.data.global.level} \n${user.data.global.toNextLevelPercent}\u001b[0;37m% /\u001b[0;33m 100\u001b[0;37m%${"```"}`,
 						inline: true,
 					},
 					{
-						name: "__Battle Royal__",
-						value: `${rankBR} \nRP: ${user.data.global.rank.rankScore}`,
+						name: "**Battle Royale**",
+						value: `${"```ansi"}\n\u001b[0;33m${rankBR} \n\u001b[0;37mRP: \u001b[0;33m${user.data.global.rank.rankScore}${"```"}`,
 						inline: true,
 					},
 					{
-						name: "__Arenas__",
-						value: `${rankAR} \nAP: ${user.data.global.arena.rankScore}`,
-						inline: true,
+						name: `Selected Legend: ${user.data.legends.selected.LegendName}`,
+						value: `${"```ansi"}\n\u001b[0;37m${selectedLegend.data[0].name}: \u001b[0;33m${selectedLegend.data[0].value} \u001b[0;37m(\u001b[0;33m${selectedLegend.data[0].rank.topPercent}\u001b[0;37m%)\n${selectedLegend.data[1].name}: \u001b[0;33m${selectedLegend.data[1].value} \u001b[0;37m(\u001b[0;33m${selectedLegend.data[1].rank.topPercent}\u001b[0;37m%)\n${selectedLegend.data[2].name}: \u001b[0;33m${selectedLegend.data[2].value} \u001b[0;37m(\u001b[0;33m${selectedLegend.data[2].rank.topPercent}\u001b[0;37m%)${"```"}`,
+						inline: false,
 					},
 				)
 				.setColor("#e3a600")
 				.setTimestamp()
 				.setFooter({ text: "Bugs can be reported with /bug", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" });
-
+			if (user.data.global.arena.rankScore != 0) {
+				embed.addFields({
+					name: "**Arenas**",
+					value: `${"```ansi"}\n${rankAR} \n\u001b[0;37mAP: \u001b[0;33m${user.data.global.arena.rankScore}${"```"}`,
+					inline: true,
+				});
+			}
 
 			const exists = await getUserExistsGame(UID);
 			if (exists) {
@@ -131,6 +138,11 @@ module.exports = {
 						const date = new Date(historyData[i].date).getUTCDate() + "/" + (new Date(historyData[i].date).getUTCMonth() + 1) + "/" + new Date(historyData[i].date).getUTCFullYear();
 						labels.push(date);
 						data.push(historyData[i].RP);
+						if (i == historyData.length - 1) {
+							const today = new Date();
+							labels.push(today.getUTCDate() + "/" + (today.getUTCMonth() + 1) + "/" + today.getUTCFullYear());
+							data.push(user.data.global.rank.rankScore);
+						}
 					}
 
 					await makeStatsChart(labels, data, userDB.discordID);

@@ -39,7 +39,7 @@ if (!existsSync(path.join(__dirname, "temp"))) {
 client.once("ready", () => {
 	logger.info("Bot is now online!", { module: "main" });
 	if (process.env.NODE_ENV == "production") {
-		client.user.setPresence({ activities: [{ name: "Check About Me", type: "LISTENING" }], status: "online" });
+		client.user.setPresence({ activities: [{ name: `to ${client.guilds.cache.size}`, type: "LISTENING" }], status: "online" });
 	}
 	else {
 		client.user.setPresence({ activities: [{ name: "Internal build!" }], status: "dnd" });
@@ -74,7 +74,7 @@ client.on("interactionCreate", async interaction => {
 			logger.info("Sent message!", { command: interaction.commandName, guildID: interaction.guildId, discordID: interaction.user.id });
 		}
 		catch (error) {
-			logger.error(new Error(error), { command: interaction.commandName, guildID: interaction.guildId, discordID: interaction.user.id });
+			logger.error(error, { command: interaction.commandName, guildID: interaction.guildId, discordID: interaction.user.id });
 			await interaction.editReply({ content: "There was an error while executing this command!", ephemeral: true });
 		}
 	}
