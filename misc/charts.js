@@ -24,7 +24,6 @@ async function makeStatsChart(dates = [], rps = [], discordID) {
 		}
 		else {
 			const chartJSNodeCanvas = new ChartJSNodeCanvas({ width: 800, height: 400, backgroundColour: "#36393f", plugins: { modern: ["chartjs-plugin-annotation"] } });
-			const averageRP = (await axios.get("http://192.168.0.13:1290/stats")).data.DB.users.averageRP;
 			const config = {
 				type: "line",
 				data: {
@@ -43,20 +42,20 @@ async function makeStatsChart(dates = [], rps = [], discordID) {
 					plugins: {
 						annotation: {
 							annotations: [
-								{
-									adjustScaleRange: false,
-									type: "line",
-									borderColor: "black",
-									borderDash: [10],
-									borderWidth: 2,
-									scaleID: "y",
-									value: averageRP,
-									label: {
-										backgroundColor: "rgba(0,0,0,0.2)",
-										content: "Average RP in bot: " + averageRP,
-										enabled: true,
-									},
-								},
+								// {
+								// 	adjustScaleRange: false,
+								// 	type: "line",
+								// 	borderColor: "black",
+								// 	borderDash: [10],
+								// 	borderWidth: 2,
+								// 	scaleID: "y",
+								// 	value: averageRP,
+								// 	label: {
+								// 		backgroundColor: "rgba(0,0,0,0.2)",
+								// 		content: "Average RP in bot: " + averageRP,
+								// 		enabled: true,
+								// 	},
+								// },
 								{
 									adjustScaleRange: false,
 									type: "line",
