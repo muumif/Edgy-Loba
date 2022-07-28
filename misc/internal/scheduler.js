@@ -7,7 +7,6 @@
 const { insertHistoryData, getAllUsers } = require("./db");
 const { logger } = require("./logger");
 const { unlink, readdir } = require("fs");
-const path = require("path");
 const cron = require("node-cron");
 const axios = require("axios");
 const tempPath = "./temp";
@@ -34,11 +33,11 @@ async function historyUpdater() {
 
 function deleteHistory() {
 	try {
-		readdir(tempPath, (err, data) => { // Read temp directory
+		readdir(tempPath, (err, data) => {
 			if (err) throw err;
-			data.forEach(file => { // Loop through each file in the directory
-				if (file.includes("history")) { // If the file contains history
-					unlink(`${tempPath}/${file}`, err => { // Delete the file that contains history
+			data.forEach(file => {
+				if (file.includes("history")) {
+					unlink(`${tempPath}/${file}`, err => {
 						if (err) {throw err;}
 						else {logger.info("Deleting TEMP history images!", { module: "deleteHistory" });}
 					});
@@ -53,11 +52,11 @@ function deleteHistory() {
 
 async function deleteTop() {
 	try {
-		readdir(tempPath, (err, data) => { // Read temp directory
+		readdir(tempPath, (err, data) => {
 			if (err) {throw err;}
-			data.forEach(file => { // Loop through each file in the directory
-				if (file.includes("top")) { // If the file contains top
-					unlink(`${tempPath}/${file}`, err => { // Delete the file that contains top
+			data.forEach(file => {
+				if (file.includes("top")) {
+					unlink(`${tempPath}/${file}`, err => {
 						if (err) {throw err;}
 						else {logger.info("Deleting TEMP top images!", { module: "deleteTop" });}
 					});
@@ -71,16 +70,16 @@ async function deleteTop() {
 }
 
 module.exports = () => {
-	cron.schedule("55 23 * * *", async function() { // Runs historyUpdater at 23:55 UTC
+	cron.schedule("55 23 * * *", async function() { // 23:55 UTC
 		logger.info("History updating started!", { module: "historyUpdater" });
 		await historyUpdater();
 	});
 
-	cron.schedule("0 0 * * *", function() { // Runs deleteHistory at 00:00 UTC
+	cron.schedule("0 0 * * *", function() { // 00:00 UTC
 		deleteHistory();
 	});
 
-	cron.schedule("0 */2 * * *", async function() { // Runs deleteTop every 2 hours
+	cron.schedule("0 */2 * * *", async function() { // every 2 hours
 		deleteTop();
 	});
 };

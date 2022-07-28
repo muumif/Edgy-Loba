@@ -13,7 +13,7 @@ const path = require("path");
 require("./misc/internal/scheduler")();
 require("dotenv").config();
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 client.commands = new Collection();
 
@@ -43,7 +43,6 @@ client.once("ready", () => {
 	}
 	else {
 		client.user.setPresence({ activities: [{ name: "Internal build!" }], status: "dnd" });
-
 	}
 });
 
@@ -73,7 +72,7 @@ client.on("interactionCreate", async interaction => {
 			await command.execute(interaction);
 			logger.info("Sent message!", { command: interaction.commandName, guildID: interaction.guildId, discordID: interaction.user.id });
 		}
-		catch (error) {
+		catch (error) { // Get commands to throw errors here and handel each error here
 			logger.error(error, { command: interaction.commandName, guildID: interaction.guildId, discordID: interaction.user.id });
 			await interaction.editReply({ content: "There was an error while executing this command!", ephemeral: true });
 		}
