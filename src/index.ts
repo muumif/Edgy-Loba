@@ -1,6 +1,8 @@
 import { ActivityType, Client, Collection, Command, GatewayIntentBits, InteractionType } from "discord.js";
 import { readdirSync } from "fs";
 import path from "path";
+import { logger } from "./internal/logger";
+import { hostname, type, version } from "os";
 
 export const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -17,7 +19,8 @@ for (const folder of readdirSync(commandsPath)) {
 }
 
 client.once("ready", () => {
-      console.log("Edgy-Loba has started under ENV: " + process.env.NODE_ENV);
+      logger.info(`▬▬ι═══════ﺤ Edgy Loba is now online -═══════ι▬▬`);
+      logger.info(`Hostname: ${hostname} | Environment: ${process.env.NODE_ENV} | Version: ${process.env.npm_package_version} | OS: ${type} ${version}`)
       if (process.env.NODE_ENV == "production") {
             client.user?.setPresence({ activities: [{ name: `${client.guilds.cache.size} servers!`, type: ActivityType.Listening }], status: "online" });
       }
@@ -29,12 +32,12 @@ client.once("ready", () => {
 client.on("interactionCreate", async interaction => {
       if (interaction.type === InteractionType.ApplicationCommand) {
             const command = commands.get(interaction.commandName);
-            
+
             if (!command) return;
 
             try {
                   await command.execute(interaction);
-                  //TODO: Log when command is sent
+                  logger.info(`[${interaction.user.username}] used [/${interaction.commandName}] in [${interaction.guild?.name}]`, { discordId: interaction.user.id, guildId: interaction.guild?.id})
             }
             catch (error) {
                   //TODO: Make a seperate error handeler in components
