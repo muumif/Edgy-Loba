@@ -38,7 +38,7 @@ client.on("interactionCreate", async interaction => {
 
             try {
                   await command.execute(interaction);
-                  logger.info(`[${interaction.user.username}] used [/${interaction.commandName}] in [${interaction.guild?.name}]`, { discordId: interaction.user.id, guildId: interaction.guild?.id, file: filename(__filename)})
+                  logger.info(`[${interaction.user.username}] used [/${interaction.commandName}] in [${interaction.guild?.name}]`, { discordId: interaction.user.id, serverId: interaction.guild?.id, file: filename(__filename)})
             }
             catch (error) {
                   //TODO: Make a seperate error handeler in components
