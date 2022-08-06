@@ -13,3 +13,8 @@ export function linksField(name: string, inline: boolean): APIEmbedField {
             inline: inline,
       };
 }
+
+export function filename(filename: string) {
+      const parts = filename.split(/[\\/]/); 
+      return parts[parts.length - 1]
+}
