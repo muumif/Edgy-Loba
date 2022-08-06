@@ -1,4 +1,4 @@
-import { Snowflake } from "discord.js";
+import { Guild, Snowflake } from "discord.js";
 import { MongoClient } from "mongodb";
 import { HistoryDocument, UserDocument } from "../types/mongo";
 
@@ -7,6 +7,7 @@ const server = `mongodb://${process.env.MONGO_CONNECTION}/?authMechanism=DEFAULT
 const DBClient = new MongoClient(server);
 const usersCollection = DBClient.db("EdgyLoba").collection("users");
 const historyCollection = DBClient.db("EdgyLoba").collection("userHistory");
+const guildCollection = DBClient.db("EdgyLoba").collection("guilds");
 
 class User {
 	discordId: Snowflake;
@@ -51,7 +52,7 @@ class User {
 		}
 	}
 
-	public async addUser(originId: string, RP: number, AP: number, platform: string, guildID: string) {
+	public async addUser(originId: string, RP: number, AP: number, platform: string, serverId: Snowflake) {
 		try {
 			await DBClient.connect();
 	
@@ -61,7 +62,7 @@ class User {
 				RP: RP,
 				AP: AP,
 				platform: platform,
-				guilds: [guildID],
+				servers: [serverId],
 			})
 			.then(function() {return Promise.resolve("User data inserted")})
 		}
@@ -84,6 +85,22 @@ class User {
 				AP: AP,
 			})
 			.then(function() {return Promise.resolve("History data inserted")})
+		}
+		catch(error){
+			return Promise.reject(error);
+		}
+		finally {
+			await DBClient.close();
+		}
+	}
+
+	public async addServer(serverId: Snowflake) {
+		try {
+			await DBClient.connect();
+	
+			return await usersCollection.updateOne({ discordId: this.discordId }, { $push: { servers: serverId } })
+			.then(function() {return Promise.resolve("Server data inserted")})
+
 		}
 		catch(error){
 			return Promise.reject(error);
@@ -139,9 +156,42 @@ class User {
 	}
 }
 
-class Guild {
-	guildId: Snowflake;
-	constructor(guildId: Snowflake){
-		this.guildId = guildId;
+class Server {
+	guild: Guild;
+	constructor(guild: Guild){
+		this.guild = guild;
+	}
+
+	public async addServer() {
+		try {
+			await DBClient.connect();
+	
+			return await guildCollection.insertOne({
+				serverId: this.guild.id,
+				name: this.guild.name,
+			})
+			.then(function() {return Promise.resolve("Inserted server")})
+
+		}
+		catch(error){
+			return Promise.reject(error);
+		}
+		finally {
+			await DBClient.close();
+		}
+	}
+	
+	public async deleteServer() {
+		try {
+			await DBClient.connect();
+	
+			return await guildCollection.deleteOne({ serverId: this.guild.id })
+		}
+		catch(error){
+			return Promise.reject(error);
+		}
+		finally {
+			await DBClient.close();
+		}
 	}
 }

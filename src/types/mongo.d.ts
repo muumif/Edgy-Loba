@@ -8,13 +8,13 @@ export interface UserDocument {
       RP: number;
       AP: number;
       platform: string;
-      guilds: [{ id: string; }];
+      servers: [{ id: string; }];
 }
 
 export interface GuildDocument {
       id?: ObjectId;
       name: string;
-      guildId: Snowflake;
+      serverId: Snowflake;
 }
 
 export interface HistoryDocument {
