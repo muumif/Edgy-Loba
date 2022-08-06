@@ -7,7 +7,7 @@ declare global {
                   DISCORD_TOKEN: string;
                   ALS_TOKEN: string;
                   ALS_ENDPOINT: URL;
-                  MONGO_PASSWORD: string;
+                  MONGO_CONNECTION: string;
                   BITLY_TOKEN: string;
                   BITLY_ENDPOINT: URL;
                   TOPGG_TOKEN: string;
