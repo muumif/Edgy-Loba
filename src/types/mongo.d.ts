@@ -13,8 +13,8 @@ export interface UserDocument {
 
 export interface GuildDocument {
       id?: ObjectId;
-      name: string;
       serverId: Snowflake;
+      name: string;
 }
 
 export interface HistoryDocument {
@@ -26,5 +26,13 @@ export interface HistoryDocument {
 }
 
 export interface BugDocument {
+      id?: ObjectId;
+      serverId: Snowflake;
+      discordId: Snowflake;
+      date: Date;
+      bug: {
+            command: string;
+            message: string
+      }
 
 }
