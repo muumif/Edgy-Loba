@@ -19,7 +19,7 @@ module.exports = {
 
             const chosenString = interaction.options.get("category")?.value;
             switch (chosenString) {
-            case "help_misc": { 
+            case "help_misc": {
                   const helpEmbed = new embed().defaultEmbed()
                         .setTitle("Help Miscellaneous")
                         .setThumbnail(profilePic(512))

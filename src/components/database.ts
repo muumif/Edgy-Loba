@@ -8,7 +8,7 @@ const DBClient = new MongoClient(server);
 const usersCollection = DBClient.db("EdgyLoba").collection("users");
 const historyCollection = DBClient.db("EdgyLoba").collection("userHistory");
 const guildCollection = DBClient.db("EdgyLoba").collection("guilds");
-
+//TODO: Logging for calls
 export class User {
       discordId: Snowflake;
 

@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Message } from "discord.js";
 
 declare module "discord.js" {
