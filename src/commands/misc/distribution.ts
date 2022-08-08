@@ -1,16 +1,16 @@
-import { CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { AttachmentBuilder, CommandInteraction, SlashCommandBuilder } from "discord.js";
 import axios from "axios";
 import { filename } from "../../components/const";
 import { embed } from "../../components/embeds";
 import { logger } from "../../components/logger";
 import { DistributionData } from "../../types/als";
+import { makeDistributionChart } from "../../components/charts";
 
 module.exports = {
       data: new SlashCommandBuilder()
             .setName("distribution")
             .setDescription("Shows the rank distribution."),
       async execute(interaction: CommandInteraction) {
-            await interaction.deferReply();
 
             try {
                   const distData = await (await axios.get(encodeURI("https://apexlegendsstatus.com/lib/php/rankdistrib.php?unranked=yes"))).data as DistributionData[];
@@ -34,9 +34,9 @@ module.exports = {
                         });
                   }
 
-                  await makeDistribChart(distData);
-                  const distribFile = new MessageAttachment("./temp/distChart.png");
-                  distribEmbed.setImage("attachment://distChart.png");
+                  const fileName = await makeDistributionChart(distData);
+                  const distribFile = new AttachmentBuilder(`${fileName}`);
+                  distribEmbed.setImage(`attachment://${filename(fileName)}`);
 
                   await interaction.editReply({ embeds: [distribEmbed], files: [distribFile] });
             }

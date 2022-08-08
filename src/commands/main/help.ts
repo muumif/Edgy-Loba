@@ -66,7 +66,7 @@ module.exports = {
                               },
                               linksField("Links", false),
                         );
-                  return await interaction.reply({ embeds: [helpEmbed], ephemeral: true });
+                  return await interaction.editReply({ embeds: [helpEmbed] });
             }
             case "help_stats": {
                   const helpEmbed = new embed().defaultEmbed()
@@ -105,7 +105,7 @@ module.exports = {
                               },
                               linksField("Links", false),
                         );
-                  return await interaction.reply({ embeds: [helpEmbed], ephemeral: true });
+                  return await interaction.editReply({ embeds: [helpEmbed] });
             }
             }
       },

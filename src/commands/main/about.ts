@@ -12,7 +12,6 @@ module.exports = {
             .setDescription("Everything about the bot!"),
 
       async execute(interaction: CommandInteraction) {
-            const deferredReply = await interaction.deferReply({ fetchReply: true });
             const topGGData = await topAPIInstance.getBot("719542118955090011");
 
             const aboutEmbed = new embed().defaultEmbed()
@@ -23,7 +22,6 @@ module.exports = {
                         {
                               name: "Statistics",
                               value: `
-						Ping: **${deferredReply.createdTimestamp - interaction.createdTimestamp}ms** 
 						Servers: **${client.guilds.cache.size}**
 						Monthly Votes: **${topGGData.monthlyPoints}**
 						Total Votes: **${topGGData.points}**
