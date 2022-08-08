@@ -18,3 +18,5 @@ export function filename(filename: string) {
       const parts = filename.split(/[\\/]/);
       return parts[parts.length - 1];
 }
+
+export const chartBackgroundColor = "#36393f";
