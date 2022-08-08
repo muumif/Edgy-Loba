@@ -18,3 +18,9 @@ export interface CraftingData {
             },
       ]
 }
+
+export interface DistributionData {
+      name: string,
+      color: string,
+      totalCount: number,
+}
