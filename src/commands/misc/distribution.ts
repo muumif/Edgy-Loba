@@ -11,9 +11,8 @@ module.exports = {
             .setName("distribution")
             .setDescription("Shows the rank distribution."),
       async execute(interaction: CommandInteraction) {
-
             try {
-                  const distData = await (await axios.get(encodeURI("https://apexlegendsstatus.com/lib/php/rankdistrib.php?unranked=yes"))).data as DistributionData[];
+                  const distData = await (await axios.get(encodeURI("https://apexlegendsstatus.com/lib/php/rankdistrib.php?unranked=yes"), { headers:{ "User-Agent": "muumif" } })).data as DistributionData[];
                   const distribEmbed = new embed().defaultEmbed()
                         .setTitle("Rank Distribution")
                         .setDescription("Data from https://apexlegendsstatus.com\nThis data is from all the user that exist in the ALS database.");
