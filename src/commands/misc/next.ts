@@ -16,7 +16,6 @@ module.exports = {
                   const nextSeason = () => {
                         return new Date(nextData.ranked.next.start * 1000);
                   };
-                  logger.info(new Date(nextData.ranked.current.end * 1000).getUTCDate().toString() + "    " + nextSeason().getUTCDate().toString(), { discordId: interaction.user.id, serverId: interaction.guildId, file: filename(__filename) });
                   const timer = () => {
                         if (nextSplit.getUTCSeconds() >= nextSeason().getUTCSeconds()) {
                               const milliSeconds = nextSplit.getTime() - new Date().getTime();
