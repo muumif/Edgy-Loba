@@ -94,7 +94,6 @@ module.exports = {
 			}
 
 			const selectedLegend = user.data.legends.all[user.data.legends.selected.LegendName];
-
 			const embed = new MessageEmbed()
 				.setTitle(`${platformEmoji}  ${user.data.global.name}`)
 				.setThumbnail(rankIMG)
@@ -110,15 +109,56 @@ module.exports = {
 						value: `${"```ansi"}\n\u001b[0;33m${rankBR} \n\u001b[0;37mRP: \u001b[0;33m${user.data.global.rank.rankScore}${"```"}`,
 						inline: true,
 					},
-					{
-						name: `Selected Legend: ${user.data.legends.selected.LegendName}`,
-						value: `${"```ansi"}\n\u001b[0;37m${selectedLegend.data[0].name}: \u001b[0;33m${selectedLegend.data[0].value} \u001b[0;37m(\u001b[0;33m${selectedLegend.data[0].rank.topPercent}\u001b[0;37m%)\n${selectedLegend.data[1].name}: \u001b[0;33m${selectedLegend.data[1].value} \u001b[0;37m(\u001b[0;33m${selectedLegend.data[1].rank.topPercent}\u001b[0;37m%)\n${selectedLegend.data[2].name}: \u001b[0;33m${selectedLegend.data[2].value} \u001b[0;37m(\u001b[0;33m${selectedLegend.data[2].rank.topPercent}\u001b[0;37m%)${"```"}`,
-						inline: false,
-					},
+
 				)
 				.setColor("#e3a600")
 				.setTimestamp()
 				.setFooter({ text: "Bugs can be reported with /bug", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" });
+			if (selectedLegend.data != undefined){
+				let selectedLegendValue = [];
+				if (selectedLegend.data[0] != undefined){
+					selectedLegendValue.push({
+						name: selectedLegend.data[0].name,
+						value: selectedLegend.data[0].value,
+						topPercent: selectedLegend.data[0].rank.topPercent
+					})
+				}
+				if (selectedLegend.data[1] != undefined) {
+					selectedLegendValue.push({
+						name: selectedLegend.data[1].name,
+						value: selectedLegend.data[1].value,
+						topPercent: selectedLegend.data[1].rank.topPercent
+					})
+				}
+				if (selectedLegend.data[2] != undefined) {
+					selectedLegendValue.push({
+						name: selectedLegend.data[2].name,
+						value: selectedLegend.data[2].value,
+						topPercent: selectedLegend.data[2].rank.topPercent
+					})
+				}
+				let selectedLegendValueString = "```ansi";
+				selectedLegendValue.forEach(function(i, idx, array) {
+					if (idx === array.length - 1){
+						selectedLegendValueString += `\n\u001b[0;37m${i.name}: \u001b[0;33m${i.value} \u001b[0;37m(\u001b[0;33m${i.topPercent}\u001b[0;37m%)`
+						selectedLegendValueString += "```";
+						return;
+					}
+					selectedLegendValueString += `\n\u001b[0;37m${i.name}: \u001b[0;33m${i.value} \u001b[0;37m(\u001b[0;33m${i.topPercent}\u001b[0;37m%)`
+
+				})
+				embed.addFields({
+					name: `Selected Legend: ${user.data.legends.selected.LegendName}`,
+					value: selectedLegendValueString,
+					inline: false,
+				})
+			} else {
+				embed.addFields({
+					name: `Selected Legend: ${user.data.legends.selected.LegendName}`,
+					value: "```ansi\n\u001b[0;37mNo trackers selected!```",
+					inline: false,
+				})
+			}
 			if (user.data.global.arena.rankScore != 0) {
 				embed.addFields({
 					name: "**Arenas**",
@@ -178,7 +218,7 @@ module.exports = {
 				return await interaction.editReply({ embeds: [new MessageEmbed().setColor("#e3a600").setTitle("An error accrued!").setDescription(error.response.request.res.statusMessage.toString()).setTimestamp().setFooter({ text: "Error page", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" })] });
 			}
 			if (error) {
-				logger.error(new Error(error), { command: "stats", guildID: interaction.guildId });
+				logger.error(error), { command: "stats", guildID: interaction.guildId };
 				return await interaction.editReply({ embeds: [new MessageEmbed().setColor("#e3a600").setTitle("An error accrued!").setDescription("Please try again later!").setTimestamp().setFooter({ text: "Error page", iconURL: "https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=256" })] });
 			}
 		}
