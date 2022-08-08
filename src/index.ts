@@ -1,5 +1,5 @@
 import { ActivityType, Client, Collection, Command, GatewayIntentBits, InteractionType } from "discord.js";
-import { readdirSync } from "fs";
+import { readdirSync, existsSync, mkdir } from "fs";
 import path from "path";
 import { logger } from "./components/logger";
 import { hostname, type, version } from "os";
@@ -17,6 +17,15 @@ for (const folder of readdirSync(commandsPath)) {
             const command = require(path.join(commandsPath, folder, file));
             commands.set(command.data.name, command);
       }
+}
+
+const tempFolder = path.join(__dirname, "temp");
+if (!existsSync(tempFolder)) {
+      logger.info("Temp directory doesn't exist!", { file: filename(__filename) });
+      mkdir(tempFolder, error => {
+            if (error) return logger.error(error);
+            logger.info("Made temp directory!", { file: filename(__filename) });
+      });
 }
 
 client.once("ready", () => {
@@ -37,8 +46,9 @@ client.on("interactionCreate", async interaction => {
             if (!command) return;
 
             try {
+                  const deferredReply = await interaction.deferReply({ fetchReply: true });
                   await command.execute(interaction);
-                  logger.info(`[${interaction.user.username}] used [/${interaction.commandName}] in [${interaction.guild?.name}]`, { discordId: interaction.user.id, serverId: interaction.guild?.id, file: filename(__filename) });
+                  logger.info(`[${interaction.user.username}] used [/${interaction.commandName}] in [${interaction.guild?.name}]. Bot response time: ${deferredReply.createdTimestamp - interaction.createdTimestamp}ms`, { discordId: interaction.user.id, serverId: interaction.guild?.id, file: filename(__filename), responseTime: deferredReply.createdTimestamp - interaction.createdTimestamp });
             }
             catch (error) {
                   //TODO: Make a seperate error handeler in components
