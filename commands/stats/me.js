@@ -77,13 +77,22 @@ module.exports = {
 				const embed = new MessageEmbed()
 					.setTitle(`${platformEmoji}  ${user.data.global.name}`)
 					.setThumbnail(rankIMG)
-					.setDescription(`${stateEmoji} ${currentState}`)
-					.addFields(
-						{
+					.setDescription(`${stateEmoji} ${currentState}`);
+					if (user.data.global.levelPrestige != undefined) {
+						embed.addFields({
+								name: "**Level**",
+								value: `${"```ansi"}\n\u001b[0;33m${user.data.global.level}\n\u001b[0;37mPrestige \u001b[0;33m${user.data.global.levelPrestige} \n${user.data.global.toNextLevelPercent}\u001b[0;37m% /\u001b[0;33m 100\u001b[0;37m%${"```"}`,
+								inline: true,
+						})
+					}else {
+						embed.addFields({
 							name: "**Level**",
 							value: `${"```ansi"}\n\u001b[0;33m${user.data.global.level} \n${user.data.global.toNextLevelPercent}\u001b[0;37m% /\u001b[0;33m 100\u001b[0;37m%${"```"}`,
 							inline: true,
-						},
+					})
+					}
+					embed.addFields(
+
 						{
 							name: "**Battle Royale**",
 							value: `${"```ansi"}\n\u001b[0;33m${rankBR} \n\u001b[0;37mRP: \u001b[0;33m${user.data.global.rank.rankScore}${"```"}`,
