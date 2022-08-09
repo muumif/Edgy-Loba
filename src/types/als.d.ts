@@ -156,3 +156,50 @@ export interface MapData {
 		}
 	},
 }
+
+export interface StatusData {
+	["EA_novafusion"]: {
+		["EU-West"]: {
+			Status: string,
+			HTTPCode: 200,
+			ResponseTime: number,
+			QueryTimestamp: number
+		},
+		["EU-East"]: {
+			Status: string,
+			HTTPCode: number,
+			ResponseTime: number,
+			QueryTimestamp: number
+		},
+		["US-West"]: {
+			Status: string,
+			HTTPCode: number,
+			ResponseTime: number,
+			QueryTimestamp: number
+		},
+		["US-Central"]: {
+			Status: string,
+			HTTPCode: number,
+			ResponseTime: number,
+			QueryTimestamp: number
+		},
+		["US-East"]: {
+			Status: string,
+			HTTPCode: number,
+			ResponseTime: number,
+			QueryTimestamp: number
+		},
+		["SouthAmerica"]: {
+			Status: string,
+			HTTPCode: number,
+			ResponseTime: number,
+			QueryTimestamp: number
+		},
+		["Asia"]: {
+			Status: string,
+			HTTPCode: number,
+			ResponseTime: number,
+			QueryTimestamp: number
+		}
+	}
+}
