@@ -8,7 +8,7 @@ export class embed {
       public defaultEmbed() {
             const embed = new EmbedBuilder()
                   .setTimestamp()
-                  .setColor([222, 160, 0])
+                  .setColor([222, 160, 0]) //Should be in const
                   .setFooter({ text: defaultTexts[Math.floor(Math.random() * defaultTexts.length)], iconURL: profilePic(128) });
             return embed;
       }
@@ -16,7 +16,7 @@ export class embed {
       public errorEmbed() {
             const embed = new EmbedBuilder()
                   .setTimestamp()
-                  .setColor([220, 55, 45])
+                  .setColor([220, 55, 45]) // Should be in const
                   .setFooter({ text: errorTexts[Math.floor(Math.random() * errorTexts.length)], iconURL: profilePic(128) });
             return embed;
       }

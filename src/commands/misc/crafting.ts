@@ -11,7 +11,6 @@ module.exports = {
             .setDescription("Shows the current items that can be crafted at the replicator!"),
 
       async execute(interaction: CommandInteraction) {
-
             try {
                   const craftingData = await (await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/crafting?auth=${process.env.ALS_TOKEN}`))).data as CraftingData[];
                   const craftingEmbed = new embed().defaultEmbed()

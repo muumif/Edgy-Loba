@@ -48,7 +48,7 @@ client.on("interactionCreate", async interaction => {
             try {
                   const deferredReply = await interaction.deferReply({ fetchReply: true });
                   await command.execute(interaction);
-                  logger.info(`[${interaction.user.username}] used [/${interaction.commandName}] in [${interaction.guild?.name}]. Bot response time: ${deferredReply.createdTimestamp - interaction.createdTimestamp}ms`, { discordId: interaction.user.id, serverId: interaction.guild?.id, file: filename(__filename), responseTime: deferredReply.createdTimestamp - interaction.createdTimestamp });
+                  logger.info(`[${interaction.user.username}] used [/${interaction.commandName}] in [${interaction.guild?.name}]. Bot response time: ${deferredReply.createdTimestamp - interaction.createdTimestamp}ms`, { command: interaction.commandName, discordId: interaction.user.id, serverId: interaction.guild?.id, file: filename(__filename), responseTime: deferredReply.createdTimestamp - interaction.createdTimestamp });
             }
             catch (error) {
                   //TODO: Make a seperate error handeler in components
