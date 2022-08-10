@@ -203,3 +203,66 @@ export interface StatusData {
 		}
 	}
 }
+
+export interface PredatorData {
+		RP: {
+			PC: {
+				foundRank: number,
+				val: number,
+				uid: string,
+				updateTimestamp: number,
+				totalMastersAndPreds: number
+			},
+			PS4: {
+				foundRank: number,
+				val: number,
+				uid: string,
+				updateTimestamp: number,
+				totalMastersAndPreds: number
+			},
+			X1: {
+				foundRank: number,
+				val: number,
+				uid: string,
+				updateTimestamp: number,
+				totalMastersAndPreds: number
+			},
+			SWITCH: {
+				foundRank: number,
+				val: number,
+				uid: string,
+				updateTimestamp: number,
+				totalMastersAndPreds: number
+			}
+		},
+		AP: {
+			PC: {
+				foundRank: number,
+				val: 8000,
+				uid: string,
+				updateTimestamp: number,
+				totalMastersAndPreds: number
+			},
+			PS4: {
+				foundRank: number,
+				val: 8000,
+				uid: string,
+				updateTimestamp: number,
+				totalMastersAndPreds: number
+			},
+			X1: {
+				foundRank: number,
+				val: 8000,
+				uid: string,
+				updateTimestamp: number,
+				totalMastersAndPreds: number
+			},
+			SWITCH: {
+				foundRank: number,
+				val: 8000,
+				uid: string,
+				updateTimestamp: number,
+				totalMastersAndPreds: number
+			}
+		}
+}

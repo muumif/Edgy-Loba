@@ -32,7 +32,7 @@ client.once("ready", () => {
       logger.info("▬▬ι═══════ﺤ Edgy Loba is now online -═══════ι▬▬", { file: filename(__filename) });
       logger.info(`Hostname: ${hostname} | Environment: ${process.env.NODE_ENV} | Version: ${process.env.npm_package_version} | OS: ${type} ${version}`, { file: filename(__filename) });
       if (process.env.NODE_ENV == "production") {
-            client.user?.setPresence({ activities: [{ name: `${client.guilds.cache.size} servers!`, type: ActivityType.Listening }], status: "online" });
+            client.user?.setPresence({ activities: [{ name: `${client.guilds.cache.size} servers!`, type: ActivityType.Playing }], status: "online" });
       }
       else {
             client.user?.setPresence({ activities: [{ name: "Internal build!" }], status: "dnd" });
