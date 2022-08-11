@@ -1,7 +1,8 @@
 import { CommandInteraction, SlashCommandBuilder } from "discord.js";
 import { embed } from "../../components/embeds";
 import axios from "axios";
-import { BitlyData, NewsData } from "../../types/als";
+import { NewsData } from "../../types/als";
+import { BitlyData } from "../../types/bitly";
 import { logger } from "../../components/logger";
 import { filename } from "../../components/const";
 
