@@ -51,7 +51,6 @@ client.on("interactionCreate", async interaction => {
                   logger.info(`[${interaction.user.username}] used [/${interaction.commandName}] in [${interaction.guild?.name}]. Bot response time: ${deferredReply.createdTimestamp - interaction.createdTimestamp}ms`, { command: interaction.commandName, discordId: interaction.user.id, serverId: interaction.guild?.id, file: filename(__filename), responseTime: deferredReply.createdTimestamp - interaction.createdTimestamp });
             }
             catch (error) {
-                  //TODO: Make a seperate error handeler in components
                   await interaction.reply({ content: "There was an error while executing this command!", ephemeral: true });
             }
       }

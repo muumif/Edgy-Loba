@@ -1,17 +1,21 @@
 import { Snowflake } from "discord.js";
 import { ObjectId } from "mongodb";
 
+interface UserServers {
+      serverId: Snowflake;
+}
+
 export interface UserDocument {
       id?: ObjectId;
       discordId: Snowflake;
       originId: string;
       RP: number;
       AP: number;
-      platform: string;
-      servers: [{ id: string; }];
+      platform: "PC" | "X1" | "PS4";
+      servers: [ UserServers ];
 }
 
-export interface GuildDocument {
+export interface ServerDocument {
       id?: ObjectId;
       serverId: Snowflake;
       name: string;
@@ -34,5 +38,4 @@ export interface BugDocument {
             command: string;
             message: string
       }
-
 }
