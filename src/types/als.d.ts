@@ -1,3 +1,17 @@
+interface Tracker {
+	name: string,
+	value: number,
+	key: string,
+	rank: {
+		rankPos: number,
+		topPercent: number
+	},
+	rankPlatformSpecific: {
+		rankPos: number | "NOT_CALCULATED_YET",
+		topPercent: number | "NOT_CALCULATED_YET"
+	}
+}
+
 export interface ALSUserData {
 		global: {
 			name: string,
@@ -15,7 +29,7 @@ export interface ALSUserData {
 			rank: {
 				rankScore: number,
 				rankName: string,
-				rankDiv: number,
+				rankDiv: 0 | 1 | 2 | 3 | 4,
 				ladderPosPlatform: number,
 				rankImg: string,
 				rankedSeason: string
@@ -23,7 +37,7 @@ export interface ALSUserData {
 			arena: {
 				rankScore: number,
 				rankName: string,
-				rankDiv: number,
+				rankDiv: 0 | 1 | 2 | 3 | 4,
 				ladderPosPlatform: number,
 				rankImg: string,
 				rankedSeason: string
@@ -53,36 +67,24 @@ export interface ALSUserData {
 					value: number
 				},
 			],
-			levelPrestige: number
+			levelPrestige: 0 | 1 | 2 | 3
 		},
 		realtime: {
-			lobbyState: string,
+			lobbyState: "invite" | "open",
 			isOnline: number,
 			isInGame: number,
 			canJoin: number,
 			partyFull: number,
-			selectedLegend: string,
-			currentState: "offline" | "online",
+			selectedLegend: "Revenant" | "Crypto" | "Horizon" | "Gibraltar" | "Wattson" | "Fuse" | "Bangalore" | "Wraith" | "Octane" | "Bloodhound" | "Caustic" | "Lifeline" | "Pathfinder" | "Loba" | "Mirage" | "Rampart" | "Valkyrie" | "Seer" | "Ash" | "Mad Maggie" | "Vantage",
+			currentState: "offline" | "inLobby" | "inMatch",
 			currentStateSinceTimestamp: number,
 			currentStateAsText: string
 		},
 		legends: {
 			selected: {
-				LegendName: string,
+				LegendName: "Revenant" | "Crypto" | "Horizon" | "Gibraltar" | "Wattson" | "Fuse" | "Bangalore" | "Wraith" | "Octane" | "Bloodhound" | "Caustic" | "Lifeline" | "Pathfinder" | "Loba" | "Mirage" | "Rampart" | "Valkyrie" | "Seer" | "Ash" | "Mad Maggie" | "Vantage",
 				data: [
-					{
-						name: string,
-						value: number,
-						key: string,
-						rank: {
-							rankPos: number,
-							topPercent: number
-						},
-						rankPlatformSpecifig: {
-							rankPos: number,
-							topPercent: number
-						}
-					},
+					Tracker
 				] | undefined,
 				gameInfo: {
 					skin: string,
@@ -97,7 +99,7 @@ export interface ALSUserData {
 						{
 							name: string,
 							value: number,
-							category: string //This could be a or case bc this only has legend names and global
+							category: "Account Badges" | "Revenant" | "Crypto" | "Horizon" | "Gibraltar" | "Wattson" | "Fuse" | "Bangalore" | "Wraith" | "Octane" | "Bloodhound" | "Caustic" | "Lifeline" | "Pathfinder" | "Loba" | "Mirage" | "Rampart" | "Valkyrie" | "Seer" | "Ash" | "Mad Maggie" | "Vantage"
 						},
 					] | undefined
 				},
@@ -106,648 +108,424 @@ export interface ALSUserData {
 					banner: string
 				},
 			},
-			Global: {
-				ImgAssets: {
-					icon: "https://api.mozambiquehe.re/assets/icons/global.png",
-					banner: "https://api.mozambiquehe.re/assets/banners/global.jpg"
-				}
-			},
-			Revenant: {
-				data: [
-					{
-						name: string,
-						value: number,
-						key: string,
-						rank: {
-							rankPos: number,
-							topPercent: number
-						},
-						rankPlatformSpecifig: {
-							rankPos: number,
-							topPercent: number
-						}
-					},
-				] | undefined,
-				gameInfo: {
-					badges: [
-							{
-								name: string,
-								value: number,
-							},
-					] | undefined
+			all: {
+				Global: {
+					ImgAssets: {
+						icon: "https://api.mozambiquehe.re/assets/icons/global.png",
+						banner: "https://api.mozambiquehe.re/assets/banners/global.jpg"
+					}
 				},
-				ImgAssets: {
-					icon: "https://api.mozambiquehe.re/assets/icons/revenant.png",
-					banner: "https://api.mozambiquehe.re/assets/banners/revenant.jpg"
-				}
-			},
-			Crypto: {
-				data: [
-					{
-						name: string,
-						value: number,
-						key: string,
-						rank: {
-							rankPos: number,
-							topPercent: number
-						},
-						rankPlatformSpecifig: {
-							rankPos: number,
-							topPercent: number
-						}
+				Revenant: {
+					data: [
+						Tracker
+					] | undefined,
+					gameInfo: {
+						badges: [
+								{
+									name: string,
+									value: number,
+								},
+						] | undefined
 					},
-				] | undefined,
-				gameInfo: {
-					badges: [
-							{
-								name: string,
-								value: number,
-							},
-					] | undefined
+					ImgAssets: {
+						icon: "https://api.mozambiquehe.re/assets/icons/revenant.png",
+						banner: "https://api.mozambiquehe.re/assets/banners/revenant.jpg"
+					}
 				},
-				ImgAssets: {
-					icon: "https://api.mozambiquehe.re/assets/icons/crypto.png",
-					banner: "https://api.mozambiquehe.re/assets/banners/crypto.jpg"
-				}
-			},
-			Horizon: {
-				data: [
-					{
-						name: string,
-						value: number,
-						key: string,
-						rank: {
-							rankPos: number,
-							topPercent: number
-						},
-						rankPlatformSpecifig: {
-							rankPos: number,
-							topPercent: number
-						}
-					},
-				] | undefined,
-				gameInfo: {
-					badges: [
-							{
-								name: string,
-								value: number,
+				Crypto: {
+					data: [
+						{
+							name: string,
+							value: number,
+							key: string,
+							rank: {
+								rankPos: number,
+								topPercent: number
 							},
-					] | undefined
+							rankPlatformSpecific: {
+								rankPos: number,
+								topPercent: number
+							}
+						},
+						{
+							name: string,
+							value: number,
+							key: string,
+							rank: {
+								rankPos: number,
+								topPercent: number
+							},
+							rankPlatformSpecific: {
+								rankPos: number,
+								topPercent: number
+							}
+						},
+						{
+							name: string,
+							value: number,
+							key: string,
+							rank: {
+								rankPos: number,
+								topPercent: number
+							},
+							rankPlatformSpecific: {
+								rankPos: number,
+								topPercent: number
+							}
+						},
+					] | undefined,
+					gameInfo: {
+						badges: [
+								{
+									name: string,
+									value: number,
+								},
+						] | undefined
+					},
+					ImgAssets: {
+						icon: "https://api.mozambiquehe.re/assets/icons/crypto.png",
+						banner: "https://api.mozambiquehe.re/assets/banners/crypto.jpg"
+					}
 				},
-				ImgAssets: {
-					icon: "https://api.mozambiquehe.re/assets/icons/horizon.png",
-					banner: "https://api.mozambiquehe.re/assets/banners/horizon.jpg"
-				}
-			},
-			Gibraltar: {
-				data: [
-					{
-						name: string,
-						value: number,
-						key: string,
-						rank: {
-							rankPos: number,
-							topPercent: number
-						},
-						rankPlatformSpecifig: {
-							rankPos: number,
-							topPercent: number
-						}
+				Horizon: {
+					data: [
+Tracker
+					] | undefined,
+					gameInfo: {
+						badges: [
+								{
+									name: string,
+									value: number,
+								},
+						] | undefined
 					},
-				] | undefined,
-				gameInfo: {
-					badges: [
-							{
-								name: string,
-								value: number,
-							},
-					] | undefined
+					ImgAssets: {
+						icon: "https://api.mozambiquehe.re/assets/icons/horizon.png",
+						banner: "https://api.mozambiquehe.re/assets/banners/horizon.jpg"
+					}
 				},
-				ImgAssets: {
-					icon: "https://api.mozambiquehe.re/assets/icons/gibraltar.png",
-					banner: "https://api.mozambiquehe.re/assets/banners/gibraltar.jpg"
-				}
-			},
-			Wattson: {
-				data: [
-					{
-						name: string,
-						value: number,
-						key: string,
-						rank: {
-							rankPos: number,
-							topPercent: number
-						},
-						rankPlatformSpecifig: {
-							rankPos: number,
-							topPercent: number
-						}
+				Gibraltar: {
+					data: [
+Tracker
+					] | undefined,
+					gameInfo: {
+						badges: [
+								{
+									name: string,
+									value: number,
+								},
+						] | undefined
 					},
-				] | undefined,
-				gameInfo: {
-					badges: [
-							{
-								name: string,
-								value: number,
-							},
-					] | undefined
+					ImgAssets: {
+						icon: "https://api.mozambiquehe.re/assets/icons/gibraltar.png",
+						banner: "https://api.mozambiquehe.re/assets/banners/gibraltar.jpg"
+					}
 				},
-				ImgAssets: {
-					icon: "https://api.mozambiquehe.re/assets/icons/wattson.png",
-					banner: "https://api.mozambiquehe.re/assets/banners/wattson.jpg"
-				}
-			},
-			Fuse: {
-				data: [
-					{
-						name: string,
-						value: number,
-						key: string,
-						rank: {
-							rankPos: number,
-							topPercent: number
-						},
-						rankPlatformSpecifig: {
-							rankPos: number,
-							topPercent: number
-						}
+				Wattson: {
+					data: [
+Tracker
+					] | undefined,
+					gameInfo: {
+						badges: [
+								{
+									name: string,
+									value: number,
+								},
+						] | undefined
 					},
-				] | undefined,
-				gameInfo: {
-					badges: [
-							{
-								name: string,
-								value: number,
-							},
-					] | undefined
+					ImgAssets: {
+						icon: "https://api.mozambiquehe.re/assets/icons/wattson.png",
+						banner: "https://api.mozambiquehe.re/assets/banners/wattson.jpg"
+					}
 				},
-				ImgAssets: {
-					icon: "https://api.mozambiquehe.re/assets/icons/fuse.png",
-					banner: "https://api.mozambiquehe.re/assets/banners/fuse.jpg"
-				}
-			},
-			Bangalore: {
-				data: [
-					{
-						name: string,
-						value: number,
-						key: string,
-						rank: {
-							rankPos: number,
-							topPercent: number
-						},
-						rankPlatformSpecifig: {
-							rankPos: number,
-							topPercent: number
-						}
+				Fuse: {
+					data: [
+Tracker
+					] | undefined,
+					gameInfo: {
+						badges: [
+								{
+									name: string,
+									value: number,
+								},
+						] | undefined
 					},
-				] | undefined,
-				gameInfo: {
-					badges: [
-							{
-								name: string,
-								value: number,
-							},
-					]
-				} | undefined,
-				ImgAssets: {
-					icon: "https://api.mozambiquehe.re/assets/icons/bangalore.png",
-					banner: "https://api.mozambiquehe.re/assets/banners/bangalore.jpg"
-				}
-			},
-			Wraith: {
-				data: [
-					{
-						name: string,
-						value: number,
-						key: string,
-						rank: {
-							rankPos: number,
-							topPercent: number
-						},
-						rankPlatformSpecifig: {
-							rankPos: number,
-							topPercent: number
-						}
-					},
-				] | undefined,
-				gameInfo: {
-					badges: [
-							{
-								name: string,
-								value: number,
-							},
-					]
-				} | undefined,
-				ImgAssets: {
-					icon: "https://api.mozambiquehe.re/assets/icons/wraith.png",
-					banner: "https://api.mozambiquehe.re/assets/banners/wraith.jpg"
-				}
-			},
-			Octane: {
-				data: [
-					{
-						name: string,
-						value: number,
-						key: string,
-						rank: {
-							rankPos: number,
-							topPercent: number
-						},
-						rankPlatformSpecifig: {
-							rankPos: number,
-							topPercent: number
-						}
-					},
-				] | undefined,
-				gameInfo: {
-					badges: [
-							{
-								name: string,
-								value: number,
-							},
-					]
-				} | undefined,
-				ImgAssets: {
-					icon: "https://api.mozambiquehe.re/assets/icons/octane.png",
-					banner: "https://api.mozambiquehe.re/assets/banners/octane.jpg"
-				}
-			},
-			Bloodhound: {
-				data: [
-					{
-						name: string,
-						value: number,
-						key: string,
-						rank: {
-							rankPos: number,
-							topPercent: number
-						},
-						rankPlatformSpecifig: {
-							rankPos: number,
-							topPercent: number
-						}
-					},
-				] | undefined,
-				gameInfo: {
-					badges: [
-							{
-								name: string,
-								value: number,
-							},
-					]
-				} | undefined,
-				ImgAssets: {
-					icon: "https://api.mozambiquehe.re/assets/icons/bloodhound.png",
-					banner: "https://api.mozambiquehe.re/assets/banners/bloodhound.jpg"
-				}
-			},
-			Caustic: {
-				data: [
-					{
-						name: string,
-						value: number,
-						key: string,
-						rank: {
-							rankPos: number,
-							topPercent: number
-						},
-						rankPlatformSpecifig: {
-							rankPos: number,
-							topPercent: number
-						}
-					},
-				] | undefined,
-				gameInfo: {
-					badges: [
-							{
-								name: string,
-								value: number,
-							},
-					]
-				} | undefined,
-				ImgAssets: {
-					icon: "https://api.mozambiquehe.re/assets/icons/caustic.png",
-					banner: "https://api.mozambiquehe.re/assets/banners/caustic.jpg"
-				}
-			},
-			Lifeline: {
-				data: [
-					{
-						name: string,
-						value: number,
-						key: string,
-						rank: {
-							rankPos: number,
-							topPercent: number
-						},
-						rankPlatformSpecifig: {
-							rankPos: number,
-							topPercent: number
-						}
-					},
-				] | undefined,
-				gameInfo: {
-					badges: [
-							{
-								name: string,
-								value: number,
-							},
-					]
-				} | undefined,
-				ImgAssets: {
-					icon: "https://api.mozambiquehe.re/assets/icons/lifeline.png",
-					banner: "https://api.mozambiquehe.re/assets/banners/lifeline.jpg"
-				}
-			},
-			Pathfinder: {
-				data: [
-					{
-						name: string,
-						value: number,
-						key: string,
-						rank: {
-							rankPos: number,
-							topPercent: number
-						},
-						rankPlatformSpecifig: {
-							rankPos: number,
-							topPercent: number
-						}
-					},
-				] | undefined,
-				gameInfo: {
-					badges: [
-							{
-								name: string,
-								value: number,
-							},
-					]
-				} | undefined,
-				ImgAssets: {
-					icon: "https://api.mozambiquehe.re/assets/icons/pathfinder.png",
-					banner: "https://api.mozambiquehe.re/assets/banners/pathfinder.jpg"
-				}
-			},
-			Loba: {
-				data: [
-					{
-						name: string,
-						value: number,
-						key: string,
-						rank: {
-							rankPos: number,
-							topPercent: number
-						},
-						rankPlatformSpecifig: {
-							rankPos: number,
-							topPercent: number
-						}
-					},
-				] | undefined,
-				gameInfo: {
-					badges: [
-							{
-								name: string,
-								value: number,
-							},
-					]
-				} | undefined,
-				ImgAssets: {
-					icon: "https://api.mozambiquehe.re/assets/icons/loba.png",
-					banner: "https://api.mozambiquehe.re/assets/banners/loba.jpg"
-				}
-			},
-			Mirage: {
-				data: [
-					{
-						name: string,
-						value: number,
-						key: string,
-						rank: {
-							rankPos: number,
-							topPercent: number
-						},
-						rankPlatformSpecifig: {
-							rankPos: number,
-							topPercent: number
-						}
-					},
-				] | undefined,
-				gameInfo: {
-					badges: [
-							{
-								name: string,
-								value: number,
-							},
-					]
-				} | undefined,
-				ImgAssets: {
-					icon: "https://api.mozambiquehe.re/assets/icons/mirage.png",
-					banner: "https://api.mozambiquehe.re/assets/banners/mirage.jpg"
-				}
-			},
-			Rampart: {
-				data: [
-					{
-						name: string,
-						value: number,
-						key: string,
-						rank: {
-							rankPos: number,
-							topPercent: number
-						},
-						rankPlatformSpecifig: {
-							rankPos: number,
-							topPercent: number
-						}
-					},
-				] | undefined,
-				gameInfo: {
-					badges: [
-							{
-								name: string,
-								value: number,
-							},
-					]
-				} | undefined,
-				ImgAssets: {
-					icon: "https://api.mozambiquehe.re/assets/icons/rampart.png",
-					banner: "https://api.mozambiquehe.re/assets/banners/rampart.jpg"
-				}
-			},
-			Valkyrie: {
-				data: [
-					{
-						name: string,
-						value: number,
-						key: string,
-						rank: {
-							rankPos: number,
-							topPercent: number
-						},
-						rankPlatformSpecifig: {
-							rankPos: number,
-							topPercent: number
-						}
-					},
-				] | undefined,
-				gameInfo: {
-					badges: [
-							{
-								name: string,
-								value: number,
-							},
-					]
-				} | undefined,
-				ImgAssets: {
-					icon: "https://api.mozambiquehe.re/assets/icons/valkyrie.png",
-					banner: "https://api.mozambiquehe.re/assets/banners/valkyrie.jpg"
-				}
-			},
-			Seer: {
-				data: [
-					{
-						name: string,
-						value: number,
-						key: string,
-						rank: {
-							rankPos: number,
-							topPercent: number
-						},
-						rankPlatformSpecifig: {
-							rankPos: number,
-							topPercent: number
-						}
-					},
-				] | undefined,
-				gameInfo: {
-					badges: [
-							{
-								name: string,
-								value: number,
-							},
-					]
-				} | undefined,
-				ImgAssets: {
-					icon: "https://api.mozambiquehe.re/assets/icons/seer.png",
-					banner: "https://api.mozambiquehe.re/assets/banners/seer.jpg"
-				}
-			},
-			Ash: {
-				data: [
-					{
-						name: string,
-						value: number,
-						key: string,
-						rank: {
-							rankPos: number,
-							topPercent: number
-						},
-						rankPlatformSpecifig: {
-							rankPos: number,
-							topPercent: number
-						}
-					},
-				] | undefined,
-				gameInfo: {
-					badges: [
-							{
-								name: string,
-								value: number,
-							},
-					]
-				} | undefined,
-				ImgAssets: {
-					icon: "https://api.mozambiquehe.re/assets/icons/ash.png",
-					banner: "https://api.mozambiquehe.re/assets/banners/ash.jpg"
-				}
-			},
-			["Mad Maggie"]: {
-				data: [
-					{
-						name: string,
-						value: number,
-						key: string,
-						rank: {
-							rankPos: number,
-							topPercent: number
-						},
-						rankPlatformSpecifig: {
-							rankPos: number,
-							topPercent: number
-						}
-					},
-				] | undefined,
-				gameInfo: {
-					badges: [
-							{
-								name: string,
-								value: number,
-							},
-					]
-				} | undefined,
-				ImgAssets: {
-					icon: "https://api.mozambiquehe.re/assets/icons/mad maggie.png",
-					banner: "https://api.mozambiquehe.re/assets/banners/mad maggie.jpg"
-				}
-			},
-			Newcastle: {
-				data: [
-					{
-						name: string,
-						value: number,
-						key: string,
-						rank: {
-							rankPos: number,
-							topPercent: number
-						},
-						rankPlatformSpecifig: {
-							rankPos: number,
-							topPercent: number
-						}
-					},
-				] | undefined,
-				gameInfo: {
-					badges: [
-							{
-								name: string,
-								value: number,
-							},
-					]
-				} | undefined,
-				ImgAssets: {
-					icon: "https://api.mozambiquehe.re/assets/icons/newcastle.png",
-					banner: "https://api.mozambiquehe.re/assets/banners/newcastle.jpg"
-				}
-			},
-			Vantage: {
-				data: [
-					{
-						name: string,
-						value: number,
-						key: string,
-						rank: {
-							rankPos: number,
-							topPercent: number
-						},
-						rankPlatformSpecifig: {
-							rankPos: number,
-							topPercent: number
-						}
-					},
-				] | undefined,
-				gameInfo: {
-					badges: [
-							{
-								name: string,
-								value: number,
-							},
-					]
-				} | undefined,
-				ImgAssets: {
-					icon: "https://api.mozambiquehe.re/assets/icons/vantage.png",
-					banner: "https://api.mozambiquehe.re/assets/banners/vantage.jpg"
+					ImgAssets: {
+						icon: "https://api.mozambiquehe.re/assets/icons/fuse.png",
+						banner: "https://api.mozambiquehe.re/assets/banners/fuse.jpg"
+					}
+				},
+				Bangalore: {
+					data: [
+Tracker
+					] | undefined,
+					gameInfo: {
+						badges: [
+								{
+									name: string,
+									value: number,
+								},
+						]
+					} | undefined,
+					ImgAssets: {
+						icon: "https://api.mozambiquehe.re/assets/icons/bangalore.png",
+						banner: "https://api.mozambiquehe.re/assets/banners/bangalore.jpg"
+					}
+				},
+				Wraith: {
+					data: [
+Tracker
+					] | undefined,
+					gameInfo: {
+						badges: [
+								{
+									name: string,
+									value: number,
+								},
+						]
+					} | undefined,
+					ImgAssets: {
+						icon: "https://api.mozambiquehe.re/assets/icons/wraith.png",
+						banner: "https://api.mozambiquehe.re/assets/banners/wraith.jpg"
+					}
+				},
+				Octane: {
+					data: [
+Tracker
+					] | undefined,
+					gameInfo: {
+						badges: [
+								{
+									name: string,
+									value: number,
+								},
+						]
+					} | undefined,
+					ImgAssets: {
+						icon: "https://api.mozambiquehe.re/assets/icons/octane.png",
+						banner: "https://api.mozambiquehe.re/assets/banners/octane.jpg"
+					}
+				},
+				Bloodhound: {
+					data: [
+Tracker
+					] | undefined,
+					gameInfo: {
+						badges: [
+								{
+									name: string,
+									value: number,
+								},
+						]
+					} | undefined,
+					ImgAssets: {
+						icon: "https://api.mozambiquehe.re/assets/icons/bloodhound.png",
+						banner: "https://api.mozambiquehe.re/assets/banners/bloodhound.jpg"
+					}
+				},
+				Caustic: {
+					data: [
+Tracker
+					] | undefined,
+					gameInfo: {
+						badges: [
+								{
+									name: string,
+									value: number,
+								},
+						]
+					} | undefined,
+					ImgAssets: {
+						icon: "https://api.mozambiquehe.re/assets/icons/caustic.png",
+						banner: "https://api.mozambiquehe.re/assets/banners/caustic.jpg"
+					}
+				},
+				Lifeline: {
+					data: [
+Tracker
+					] | undefined,
+					gameInfo: {
+						badges: [
+								{
+									name: string,
+									value: number,
+								},
+						]
+					} | undefined,
+					ImgAssets: {
+						icon: "https://api.mozambiquehe.re/assets/icons/lifeline.png",
+						banner: "https://api.mozambiquehe.re/assets/banners/lifeline.jpg"
+					}
+				},
+				Pathfinder: {
+					data: [
+Tracker
+					] | undefined,
+					gameInfo: {
+						badges: [
+								{
+									name: string,
+									value: number,
+								},
+						]
+					} | undefined,
+					ImgAssets: {
+						icon: "https://api.mozambiquehe.re/assets/icons/pathfinder.png",
+						banner: "https://api.mozambiquehe.re/assets/banners/pathfinder.jpg"
+					}
+				},
+				Loba: {
+					data: [
+Tracker
+					] | undefined,
+					gameInfo: {
+						badges: [
+								{
+									name: string,
+									value: number,
+								},
+						]
+					} | undefined,
+					ImgAssets: {
+						icon: "https://api.mozambiquehe.re/assets/icons/loba.png",
+						banner: "https://api.mozambiquehe.re/assets/banners/loba.jpg"
+					}
+				},
+				Mirage: {
+					data: [
+Tracker
+					] | undefined,
+					gameInfo: {
+						badges: [
+								{
+									name: string,
+									value: number,
+								},
+						]
+					} | undefined,
+					ImgAssets: {
+						icon: "https://api.mozambiquehe.re/assets/icons/mirage.png",
+						banner: "https://api.mozambiquehe.re/assets/banners/mirage.jpg"
+					}
+				},
+				Rampart: {
+					data: [
+Tracker
+					] | undefined,
+					gameInfo: {
+						badges: [
+								{
+									name: string,
+									value: number,
+								},
+						]
+					} | undefined,
+					ImgAssets: {
+						icon: "https://api.mozambiquehe.re/assets/icons/rampart.png",
+						banner: "https://api.mozambiquehe.re/assets/banners/rampart.jpg"
+					}
+				},
+				Valkyrie: {
+					data: [
+Tracker
+					] | undefined,
+					gameInfo: {
+						badges: [
+								{
+									name: string,
+									value: number,
+								},
+						]
+					} | undefined,
+					ImgAssets: {
+						icon: "https://api.mozambiquehe.re/assets/icons/valkyrie.png",
+						banner: "https://api.mozambiquehe.re/assets/banners/valkyrie.jpg"
+					}
+				},
+				Seer: {
+					data: [
+Tracker
+					] | undefined,
+					gameInfo: {
+						badges: [
+								{
+									name: string,
+									value: number,
+								},
+						]
+					} | undefined,
+					ImgAssets: {
+						icon: "https://api.mozambiquehe.re/assets/icons/seer.png",
+						banner: "https://api.mozambiquehe.re/assets/banners/seer.jpg"
+					}
+				},
+				Ash: {
+					data: [
+Tracker
+					] | undefined,
+					gameInfo: {
+						badges: [
+								{
+									name: string,
+									value: number,
+								},
+						]
+					} | undefined,
+					ImgAssets: {
+						icon: "https://api.mozambiquehe.re/assets/icons/ash.png",
+						banner: "https://api.mozambiquehe.re/assets/banners/ash.jpg"
+					}
+				},
+				["Mad Maggie"]: {
+					data: [
+Tracker
+					] | undefined,
+					gameInfo: {
+						badges: [
+								{
+									name: string,
+									value: number,
+								},
+						]
+					} | undefined,
+					ImgAssets: {
+						icon: "https://api.mozambiquehe.re/assets/icons/mad maggie.png",
+						banner: "https://api.mozambiquehe.re/assets/banners/mad maggie.jpg"
+					}
+				},
+				Newcastle: {
+					data: [
+Tracker
+					] | undefined,
+					gameInfo: {
+						badges: [
+								{
+									name: string,
+									value: number,
+								},
+						]
+					} | undefined,
+					ImgAssets: {
+						icon: "https://api.mozambiquehe.re/assets/icons/newcastle.png",
+						banner: "https://api.mozambiquehe.re/assets/banners/newcastle.jpg"
+					}
+				},
+				Vantage: {
+					data: [
+Tracker
+					] | undefined,
+					gameInfo: {
+						badges: [
+								{
+									name: string,
+									value: number,
+								},
+						]
+					} | undefined,
+					ImgAssets: {
+						icon: "https://api.mozambiquehe.re/assets/icons/vantage.png",
+						banner: "https://api.mozambiquehe.re/assets/banners/vantage.jpg"
+					}
 				}
 			}
 		}
@@ -899,47 +677,233 @@ export interface MapData {
 }
 
 export interface StatusData {
-	["EA_novafusion"]: {
+	["Origin_login"]: {
 		["EU-West"]: {
-			Status: string,
-			HTTPCode: 200,
+			Status: "UP" | "SLOW" | "DOWN",
+			HTTPCode: number,
 			ResponseTime: number,
 			QueryTimestamp: number
 		},
 		["EU-East"]: {
-			Status: string,
+			Status: "UP" | "SLOW" | "DOWN",
 			HTTPCode: number,
 			ResponseTime: number,
 			QueryTimestamp: number
 		},
 		["US-West"]: {
-			Status: string,
+			Status: "UP" | "SLOW" | "DOWN",
 			HTTPCode: number,
 			ResponseTime: number,
 			QueryTimestamp: number
 		},
 		["US-Central"]: {
-			Status: string,
+			Status: "UP" | "SLOW" | "DOWN",
 			HTTPCode: number,
 			ResponseTime: number,
 			QueryTimestamp: number
 		},
 		["US-East"]: {
-			Status: string,
+			Status: "UP" | "SLOW" | "DOWN",
 			HTTPCode: number,
 			ResponseTime: number,
 			QueryTimestamp: number
 		},
 		["SouthAmerica"]: {
-			Status: string,
+			Status: "UP" | "SLOW" | "DOWN",
 			HTTPCode: number,
 			ResponseTime: number,
 			QueryTimestamp: number
 		},
 		["Asia"]: {
-			Status: string,
+			Status: "UP" | "SLOW" | "DOWN",
 			HTTPCode: number,
 			ResponseTime: number,
+			QueryTimestamp: number
+		}
+	},
+	["EA_novafusion"]: {
+		["EU-West"]: {
+			Status: "UP" | "SLOW" | "DOWN",
+			HTTPCode: number,
+			ResponseTime: number,
+			QueryTimestamp: number
+		},
+		["EU-East"]: {
+			Status: "UP" | "SLOW" | "DOWN",
+			HTTPCode: number,
+			ResponseTime: number,
+			QueryTimestamp: number
+		},
+		["US-West"]: {
+			Status: "UP" | "SLOW" | "DOWN",
+			HTTPCode: number,
+			ResponseTime: number,
+			QueryTimestamp: number
+		},
+		["US-Central"]: {
+			Status: "UP" | "SLOW" | "DOWN",
+			HTTPCode: number,
+			ResponseTime: number,
+			QueryTimestamp: number
+		},
+		["US-East"]: {
+			Status: "UP" | "SLOW" | "DOWN",
+			HTTPCode: number,
+			ResponseTime: number,
+			QueryTimestamp: number
+		},
+		["SouthAmerica"]: {
+			Status: "UP" | "SLOW" | "DOWN",
+			HTTPCode: number,
+			ResponseTime: number,
+			QueryTimestamp: number
+		},
+		["Asia"]: {
+			Status: "UP" | "SLOW" | "DOWN",
+			HTTPCode: number,
+			ResponseTime: number,
+			QueryTimestamp: number
+		}
+	}
+	["EA_accounts"]: {
+		["EU-West"]: {
+			Status: "UP" | "SLOW" | "DOWN",
+			HTTPCode: number,
+			ResponseTime: number
+			QueryTimestamp: number
+		},
+		["EU-East"]: {
+			Status: "UP" | "SLOW" | "DOWN",
+			HTTPCode: number,
+			ResponseTime: number
+			QueryTimestamp: number
+		},
+		["US-West"]: {
+			Status: "UP" | "SLOW" | "DOWN",
+			HTTPCode: number,
+			ResponseTime: number
+			QueryTimestamp: number
+		},
+		["US-Central"]: {
+			Status: "UP" | "SLOW" | "DOWN",
+			HTTPCode: number,
+			ResponseTime: number
+			QueryTimestamp: number
+		},
+		["US-East"]: {
+			Status: "UP" | "SLOW" | "DOWN",
+			HTTPCode: number,
+			ResponseTime: number
+			QueryTimestamp: number
+		},
+		["SouthAmerica"]: {
+			Status: "UP" | "SLOW" | "DOWN",
+			HTTPCode: number,
+			ResponseTime: number
+			QueryTimestamp: number
+		},
+		["Asia"]: {
+			Status: "UP" | "SLOW" | "DOWN",
+			HTTPCode: number,
+			ResponseTime: number
+			QueryTimestamp: number
+		}
+	},
+	["ApexOauth_Crossplay"]: {
+		["EU-West"]: {
+			Status: "UP" | "SLOW" | "DOWN",
+			HTTPCode: number,
+			ResponseTime: number
+			QueryTimestamp: number
+		},
+		["EU-East"]: {
+			Status: "UP" | "SLOW" | "DOWN",
+			HTTPCode: number,
+			ResponseTime: number,
+			QueryTimestamp: number
+		},
+		["US-West"]: {
+			Status: "UP" | "SLOW" | "DOWN",
+			HTTPCode: number,
+			ResponseTime: number,
+			QueryTimestamp: number
+		},
+		["US-Central"]: {
+			Status: "UP" | "SLOW" | "DOWN",
+			HTTPCode: number,
+			ResponseTime: number,
+			QueryTimestamp: number
+		},
+		["US-East"]: {
+			Status: "UP" | "SLOW" | "DOWN",
+			HTTPCode: number,
+			ResponseTime: number,
+			QueryTimestamp: number
+		},
+		["SouthAmerica"]: {
+			Status: "UP" | "SLOW" | "DOWN",
+			HTTPCode: number,
+			ResponseTime: number,
+			QueryTimestamp: number
+		},
+		["Asia"]: {
+			Status: "UP" | "SLOW" | "DOWN",
+			HTTPCode: number,
+			ResponseTime: number,
+			QueryTimestamp: number
+		}
+	},
+	["selfCoreTest"]: {
+		["Status-website"]: {
+			Status: "UP" | "SLOW" | "DOWN",
+			HTTPCode: number,
+			ResponseTime: number,
+			QueryTimestamp: number
+		},
+		["Stats-API"]: {
+			Status: "UP" | "SLOW" | "DOWN",
+			HTTPCode: number,
+			ResponseTime: number,
+			QueryTimestamp: number
+		},
+		["Overflow-#1"]: {
+			Status: "UP" | "SLOW" | "DOWN",
+			HTTPCode: number,
+			ResponseTime: number,
+			QueryTimestamp: number
+		},
+		["Overflow-#2"]: {
+			Status: "UP" | "SLOW" | "DOWN",
+			HTTPCode: number,
+			ResponseTime: number,
+			QueryTimestamp: number
+		},
+		["Origin-API"]: {
+			Status: "UP" | "SLOW" | "DOWN",
+			HTTPCode: number,
+			ResponseTime: number,
+			QueryTimestamp: number
+		},
+		["Playstation-API"]: {
+			Status: "UP" | "SLOW" | "DOWN",
+			HTTPCode: number,
+			ResponseTime: number,
+			QueryTimestamp: number
+		},
+		["Xbox-API"]: {
+			Status: "UP" | "SLOW" | "DOWN",
+			HTTPCode: number,
+			ResponseTime: number,
+			QueryTimestamp: number
+		}
+	},
+	["otherPlatforms"]: {
+		["Playstation-Network"]: {
+			Status: "UP" | "SLOW" | "DOWN",
+			QueryTimestamp: number
+		},
+		["Xbox-Live"]: {
+			Status: "UP" | "SLOW" | "DOWN",
 			QueryTimestamp: number
 		}
 	}
