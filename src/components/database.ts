@@ -63,6 +63,24 @@ export class DBUser {
             }
       }
 
+      public async getServer(serverId: Snowflake) {
+            try {
+                  await DBClient.connect();
+
+                  const server = await usersCollection.findOne({ discordId: this.discordId.toString(), servers: serverId });
+                  if (server == null) return Promise.resolve("No server found!");
+
+                  logger.info("Fetched a users server from the DB!", { serverId: serverId, discordId: this.discordId, file: filename(__filename) });
+                  return Promise.resolve(server);
+            }
+            catch (error) {
+                  return Promise.reject(error);
+            }
+            finally {
+                  await DBClient.close();
+            }
+      }
+
       public async addUser(originId: string, RP: number, AP: number, platform: string, serverId: Snowflake | undefined) {
             try {
                   await DBClient.connect();
@@ -219,6 +237,24 @@ export class DBServer {
 
                   logger.info("Deleted a server from the DB!", { serverId: this.guild.id, file: filename(__filename) });
                   return await guildCollection.deleteOne({ serverId: this.guild.id });
+            }
+            catch (error) {
+                  return Promise.reject(error);
+            }
+            finally {
+                  await DBClient.close();
+            }
+      }
+
+      public async topUsers() {
+            try {
+                  await DBClient.connect();
+
+                  const users = await usersCollection.find({ servers: this.guild.id }).sort({ RP: -1 }).limit(10).toArray();
+
+                  if (users.length == 0) return Promise.resolve("No user data!");
+                  logger.info("Fetched users from the DB!", { serverId: this.guild.id, file: filename(__filename) });
+                  return Promise.resolve(users);
             }
             catch (error) {
                   return Promise.reject(error);

@@ -16,6 +16,9 @@ module.exports = {
             try {
                   const dbUser = new DBUser(interaction.user.id);
                   let dbUserData = await dbUser.getUser() as UserDocument | string;
+                  if (await dbUser.getServer(interaction.guildId as string) == "No server found!") {
+                        await dbUser.addServer(interaction.guildId as string);
+                  }
                   if (dbUserData == "User not found!") {
                         const meEmbed = new embed().errorEmbed()
                               .setTitle("User not linked!")
