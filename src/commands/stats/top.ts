@@ -12,7 +12,7 @@ module.exports = {
             .setDescription("Shows the top 10 users in the server."),
       async execute(interaction: CommandInteraction) {
             try {
-                  let topData = await new DBServer(interaction.guild as Guild).topUsers() as UserDocument[] | string;
+                  let topData = await new DBServer(interaction.guild as Guild).getTopUsers() as UserDocument[] | string;
                   if (topData == "No user data!") {
                         const topEmbed = new embed().errorEmbed()
                               .setTitle("An error accured!")
