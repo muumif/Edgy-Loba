@@ -67,7 +67,7 @@ export interface ALSUserData {
 					value: number
 				},
 			],
-			levelPrestige: 0 | 1 | 2 | 3
+			levelPrestige: 0 | 1 | 2 | 3 | undefined
 		},
 		realtime: {
 			lobbyState: "invite" | "open",
