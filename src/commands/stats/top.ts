@@ -26,6 +26,10 @@ module.exports = {
                   for (let i = 0; i < topData.length; i++) {
                         const discordUser = await interaction.client.users.fetch(topData[i].discordId);
                         const username = await UIDToIGN(topData[i].originId, topData[i].platform, interaction.guildId as string, topData[i].discordId);
+                        if (i == 0) {
+                              if (discordUser.avatarURL() == null) {topEmbed.setThumbnail("https://cdn.discordapp.com/embed/avatars/2.png");}
+                              else { topEmbed.setThumbnail(discordUser.avatarURL() as string);}
+                        }
                         topEmbed.addFields(
                               {
                                     name: `${i + 1}. ${username} / ${discordUser.username}`,
