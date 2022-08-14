@@ -1,6 +1,6 @@
 import { CommandInteraction, Guild, SlashCommandBuilder } from "discord.js";
 import { filename } from "../../components/const";
-import { DBServer } from "../../components/database";
+import { DBGlobal } from "../../components/database";
 import { embed } from "../../components/embeds";
 import { logger } from "../../components/logger";
 import { UserDocument } from "../../types/mongo";
@@ -11,7 +11,7 @@ module.exports = {
             .setDescription("Shows the top 3 global users on the bot."),
       async execute(interaction: CommandInteraction) {
             try {
-                  let globalTopData = await new DBServer(interaction.guild as Guild).getGlobalTopUsers() as UserDocument[] | string;
+                  let globalTopData = await new DBGlobal().getGlobalTopUsers(interaction.guild as Guild) as UserDocument[] | string;
                   if (globalTopData == "No user data!") {
                         const globalTopEmbed = new embed().errorEmbed()
                               .setTitle("An error accured!")

@@ -1,6 +1,5 @@
 import { Guild, Snowflake } from "discord.js";
 import { MongoClient } from "mongodb";
-import { client } from "..";
 import { HistoryDocument, UserDocument } from "../types/mongo";
 import { filename } from "./const";
 import { logger } from "./logger";
@@ -20,7 +19,69 @@ if (process.env.NODE_ENV == "development") {
       bugCollection = DBClient.db("EdgyLobaDEV").collection("bugs");
 }
 
-//TODO: Logging for calls
+export class DBGlobal {
+      public async getAllUsers() {
+            try {
+                  await DBClient.connect();
+
+                  const users = await usersCollection.find().toArray();
+
+                  if (users == null) return Promise.resolve("No user data!");
+                  logger.info("Fetched all users from the DB!", { file: filename(__filename) });
+                  return Promise.resolve(users);
+            }
+            catch (error) {
+                  return Promise.reject(error);
+            }
+            finally {
+                  await DBClient.close();
+            }
+      }
+
+      public async getGlobalTopUsers(guild: Guild) {
+            try {
+                  await DBClient.connect();
+                  const users = await usersCollection.find().sort({ RP: -1 }).limit(3).toArray();
+
+                  if (users.length == 0) return Promise.resolve("No user data!");
+                  logger.info("Fetched users from the DB!", { serverId: guild.id, file: filename(__filename) });
+                  return Promise.resolve(users);
+            }
+            catch (error) {
+                  return Promise.reject(error);
+            }
+            finally {
+                  await DBClient.close();
+            }
+      }
+
+      public async addBug(discordId: Snowflake, serverId: Snowflake, command: string, message: string) {
+            try {
+                  await DBClient.connect();
+
+                  return await bugCollection.insertOne({
+                        serverId: serverId,
+                        discordId: discordId,
+                        date: new Date(),
+                        data: {
+                              command: command,
+                              message: message,
+                        },
+                  })
+                        .then(function() {
+                              logger.info("Added a bug into the DB!", { serverId: serverId, discordId: discordId, file: filename(__filename) });
+                              return Promise.resolve("Server data inserted");
+                        });
+            }
+            catch (error) {
+                  return Promise.reject(error);
+            }
+            finally {
+                  await DBClient.close();
+            }
+      }
+}
+
 export class DBUser {
       discordId: Snowflake;
 
@@ -151,33 +212,6 @@ export class DBUser {
             }
       }
 
-      public async addBug(serverId: Snowflake, command: string, message: string) {
-            try {
-                  await DBClient.connect();
-
-                  const id = this.discordId;
-                  return await bugCollection.insertOne({
-                        serverId: serverId,
-                        discordId: this.discordId,
-                        date: new Date(),
-                        data: {
-                              command: command,
-                              message: message,
-                        },
-                  })
-                        .then(function() {
-                              logger.info("Added a bug into the DB!", { serverId: serverId, discordId: id, file: filename(__filename) });
-                              return Promise.resolve("Server data inserted");
-                        });
-            }
-            catch (error) {
-                  return Promise.reject(error);
-            }
-            finally {
-                  await DBClient.close();
-            }
-      }
-
       public async updateRP(RP: number) {
             try {
                   await DBClient.connect();
@@ -281,23 +315,6 @@ export class DBServer {
                   await DBClient.connect();
 
                   const users = await usersCollection.find({ servers: this.guild.id }).sort({ RP: -1 }).limit(10).toArray();
-
-                  if (users.length == 0) return Promise.resolve("No user data!");
-                  logger.info("Fetched users from the DB!", { serverId: this.guild.id, file: filename(__filename) });
-                  return Promise.resolve(users);
-            }
-            catch (error) {
-                  return Promise.reject(error);
-            }
-            finally {
-                  await DBClient.close();
-            }
-      }
-
-      public async getGlobalTopUsers() {
-            try {
-                  await DBClient.connect();
-                  const users = await usersCollection.find().sort({ RP: -1 }).limit(3).toArray();
 
                   if (users.length == 0) return Promise.resolve("No user data!");
                   logger.info("Fetched users from the DB!", { serverId: this.guild.id, file: filename(__filename) });

@@ -14,11 +14,9 @@ module.exports = {
                         .setDescription("For what platform to search on!")
                         .setRequired(true)
                         .addChoices(
-                              { name: "All", value: "pred_all" },
                               { name: "PC", value: "pred_pc" },
                               { name: "XBOX", value: "pred_xbox" },
                               { name: "Playstation", value: "pred_ps" },
-                              { name: "Switch", value: "pred_switch" },
                         )),
       async execute(interaction: CommandInteraction) {
             try {
@@ -47,6 +45,7 @@ module.exports = {
 
                         const predEmbed = new embed().defaultEmbed()
                               .setTitle("Platform PC!")
+                              .setThumbnail("https://api.mozambiquehe.re/assets/ranks/apexpredator1.png")
                               .addFields(
 
                                     {
@@ -84,6 +83,7 @@ module.exports = {
 
                         const predEmbed = new embed().defaultEmbed()
                               .setTitle("Platform XBOX!")
+                              .setThumbnail("https://api.mozambiquehe.re/assets/ranks/apexpredator1.png")
                               .addFields(
 
                                     {
@@ -122,6 +122,7 @@ module.exports = {
 
                         const predEmbed = new embed().defaultEmbed()
                               .setTitle("Platform Playstation!")
+                              .setThumbnail("https://api.mozambiquehe.re/assets/ranks/apexpredator1.png")
                               .addFields(
 
                                     {
@@ -132,45 +133,6 @@ module.exports = {
                                     {
                                           name: "Arenas",
                                           value: "Playstation: **" + predatorData.AP.PS4.val + ` AP**\nTotal Masters: **${totalMastersAR()}**`,
-                                          inline: true,
-                                    },
-
-                              );
-                        return await interaction.editReply({ embeds: [predEmbed] });
-                  }
-
-                  case "pred_switch": {
-                        const totalMastersBR = () => {
-                              if (predatorData.RP.SWITCH.totalMastersAndPreds >= 750) {
-                                    return predatorData.RP.SWITCH.totalMastersAndPreds - 750;
-                              }
-                              else {
-                                    return "No master players!";
-                              }
-                        };
-
-                        const totalMastersAR = () => {
-                              if (predatorData.AP.SWITCH.totalMastersAndPreds >= 750) {
-                                    return predatorData.AP.SWITCH.totalMastersAndPreds - 750;
-                              }
-                              else {
-                                    return "No master players!";
-                              }
-                        };
-
-                        const predEmbed = new embed().defaultEmbed()
-                              .setTitle("Platform Switch!")
-                              .setThumbnail("https://api.mozambiquehe.re/assets/ranks/apexpredator1.png")
-                              .addFields(
-
-                                    {
-                                          name: "Battle Royale",
-                                          value: "Switch: **" + predatorData.RP.SWITCH.val + ` RP**\nTotal Masters: **${totalMastersBR()}**`,
-                                          inline: true,
-                                    },
-                                    {
-                                          name: "Arenas",
-                                          value: "Switch: **" + predatorData.AP.SWITCH.val + ` AP**\nTotal Masters: **${totalMastersAR()}**`,
                                           inline: true,
                                     },
 
