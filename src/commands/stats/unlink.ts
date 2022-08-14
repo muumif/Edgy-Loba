@@ -1,5 +1,5 @@
 import { CommandInteraction, SlashCommandBuilder } from "discord.js";
-import { User } from "../../components/database";
+import { DBUser } from "../../components/database";
 import { embed } from "../../components/embeds";
 
 module.exports = {
@@ -8,7 +8,7 @@ module.exports = {
             .setDescription("Unlink your discord account from your Apex username."),
       async execute(interaction: CommandInteraction) {
 
-            const dbUser = new User(interaction.user.id);
+            const dbUser = new DBUser(interaction.user.id);
             if (await dbUser.getUser() == "User not found!") {
                   const unlinkEmbed = new embed().errorEmbed()
                         .setTitle("You don't have any linked usernames!")

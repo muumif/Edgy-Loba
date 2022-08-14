@@ -1,7 +1,7 @@
 import axios from "axios";
 import { CommandInteraction, SlashCommandBuilder } from "discord.js";
 import { filename } from "../../components/const";
-import { User } from "../../components/database";
+import { DBUser } from "../../components/database";
 import { embed } from "../../components/embeds";
 import { logger } from "../../components/logger";
 import { getUserUID } from "../../components/uid";
@@ -45,7 +45,7 @@ module.exports = {
                   }
             };
 
-            const dbUser = new User(interaction.user.id);
+            const dbUser = new DBUser(interaction.user.id);
             if (await dbUser.getUser() == "User not found!") {
                   try {
                         const userUID = await getUserUID(user, platform(), interaction.guild?.id, interaction.user.id);

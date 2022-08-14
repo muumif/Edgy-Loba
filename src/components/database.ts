@@ -18,7 +18,7 @@ if (process.env.NODE_ENV == "development") {
 }
 
 //TODO: Logging for calls
-export class User {
+export class DBUser {
       discordId: Snowflake;
 
       constructor(discordId: Snowflake) {
@@ -44,16 +44,16 @@ export class User {
             }
       }
 
-      public async getHistory() {
+      public async getHistory(): Promise<string | HistoryDocument[]> {
             try {
                   await DBClient.connect();
 
                   const history = await historyCollection.find({ discordId: this.discordId.toString() }).sort({ date: 1 }).toArray() as HistoryDocument[] | [];
 
-                  if (history.length == 0) return Promise.reject("No history data was found!");
+                  if (history.length == 0) return Promise.resolve("No history data was found!");
 
-                  logger.info("Fetched history from the DB!", { discordId: this.discordId, file: filename(__filename) });
-                  return Promise.resolve(history);
+                  logger.info("Fetched a users history from the DB!", { discordId: this.discordId, file: filename(__filename) });
+                  return Promise.resolve(history as HistoryDocument[]);
             }
             catch (error) {
                   return Promise.reject(error);
@@ -154,7 +154,7 @@ export class User {
                   const id = this.discordId;
                   return await usersCollection.updateOne({ discordId: this.discordId }, { $set:{ AP: AP } })
                         .then(function() {
-                              logger.info("Updated a users RP in the DB!", { discordId: id, file: filename(__filename) });
+                              logger.info("Updated a users AP in the DB!", { discordId: id, file: filename(__filename) });
                               return Promise.resolve("Updated AP");
                         });
             }
@@ -185,7 +185,7 @@ export class User {
       }
 }
 
-export class Server {
+export class DBServer {
       guild: Guild;
       constructor(guild: Guild) {
             this.guild = guild;
