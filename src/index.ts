@@ -4,10 +4,11 @@ import path from "path";
 import { logger } from "./components/logger";
 import { hostname, type, version } from "os";
 import { filename } from "./components/const";
+import { DBUser } from "./components/database";
 
 export const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-const commands: Collection<unknown, Command> = new Collection();
+export const commands: Collection<unknown, Command> = new Collection();
 const commandsPath = path.join(__dirname, "commands");
 
 for (const folder of readdirSync(commandsPath)) {
@@ -46,12 +47,27 @@ client.on("interactionCreate", async interaction => {
             if (!command) return;
 
             try {
+                  if (interaction.commandName == "bug") {
+                        await command.execute(interaction);
+                        logger.info(`[${interaction.user.username}] used [/${interaction.commandName}] in [${interaction.guild?.name}].`, { command: interaction.commandName, discordId: interaction.user.id, serverId: interaction.guild?.id, file: filename(__filename) });
+                        return;
+                  }
                   const deferredReply = await interaction.deferReply({ fetchReply: true });
                   await command.execute(interaction);
                   logger.info(`[${interaction.user.username}] used [/${interaction.commandName}] in [${interaction.guild?.name}]. Bot response time: ${deferredReply.createdTimestamp - interaction.createdTimestamp}ms`, { command: interaction.commandName, discordId: interaction.user.id, serverId: interaction.guild?.id, file: filename(__filename), responseTime: deferredReply.createdTimestamp - interaction.createdTimestamp });
             }
             catch (error) {
                   await interaction.reply({ content: "There was an error while executing this command!", ephemeral: true });
+            }
+      }
+
+      if (interaction.type == InteractionType.ModalSubmit) {
+            if (interaction.customId === "bugReport") {
+                  const commandInput = interaction.fields.getTextInputValue("commandInput");
+                  const messageInput = interaction.fields.getTextInputValue("messageInput");
+
+                  await new DBUser(interaction.user.id).addBug(interaction.guildId as string, commandInput, messageInput);
+                  interaction.reply({ content: "Bug reported!", ephemeral: true });
             }
       }
 });
