@@ -1,10 +1,11 @@
 import { ActivityType, Client, Collection, Command, GatewayIntentBits, InteractionType } from "discord.js";
 import { readdirSync, existsSync, mkdir } from "fs";
-import path from "path";
 import { logger } from "./components/logger";
 import { hostname, type, version } from "os";
 import { filename } from "./components/const";
-import { DBUser } from "./components/database";
+import { DBGlobal } from "./components/database";
+import path from "path";
+import "./components/scheduler";
 
 export const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -66,7 +67,7 @@ client.on("interactionCreate", async interaction => {
                   const commandInput = interaction.fields.getTextInputValue("commandInput");
                   const messageInput = interaction.fields.getTextInputValue("messageInput");
 
-                  await new DBUser(interaction.user.id).addBug(interaction.guildId as string, commandInput, messageInput);
+                  await new DBGlobal().addBug(interaction.user.id, interaction.guildId as string, commandInput, messageInput);
                   interaction.reply({ content: "Bug reported!", ephemeral: true });
             }
       }
