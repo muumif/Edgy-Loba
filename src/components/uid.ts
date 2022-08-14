@@ -5,7 +5,7 @@ import { logger } from "./logger";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const JSONBigInt = require("json-bigint")({ "storeAsString": true });
 
-export async function getUserUID(IGN: string, platform: string, guildId: Snowflake | undefined, discordId: Snowflake) {
+export async function getUserUID(IGN: string, platform: "PC" | "X1" | "PS4", guildId: Snowflake | undefined, discordId: Snowflake) {
       try {
             const response = await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/nametouid?auth=${process.env.ALS_TOKEN}&player=${IGN}&platform=${platform}`), { transformResponse: [data => data] });
             if (response.data.includes("Error")) { // This is used to check for Errors instead of catch. Could throw an error then handle it in catch.
@@ -32,7 +32,7 @@ export async function getUserUID(IGN: string, platform: string, guildId: Snowfla
 
 }
 
-export async function UIDToIGN(UID: string, platform: string, guildId: Snowflake, discordId: Snowflake) {
+export async function UIDToIGN(UID: string, platform: "PC" | "X1" | "PS4", guildId: Snowflake, discordId: Snowflake) {
       try {
             const data = await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${UID}&platform=${platform}&skipRank=true`));
             logger.info("ALS API fetched user!", { guildId: guildId, discordId: discordId, UID: UID, platform: platform, file: filename(__filename) });
