@@ -11,8 +11,7 @@ The Bot may not be used by individuals under the minimal age described in [Disco
 
 ## Affiliation
 
-The Bot is not affiliated with, supported or made by [Discord Inc](https://discord.com).<br>
-The Bot is not affiliated with, supported or made by [EA](https://www.ea.com)/[Respawn](https://www.respawn.com)/[EAC](https://www.easy.ac). <br>
+The Bot is not affiliated with, supported or made by [Discord Inc](https://discord.com)/[EA](https://www.ea.com)/[Respawn](https://www.respawn.com)/[EAC](https://www.easy.ac)..<br>
 All images, icons and trademarks belong to their respective owners.
 
 ## Liability
