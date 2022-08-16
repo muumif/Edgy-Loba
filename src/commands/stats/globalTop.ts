@@ -37,8 +37,10 @@ module.exports = {
                                     inline: false,
                               },
                         );
+                        if (i == globalTopData.length - 1) {
+                              await interaction.editReply({ embeds: [globalTopEmbed] });
+                        }
                   }
-                  await interaction.editReply({ embeds: [globalTopEmbed] });
             }
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             catch (error:any) {
