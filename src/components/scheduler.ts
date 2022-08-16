@@ -36,7 +36,7 @@ async function deleteTemp() {
                   data.forEach(file => {
                         unlink(`${cwd()}/temp/${file}`, err => {
                               if (err) throw err;
-
+                              logger.info("Deleted temp folder!", { file: filename(__filename) });
                         });
                   });
             });
