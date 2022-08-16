@@ -29,14 +29,14 @@ module.exports = {
                         if (i == 0) {
                               if (discordUser.avatarURL() == null) {globalTopEmbed.setThumbnail("https://cdn.discordapp.com/embed/avatars/2.png");}
                               else { globalTopEmbed.setThumbnail(discordUser.avatarURL() as string);}
-                              globalTopEmbed.addFields(
-                                    {
-                                          name: `${i + 1}. ${discordUser.username}`,
-                                          value: `RP: ${globalTopData[i].RP}`,
-                                          inline: false,
-                                    },
-                              );
                         }
+                        globalTopEmbed.addFields(
+                              {
+                                    name: `${i + 1}. ${discordUser.username}`,
+                                    value: `RP: ${globalTopData[i].RP}`,
+                                    inline: false,
+                              },
+                        );
                   }
                   await interaction.editReply({ embeds: [globalTopEmbed] });
             }
