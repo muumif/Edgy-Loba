@@ -3,7 +3,7 @@ import axios from "axios";
 import { embed } from "../../components/embeds";
 import { MapData } from "../../types/als";
 import { logger } from "../../components/logger";
-import { filename } from "../../components/const";
+import { filename, profilePic } from "../../components/const";
 
 module.exports = {
       data: new SlashCommandBuilder()
@@ -63,7 +63,8 @@ module.exports = {
                                     value: `${"```ansi"}\n\u001b[0;33m${timer().days} \u001b[0;37mDays / \u001b[0;33m${timer().hours} \u001b[0;37mHours / \u001b[0;33m${timer().minutes} \u001b[0;37mMinutes / \u001b[0;33m${timer().seconds} \u001b[0;37mSeconds ${"```"}`,
                                     inline: false,
                               },
-                        );
+                        )
+                        .setFooter({ text: "This data may not be accurate at times. Use /bug to report a issue", iconURL: profilePic(128) });
 
                   await interaction.editReply({ embeds: [nextEmbed] });
             }
