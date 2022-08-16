@@ -2,7 +2,6 @@ import { SlashCommandBuilder, CommandInteraction } from "discord.js";
 import { Api } from "@top-gg/sdk";
 import { embed } from "../../components/embeds";
 import { profilePic, linksField } from "../../components/const";
-import { client } from "../../index";
 
 const topAPIInstance = new Api(process.env.TOPGG_TOKEN);
 
@@ -10,7 +9,6 @@ module.exports = {
       data: new SlashCommandBuilder()
             .setName("about")
             .setDescription("Everything about the bot!"),
-
       async execute(interaction: CommandInteraction) {
             const topGGData = await topAPIInstance.getBot("719542118955090011");
 
@@ -22,7 +20,7 @@ module.exports = {
                         {
                               name: "Statistics",
                               value: `
-						Servers: **${client.guilds.cache.size}**
+						Servers: **${interaction.client.guilds.cache.size}**
 						Monthly Votes: **${topGGData.monthlyPoints}**
 						Total Votes: **${topGGData.points}**
 						`,
