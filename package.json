@@ -7,7 +7,7 @@
     "build": "tsc",
     "deploy": "tsc && node -r dotenv/config ./prod/deploy.js",
     "dev": "nodemon",
-    "start": "node -r dotenv/config ./prod/index.js"
+    "start": "node --no-warnings -r dotenv/config ./prod/index.js"
   },
   "author": "muumif",
   "license": "ISC",
