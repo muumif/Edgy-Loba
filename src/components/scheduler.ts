@@ -1,6 +1,6 @@
 import axios from "axios";
+import schedule from "node-schedule";
 import { readdir, unlink } from "fs";
-import cron from "node-cron";
 import { cwd } from "process";
 import { ALSUserData } from "../types/als";
 import { UserDocument } from "../types/mongo";
@@ -36,7 +36,7 @@ async function deleteTemp() {
                   data.forEach(file => {
                         unlink(`${cwd()}/temp/${file}`, err => {
                               if (err) throw err;
-                              logger.info("Deleted temp folder!", { file: filename(__filename) });
+                              logger.info(`Deleted file: ${file} in temp!`, { file: filename(__filename) });
                         });
                   });
             });
@@ -47,13 +47,12 @@ async function deleteTemp() {
       }
 }
 
-module.exports = () => {
-      cron.schedule("55 23 * * *", async function() {
-            logger.info("▬▬ι═══════ﺤ History updating started -═══════ι▬▬", { file: filename(__filename) }),
-            await HistoryUpdater();
-      });
+export const cronHistoryUpdate = schedule.scheduleJob("55 23 * * *", async function() {
+      logger.info("▬▬ι═══════ﺤ History updating started -═══════ι▬▬", { file: filename(__filename) }),
+      await HistoryUpdater();
+      logger.info("▬▬ι═══════ﺤ History updating stopped -═══════ι▬▬", { file: filename(__filename) });
+});
 
-      cron.schedule("0 */12 * * *", async function() {
-            deleteTemp();
-      });
-};
+export const cronDeleteTemp = schedule.scheduleJob("0 */12 * * *", async function() {
+      deleteTemp();
+});
