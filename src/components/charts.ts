@@ -91,7 +91,6 @@ export async function makeStatsChart(historyData: HistoryDocument[], todayRP: nu
                                     //       label: {
                                     //             backgroundColor: "rgba(0,0,0,0.2)",
                                     //             content: "Bronze",
-                                    //             enabled: true,
                                     //       },
                                     // },
                                     // {
@@ -105,7 +104,6 @@ export async function makeStatsChart(historyData: HistoryDocument[], todayRP: nu
                                     //       label: {
                                     //             backgroundColor: "rgba(0,0,0,0.2)",
                                     //             content: "Silver",
-                                    //             enabled: true,
                                     //       },
                                     // },
                                     // {
@@ -119,7 +117,6 @@ export async function makeStatsChart(historyData: HistoryDocument[], todayRP: nu
                                     //       label: {
                                     //             backgroundColor: "rgba(0,0,0,0.2)",
                                     //             content: "Gold",
-                                    //             enabled: true,
                                     //       },
                                     // },
                                     // {
@@ -133,7 +130,6 @@ export async function makeStatsChart(historyData: HistoryDocument[], todayRP: nu
                                     //       label: {
                                     //             backgroundColor: "rgba(0,0,0,0.2)",
                                     //             content: "Platinum",
-                                    //             enabled: true,
                                     //       },
                                     // },
                                     // {
@@ -147,7 +143,6 @@ export async function makeStatsChart(historyData: HistoryDocument[], todayRP: nu
                                     //       label: {
                                     //             backgroundColor: "rgba(0,0,0,0.2)",
                                     //             content: "Diamond",
-                                    //             enabled: true,
                                     //       },
                                     // },
                                     // {
@@ -161,7 +156,6 @@ export async function makeStatsChart(historyData: HistoryDocument[], todayRP: nu
                                     //       label: {
                                     //             backgroundColor: "rgba(0,0,0,0.2)",
                                     //             content: "Masters",
-                                    //             enabled: true,
                                     //       },
                                     // },
                               ],

@@ -31,10 +31,12 @@ if (!existsSync(tempFolder)) {
       });
 }
 
-client.once("ready", () => {
+
+client.once("ready", async () => {
       logger.info("▬▬ι═══════ﺤ Edgy Loba is now online -═══════ι▬▬", { file: filename(__filename) });
       logger.info(`Hostname: ${hostname} | Environment: ${process.env.NODE_ENV} | Version: ${process.env.npm_package_version} | OS: ${type} ${version}`, { file: filename(__filename) });
 
+      await new DBGlobal().verifyServers(client);
 
       if (process.env.NODE_ENV == "production") {
             const presences = [
@@ -50,8 +52,6 @@ client.once("ready", () => {
                   const presence = presences[Math.floor(Math.random() * presences.length)];
                   client.user?.setPresence({ activities: [{ name: `${presence.name}`, type: presence.type }], status: "online" });
             }, 600000);
-
-            // Verify all guilds
       }
       else {
             client.user?.setPresence({ activities: [{ name: "Internal Build!" }], status: "dnd" });

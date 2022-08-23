@@ -1,6 +1,6 @@
-import { Guild, Snowflake } from "discord.js";
+import { Client, Guild, Snowflake } from "discord.js";
 import { MongoClient } from "mongodb";
-import { HistoryDocument, UserDocument } from "../types/mongo";
+import { HistoryDocument, UserDocument, ServerDocument } from "../types/mongo";
 import { filename } from "./const";
 import { logger } from "./logger";
 
@@ -75,6 +75,50 @@ export class DBGlobal {
             }
             catch (error) {
                   return Promise.reject(error);
+            }
+            finally {
+                  await DBClient.close();
+            }
+      }
+
+      public async verifyServers(client: Client) {
+            try {
+
+                  const addGuilds = async () => {
+                        const guilds = client.guilds.cache.map(guild => guild);
+                        for (let i = 0; i < guilds.length; i++) {
+                              const DBGuild = await guildCollection.findOne({ serverId: guilds[i].id }) as ServerDocument | null;
+                              if (DBGuild == null) {
+                                    await guildCollection.insertOne({
+                                          serverId: guilds[i].id,
+                                          name: guilds[i].name,
+                                    }) .then(function() {
+                                          logger.info("Added a server to the DB!", { serverId: guilds[i].id, file: filename(__filename) });
+                                    });
+                              }
+                        }
+                        return;
+                  };
+
+                  const deleteGuilds = async () => {
+                        const DBGuilds = await guildCollection.find({}).toArray() as ServerDocument[] | [];
+                        if (DBGuilds == []) logger.error("No guilds found!", { file: filename(__filename) }); // Make error for this
+                        for (let i = 0; i < DBGuilds.length; i++) {
+                              if (client.guilds.cache.get(DBGuilds[i].serverId) == undefined) {
+                                    await guildCollection.deleteOne({ serverId: DBGuilds[i].serverId });
+                                    logger.info("Deleted a server from the DB!", { serverId: DBGuilds[i].serverId, file: filename(__filename) });
+                              }
+                        }
+                        return;
+                  };
+                  await DBClient.connect();
+                  await addGuilds();
+                  await deleteGuilds();
+                  return;
+            }
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            catch (error:any) {
+                  return logger.error(error, { file: filename(__filename) });
             }
             finally {
                   await DBClient.close();
