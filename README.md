@@ -29,21 +29,28 @@ To give Apex Legends players their stats in an easy and convenient way inside of
 Previews
 -------
 <p float="left">
-  <img src="http://images.muumi.xyz/EdgyLoba/previewMe.PNG" alt="/me" style="width:360px; height:310px;"/>
-  <img src="http://images.muumi.xyz/EdgyLoba/previewStatsNew.PNG" alt="/stats" />
+  <img src="https://i.imgur.com/I90TyT8.png" alt="/me"/>
+  <img src="https://i.imgur.com/csiHfen.png" alt="/stats" />
 </p>
 
 Commands
 ========
 
+| Main Commands | Description
+|  ---          |     ---    
+| /help         | See the commands for the bot. 
+| /bug          | Report a bug.
+| /about        | Everything about the bot!       
+
 | Misc Commands | Description 
-|  ---          |     ---
-| /help         | See the commands for the bot.                                  
-| /crafting     | Shows the current items that can be crafted at the Replicator. 
+|  ---          |     ---    
+| /crafting     | Shows the current items that can be crafted at the Replicator.
 | /map          | Shows the current and next maps for Battle Royale and Arenas. Also the time remaining until the next map. 
 | /news         | Shows the latest news from EA news feed about Apex Legends. 
-| /pred         | Shows how much RP/AP is needed to reach Predator on all platforms. Also how many predators are on every platform. 
-| /status       | Shows the gameplay servers status. Also the response time. 
+| /predator     | Shows how much RP/AP is needed to reach Predator on all platforms. Also how many predators are on every platform. 
+| /status       | Shows the gameplay servers status. Also the response time.
+| /distribution | Shows the rank distribution.
+| /next         | Shows when a new split or season starts.
 
 | Stats Commands    | Description 
 |  ---              |     ---
