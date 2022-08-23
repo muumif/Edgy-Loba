@@ -163,6 +163,10 @@ module.exports = {
                               if (i == selectedLegend.data.length - 1) {
                                     selectedTrackers += "```";
                               }
+                              if (i == 6) {
+                                    selectedTrackers += "```";
+                                    return;
+                              }
                         }
                         statsEmbed.addFields({
                               name: `Selected Legend: ${ALSUser.legends.selected.LegendName}`,
