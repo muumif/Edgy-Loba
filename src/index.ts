@@ -3,10 +3,10 @@ import { readdirSync, existsSync, mkdir } from "fs";
 import { logger } from "./components/logger";
 import { hostname, type, version } from "os";
 import { filename } from "./components/const";
-import { DBGlobal } from "./components/database";
+import { DBGlobal, DBServer } from "./components/database";
+import { AutoPoster } from "topgg-autoposter";
 import path from "path";
 import "./components/scheduler";
-import moment from "moment";
 
 export const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -35,28 +35,44 @@ client.once("ready", () => {
       logger.info("▬▬ι═══════ﺤ Edgy Loba is now online -═══════ι▬▬", { file: filename(__filename) });
       logger.info(`Hostname: ${hostname} | Environment: ${process.env.NODE_ENV} | Version: ${process.env.npm_package_version} | OS: ${type} ${version}`, { file: filename(__filename) });
 
-      const duration = moment(client.uptime as number).format("H [hrs], m [mins]");
-      const presences = [
-            { type: 3, name: `${client.guilds.cache.size} servers!` },
-            { type: 1, name: `${client.guilds.cache.size} servers!` },
-            { type: 2, name: `${client.guilds.cache.size} servers!` },
-            { type: 3, name: `uptime ${duration}` },
-            { type: 2, name: "/help" },
-            { type: 2, name: "/about" },
-            { type: 1, name: `version ${process.env.npm_package_version}` },
-      ];
 
       if (process.env.NODE_ENV == "production") {
+            const presences = [
+                  { type: 3, name: `${client.guilds.cache.size} servers!` },
+                  { type: 1, name: `${client.guilds.cache.size} servers!` },
+                  { type: 2, name: `${client.guilds.cache.size} servers!` },
+                  { type: 2, name: "/help" },
+                  { type: 2, name: "/about" },
+                  { type: 1, name: `version ${process.env.npm_package_version}` },
+            ];
             client.user?.setPresence({ activities: [{ name: `${client.guilds.cache.size} servers!`, type: ActivityType.Playing }], status: "online" });
             setInterval(() => {
                   const presence = presences[Math.floor(Math.random() * presences.length)];
                   client.user?.setPresence({ activities: [{ name: `${presence.name}`, type: presence.type }], status: "online" });
             }, 600000);
+
+            // Verify all guilds
       }
       else {
-            client.user?.setPresence({ activities: [{ name: "Internal build!" }], status: "dnd" });
+            client.user?.setPresence({ activities: [{ name: "Internal Build!" }], status: "dnd" });
       }
 });
+
+if (process.env.NODE_ENV == "production") {
+      const ap = AutoPoster(process.env.TOPGG_TOKEN, client);
+
+      ap.on("posted", () => {
+            logger.info("Posted stats to top.gg", { file: filename(__filename) });
+      });
+
+      client.on("guildCreate", guild => {
+            new DBServer(guild).addServer();
+      });
+
+      client.on("guildDelete", guild => {
+            new DBServer(guild).deleteServer();
+      });
+}
 
 client.on("interactionCreate", async interaction => {
       if (interaction.type === InteractionType.ApplicationCommand) {
@@ -73,7 +89,7 @@ client.on("interactionCreate", async interaction => {
                   const deferredReply = await interaction.deferReply({ fetchReply: true });
                   const dateNow = Date.now();
                   await command.execute(interaction);
-                  logger.info(`[${interaction.user.username}] used [/${interaction.commandName}] in [${interaction.guild?.name}]. Bot response time: ${interaction.createdTimestamp - dateNow}ms`, { command: interaction.commandName, discordId: interaction.user.id, serverId: interaction.guild?.id, file: filename(__filename), responseTime: interaction.createdTimestamp - dateNow });
+                  logger.info(`[${interaction.user.username}] used [/${interaction.commandName}] in [${interaction.guild?.name}]. Bot response time: ${dateNow - interaction.createdTimestamp}ms`, { command: interaction.commandName, discordId: interaction.user.id, serverId: interaction.guild?.id, file: filename(__filename), responseTime: interaction.createdTimestamp - dateNow });
             }
             catch (error) {
                   await interaction.reply({ content: "There was an error while executing this command!", ephemeral: true });
