@@ -76,6 +76,8 @@ if (process.env.NODE_ENV == "production") {
 
 client.on("interactionCreate", async interaction => {
       if (interaction.type === InteractionType.ApplicationCommand) {
+            const dateNow = Date.now();
+
             const command = commands.get(interaction.commandName);
 
             if (!command) return;
@@ -87,7 +89,6 @@ client.on("interactionCreate", async interaction => {
                         return;
                   }
                   await interaction.deferReply();
-                  const dateNow = Date.now();
                   await command.execute(interaction);
                   logger.info(`[${interaction.user.username}] used [/${interaction.commandName}] in [${interaction.guild?.name}]. Bot response time: ${dateNow - interaction.createdTimestamp}ms`, { metadata: { command: interaction.commandName, discordId: interaction.user.id, serverId: interaction.guild?.id, file: filename(__filename), responseTime: dateNow - interaction.createdTimestamp } });
             }
