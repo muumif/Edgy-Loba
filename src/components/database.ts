@@ -1,4 +1,4 @@
-import { Client, Guild, Snowflake } from "discord.js";
+import { Client, Guild, Snowflake, User } from "discord.js";
 import { MongoClient } from "mongodb";
 import { HistoryDocument, UserDocument, ServerDocument } from "../types/mongo";
 import { filename } from "./const";
@@ -54,6 +54,36 @@ export class DBGlobal {
                   await DBClient.close();
             }
       }
+
+      userAverageRP = async () => {
+            type RP = {
+                  RP: number
+            };
+            try {
+                  await DBClient.connect();
+
+                  const users = await usersCollection.find({}).project({ "RP": 1, "_id": 0 }).toArray() as RP[];
+
+                  if (users.length == 0) return Promise.resolve("No user data!");
+                  logger.info("Fetched average RP from the DB!", { metadata: { file: filename(__filename) } });
+
+                  const totalRP = () => {
+                        let total = 0;
+                        for (let i = 0; i < users.length; i++) {
+                              total = total + users[i].RP;
+                        }
+                        return total;
+                  };
+
+                  return totalRP() / users.length;
+            }
+            catch (error) {
+                  return Promise.reject(error);
+            }
+            finally {
+                  await DBClient.close();
+            }
+      };
 
       public async addBug(discordId: Snowflake, serverId: Snowflake, command: string, message: string) {
             try {

@@ -96,7 +96,9 @@ client.on("interactionCreate", async interaction => {
                   logger.info(`[${interaction.user.username}] used [/${interaction.commandName}] in [${interaction.guild?.name}]. Bot response time: ${dateAfter - dateBefore}ms`, { metadata: { command: interaction.commandName, discordId: interaction.user.id, serverId: interaction.guild?.id, file: filename(__filename), responseTime: dateAfter - dateBefore } });
 
             }
-            catch (error) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            catch (error:any) {
+                  // logger.error(error, { metadata: { file: filename(__filename) } });
                   await interaction.reply({ content: "There was an error while executing this command!", ephemeral: true });
             }
       }
