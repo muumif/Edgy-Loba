@@ -1,4 +1,4 @@
-import { ActivityType, Client, Collection, Command, GatewayIntentBits, InteractionType } from "discord.js";
+import { ActivityType, Client, Collection, Command, CommandInteraction, GatewayIntentBits, InteractionType } from "discord.js";
 import { readdirSync, existsSync, mkdir } from "fs";
 import { logger } from "./components/logger";
 import { hostname, type, version } from "os";
@@ -76,8 +76,6 @@ if (process.env.NODE_ENV == "production") {
 
 client.on("interactionCreate", async interaction => {
       if (interaction.type === InteractionType.ApplicationCommand) {
-            const dateNow = Date.now();
-
             const command = commands.get(interaction.commandName);
 
             if (!command) return;
@@ -88,9 +86,15 @@ client.on("interactionCreate", async interaction => {
                         logger.info(`[${interaction.user.username}] used [/${interaction.commandName}] in [${interaction.guild?.name}].`, { metadata: { command: interaction.commandName, discordId: interaction.user.id, serverId: interaction.guild?.id, file: filename(__filename) } });
                         return;
                   }
+                  const dateBefore = new Date().getTime();
+
                   await interaction.deferReply();
                   await command.execute(interaction);
-                  logger.info(`[${interaction.user.username}] used [/${interaction.commandName}] in [${interaction.guild?.name}]. Bot response time: ${dateNow - interaction.createdTimestamp}ms`, { metadata: { command: interaction.commandName, discordId: interaction.user.id, serverId: interaction.guild?.id, file: filename(__filename), responseTime: dateNow - interaction.createdTimestamp } });
+
+                  const dateAfter = new Date().getTime();
+
+                  logger.info(`[${interaction.user.username}] used [/${interaction.commandName}] in [${interaction.guild?.name}]. Bot response time: ${dateBefore - dateAfter}ms`, { metadata: { command: interaction.commandName, discordId: interaction.user.id, serverId: interaction.guild?.id, file: filename(__filename), responseTime: dateBefore - dateAfter } });
+
             }
             catch (error) {
                   await interaction.reply({ content: "There was an error while executing this command!", ephemeral: true });
