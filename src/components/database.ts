@@ -75,7 +75,7 @@ export class DBGlobal {
                         return total;
                   };
 
-                  return totalRP() / users.length;
+                  return Math.floor(totalRP() / users.length);
             }
             catch (error) {
                   return Promise.reject(error);
