@@ -5,8 +5,13 @@ const customFormat = format.printf(({ level, message, timestamp, metadata }) => 
       return `${timestamp} | ${metadata.file} | ${level} | ${message}`;
 });
 
+let database = "EdgyLoba";
+if (process.env.NODE_ENV == "development") {
+      database = "EdgyLobaDEV";
+}
+
 const mongoOptions: MongoDBConnectionOptions = {
-      db: `mongodb://${process.env.MONGO_CONNECTION}/EdgyLobaDEV?authSource=admin`,
+      db: `mongodb://${process.env.MONGO_CONNECTION}/${database}?authSource=admin`,
       collection: "logs",
       name: "mongodb",
       decolorize: true,
