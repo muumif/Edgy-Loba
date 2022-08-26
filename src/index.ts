@@ -86,7 +86,7 @@ client.on("interactionCreate", async interaction => {
                         logger.info(`[${interaction.user.username}] used [/${interaction.commandName}] in [${interaction.guild?.name}].`, { metadata: { command: interaction.commandName, discordId: interaction.user.id, serverId: interaction.guild?.id, file: filename(__filename) } });
                         return;
                   }
-                  interaction.deferReply();
+                  await interaction.deferReply();
                   const dateNow = Date.now();
                   await command.execute(interaction);
                   logger.info(`[${interaction.user.username}] used [/${interaction.commandName}] in [${interaction.guild?.name}]. Bot response time: ${dateNow - interaction.createdTimestamp}ms`, { metadata: { command: interaction.commandName, discordId: interaction.user.id, serverId: interaction.guild?.id, file: filename(__filename), responseTime: dateNow - interaction.createdTimestamp } });
