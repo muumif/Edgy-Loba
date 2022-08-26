@@ -32,7 +32,7 @@ export async function makeDistributionChart(distData: DistributionData[]) {
 
       const imageBuffer = await chartJSNodeCanvas.renderToBuffer(config, "image/png");
       const currentTime = new Date().getTime();
-      await writeFile(`./temp/distribution_${currentTime}.png`, imageBuffer).then(function() {logger.info(`Made temp file: distribution_${currentTime}.png`, { file: filename(__filename) });});
+      await writeFile(`./temp/distribution_${currentTime}.png`, imageBuffer).then(function() {logger.info(`Made temp file: distribution_${currentTime}.png`, { metadata: { file: filename(__filename) }});});
       return `./temp/distribution_${currentTime}.png`;
 }
 
@@ -172,6 +172,6 @@ export async function makeStatsChart(historyData: HistoryDocument[], todayRP: nu
       },
       "image/png");
       const currentTime = new Date().getTime();
-      await writeFile(`./temp/history_${discordId}_${currentTime}.png`, imageBuffer).then(function() {logger.info(`Made temp file: history_${discordId}_${currentTime}.png`, { file: filename(__filename) });});
+      await writeFile(`./temp/history_${discordId}_${currentTime}.png`, imageBuffer).then(function() {logger.info(`Made temp file: history_${discordId}_${currentTime}.png`, { metadata: { file: filename(__filename) }});});
       return `./temp/history_${discordId}_${currentTime}.png`;
 }

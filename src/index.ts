@@ -24,17 +24,17 @@ for (const folder of readdirSync(commandsPath)) {
 
 const tempFolder = path.join(__dirname, "temp");
 if (!existsSync(tempFolder)) {
-      logger.info("Temp directory doesn't exist!", { file: filename(__filename) });
+      logger.info("Temp directory doesn't exist!", { metadata: { file: filename(__filename) } });
       mkdir(tempFolder, error => {
             if (error) return logger.error(error);
-            logger.info("Made temp directory!", { file: filename(__filename) });
+            logger.info("Made temp directory!", { metadata: { file: filename(__filename) } });
       });
 }
 
 
 client.once("ready", async () => {
-      logger.info("▬▬ι═══════ﺤ Edgy Loba is now online -═══════ι▬▬", { file: filename(__filename) });
-      logger.info(`Hostname: ${hostname} | Environment: ${process.env.NODE_ENV} | Version: ${process.env.npm_package_version} | OS: ${type} ${version}`, { file: filename(__filename) });
+      logger.info("▬▬ι═══════ﺤ Edgy Loba is now online -═══════ι▬▬", { metadata: { file: filename(__filename) } });
+      logger.info(`Hostname: ${hostname} | Environment: ${process.env.NODE_ENV} | Version: ${process.env.npm_package_version} | OS: ${type} ${version}`, { metadata: { file: filename(__filename) } });
 
       await new DBGlobal().verifyServers(client);
 
@@ -62,7 +62,7 @@ if (process.env.NODE_ENV == "production") {
       const ap = AutoPoster(process.env.TOPGG_TOKEN, client);
 
       ap.on("posted", () => {
-            logger.info("Posted stats to top.gg", { file: filename(__filename) });
+            logger.info("Posted stats to top.gg", { metadata: { file: filename(__filename) } });
       });
 
       client.on("guildCreate", guild => {
@@ -83,13 +83,12 @@ client.on("interactionCreate", async interaction => {
             try {
                   if (interaction.commandName == "bug") {
                         await command.execute(interaction);
-                        logger.info(`[${interaction.user.username}] used [/${interaction.commandName}] in [${interaction.guild?.name}].`, { command: interaction.commandName, discordId: interaction.user.id, serverId: interaction.guild?.id, file: filename(__filename) });
+                        logger.info(`[${interaction.user.username}] used [/${interaction.commandName}] in [${interaction.guild?.name}].`, { metadata: { command: interaction.commandName, discordId: interaction.user.id, serverId: interaction.guild?.id, file: filename(__filename) } });
                         return;
                   }
-                  const deferredReply = await interaction.deferReply({ fetchReply: true });
                   const dateNow = Date.now();
                   await command.execute(interaction);
-                  logger.info(`[${interaction.user.username}] used [/${interaction.commandName}] in [${interaction.guild?.name}]. Bot response time: ${dateNow - interaction.createdTimestamp}ms`, { command: interaction.commandName, discordId: interaction.user.id, serverId: interaction.guild?.id, file: filename(__filename), responseTime: interaction.createdTimestamp - dateNow });
+                  logger.info(`[${interaction.user.username}] used [/${interaction.commandName}] in [${interaction.guild?.name}]. Bot response time: ${dateNow - interaction.createdTimestamp}ms`, { metadata: { command: interaction.commandName, discordId: interaction.user.id, serverId: interaction.guild?.id, file: filename(__filename), responseTime: dateNow - interaction.createdTimestamp } });
             }
             catch (error) {
                   await interaction.reply({ content: "There was an error while executing this command!", ephemeral: true });

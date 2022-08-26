@@ -1,8 +1,19 @@
 import { Logger, format, createLogger, transports } from "winston";
+import { MongoDB, MongoDBConnectionOptions } from "winston-mongodb";
 
-const customFormat = format.printf(({ level, message, timestamp, file }) => {
-      return `${timestamp} | ${file} | ${level} | ${message}`;
+const customFormat = format.printf(({ level, message, timestamp, metadata }) => {
+      return `${timestamp} | ${metadata.file} | ${level} | ${message}`;
 });
+
+const mongoOptions: MongoDBConnectionOptions = {
+      db: `mongodb://${process.env.MONGO_CONNECTION}/EdgyLobaDEV?authSource=admin`,
+      collection: "logs",
+      name: "mongodb",
+      decolorize: true,
+      tryReconnect: true,
+      storeHost: true,
+      metaKey: "metadata",
+};
 
 export const logger: Logger = createLogger({
       level: "info",
@@ -25,5 +36,6 @@ export const logger: Logger = createLogger({
                   ),
             }),
             new transports.File({ filename: "./logs/combined.log" }), // Save logs to a file combined.log
+            new MongoDB(mongoOptions),
       ],
 });

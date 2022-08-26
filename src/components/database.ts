@@ -27,7 +27,7 @@ export class DBGlobal {
                   const users = await usersCollection.find().toArray();
 
                   if (users == null) return Promise.resolve("No user data!");
-                  logger.info("Fetched all users from the DB!", { file: filename(__filename) });
+                  logger.info("Fetched all users from the DB!", { metadata: { file: filename(__filename) } });
                   return Promise.resolve(users);
             }
             catch (error) {
@@ -44,7 +44,7 @@ export class DBGlobal {
                   const users = await usersCollection.find().sort({ RP: -1 }).limit(3).toArray();
 
                   if (users.length == 0) return Promise.resolve("No user data!");
-                  logger.info("Fetched users from the DB!", { serverId: guild.id, file: filename(__filename) });
+                  logger.info("Fetched users from the DB!", { metadata: { serverId: guild.id, file: filename(__filename) } });
                   return Promise.resolve(users);
             }
             catch (error) {
@@ -69,7 +69,7 @@ export class DBGlobal {
                         },
                   })
                         .then(function() {
-                              logger.info("Added a bug into the DB!", { serverId: serverId, discordId: discordId, file: filename(__filename) });
+                              logger.info("Added a bug into the DB!", { metadata: { serverId: serverId, discordId: discordId, file: filename(__filename) } });
                               return Promise.resolve("Server data inserted");
                         });
             }
@@ -93,7 +93,7 @@ export class DBGlobal {
                                           serverId: guilds[i].id,
                                           name: guilds[i].name,
                                     }) .then(function() {
-                                          logger.info("Added a server to the DB!", { serverId: guilds[i].id, file: filename(__filename) });
+                                          logger.info("Added a server to the DB!", { metadata: { serverId: guilds[i].id, file: filename(__filename) } });
                                     });
                               }
                         }
@@ -102,11 +102,11 @@ export class DBGlobal {
 
                   const deleteGuilds = async () => {
                         const DBGuilds = await guildCollection.find({}).toArray() as ServerDocument[] | [];
-                        if (DBGuilds == []) logger.error("No guilds found!", { file: filename(__filename) }); // Make error for this
+                        if (DBGuilds == []) logger.error("No guilds found!", { metadata: { file: filename(__filename) } }); // Make error for this
                         for (let i = 0; i < DBGuilds.length; i++) {
                               if (client.guilds.cache.get(DBGuilds[i].serverId) == undefined) {
                                     await guildCollection.deleteOne({ serverId: DBGuilds[i].serverId });
-                                    logger.info("Deleted a server from the DB!", { serverId: DBGuilds[i].serverId, file: filename(__filename) });
+                                    logger.info("Deleted a server from the DB!", { metadata: { serverId: DBGuilds[i].serverId, file: filename(__filename) } });
                               }
                         }
                         return;
@@ -118,7 +118,7 @@ export class DBGlobal {
             }
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             catch (error:any) {
-                  return logger.error(error, { file: filename(__filename) });
+                  return logger.error(error, { metadata: { file: filename(__filename) } });
             }
             finally {
                   await DBClient.close();
@@ -141,7 +141,7 @@ export class DBUser {
 
                   if (user == null) return Promise.resolve("User not found!");
 
-                  logger.info("Fetched a user from the DB!", { discordId: this.discordId, file: filename(__filename) });
+                  logger.info("Fetched a user from the DB!", { metadata: { discordId: this.discordId, file: filename(__filename) } });
                   return Promise.resolve(user);
             }
             catch (error) {
@@ -160,7 +160,7 @@ export class DBUser {
 
                   if (history.length == 0) return Promise.resolve("No history data was found!");
 
-                  logger.info("Fetched a users history from the DB!", { discordId: this.discordId, file: filename(__filename) });
+                  logger.info("Fetched a users history from the DB!", { metadata: { discordId: this.discordId, file: filename(__filename) } });
                   return Promise.resolve(history as HistoryDocument[]);
             }
             catch (error) {
@@ -178,7 +178,7 @@ export class DBUser {
                   const server = await usersCollection.findOne({ discordId: this.discordId.toString(), servers: serverId });
                   if (server == null) return Promise.resolve("No server found!");
 
-                  logger.info("Fetched a users server from the DB!", { serverId: serverId, discordId: this.discordId, file: filename(__filename) });
+                  logger.info("Fetched a users server from the DB!", { metadata: { serverId: serverId, discordId: this.discordId, file: filename(__filename) } });
                   return Promise.resolve(server);
             }
             catch (error) {
@@ -202,7 +202,7 @@ export class DBUser {
                         servers: [serverId],
                   })
                         .then(function() {
-                              logger.info("Added a user to the DB!", { serverId: serverId, discordId: id, file: filename(__filename) });
+                              logger.info("Added a user to the DB!", { metadata: { metadata: { serverId: serverId, discordId: id, file: filename(__filename) } } });
                               return Promise.resolve("User data inserted");
                         });
             }
@@ -225,7 +225,7 @@ export class DBUser {
                         AP: AP,
                   })
                         .then(function() {
-                              logger.info("Added history data to the DB!", { discordId: id, file: filename(__filename) });
+                              logger.info("Added history data to the DB!", { metadata: { discordId: id, file: filename(__filename) } });
                               return Promise.resolve("History data inserted");
                         });
             }
@@ -243,7 +243,7 @@ export class DBUser {
                   const id = this.discordId;
                   return await usersCollection.updateOne({ discordId: this.discordId }, { $push: { servers: serverId } })
                         .then(function() {
-                              logger.info("Updated a users servers in the DB!", { serverId: serverId, discordId: id, file: filename(__filename) });
+                              logger.info("Updated a users servers in the DB!", { metadata: { serverId: serverId, discordId: id, file: filename(__filename) } });
                               return Promise.resolve("Server data inserted");
                         });
 
@@ -262,7 +262,7 @@ export class DBUser {
                   const id = this.discordId;
                   return await usersCollection.updateOne({ discordId: this.discordId }, { $set:{ RP: RP } })
                         .then(function() {
-                              logger.info("Updated a users RP in the DB!", { discordId: id, file: filename(__filename) });
+                              logger.info("Updated a users RP in the DB!", { metadata: { discordId: id, file: filename(__filename) } });
                               return Promise.resolve("Updated RP");
                         });
             }
@@ -280,7 +280,7 @@ export class DBUser {
                   const id = this.discordId;
                   return await usersCollection.updateOne({ discordId: this.discordId }, { $set:{ AP: AP } })
                         .then(function() {
-                              logger.info("Updated a users AP in the DB!", { discordId: id, file: filename(__filename) });
+                              logger.info("Updated a users AP in the DB!", { metadata: { discordId: id, file: filename(__filename) } });
                               return Promise.resolve("Updated AP");
                         });
             }
@@ -298,7 +298,7 @@ export class DBUser {
                   const id = this.discordId;
                   return await usersCollection.deleteOne({ discordId: this.discordId })
                         .then(function() {
-                              logger.info("Deleted a user from the DB!", { discordId: id, file: filename(__filename) });
+                              logger.info("Deleted a user from the DB!", { metadata: { discordId: id, file: filename(__filename) } });
                               return Promise.resolve("Deleted user");
                         });
             }
@@ -326,7 +326,7 @@ export class DBServer {
                         name: this.guild.name,
                   })
                         .then(function() {
-                              logger.info("Added a server to the DB!", { serverId: id, file: filename(__filename) });
+                              logger.info("Added a server to the DB!", { metadata: { serverId: id, file: filename(__filename) } });
                               return Promise.resolve("Inserted server");
                         });
 
@@ -343,7 +343,7 @@ export class DBServer {
             try {
                   await DBClient.connect();
 
-                  logger.info("Deleted a server from the DB!", { serverId: this.guild.id, file: filename(__filename) });
+                  logger.info("Deleted a server from the DB!", { metadata:{ serverId: this.guild.id, file: filename(__filename) } });
                   return await guildCollection.deleteOne({ serverId: this.guild.id });
             }
             catch (error) {
@@ -361,7 +361,7 @@ export class DBServer {
                   const users = await usersCollection.find({ servers: this.guild.id }).sort({ RP: -1 }).limit(10).toArray();
 
                   if (users.length == 0) return Promise.resolve("No user data!");
-                  logger.info("Fetched users from the DB!", { serverId: this.guild.id, file: filename(__filename) });
+                  logger.info("Fetched users from the DB!", { metadata:{ serverId: this.guild.id, file: filename(__filename) } });
                   return Promise.resolve(users);
             }
             catch (error) {

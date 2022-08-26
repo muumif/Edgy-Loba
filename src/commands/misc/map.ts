@@ -51,7 +51,7 @@ module.exports = {
                   const currentTime = new Date().getTime();
                   writeFile(`./temp/map_${currentTime}.jpeg`, canvas.toBuffer("image/jpeg"), error => {
                         if (error) throw error;
-                        logger.info(`Made temp file: map_${currentTime}.png`, { discordId: interaction.user.id, serverId: interaction.guildId, file: filename(__filename) });
+                        logger.info(`Made temp file: map_${currentTime}.png`, { metadata: { discordId: interaction.user.id, serverId: interaction.guildId, file: filename(__filename) }});
                   });
 
                   const mapFile = new AttachmentBuilder(`./temp/map_${currentTime}.jpeg`);
