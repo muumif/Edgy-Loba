@@ -180,7 +180,7 @@ module.exports = {
             catch (error: any) {
                   if (error.isGetUidError) {
                         logger.error(error, { metadata: { discordId: interaction.user.id, serverId: interaction.guildId, file: filename(__filename) } });
-                        return await interaction.editReply({ embeds: [new embed().errorEmbed().setTitle("An error accrued!").setDescription(error.message)] });
+                        return await interaction.editReply({ embeds: [new embed().errorEmbed().setTitle("An error accrued!").setDescription(JSON.parse(error.message).Error)] });
                   }
                   if (error.response) {
                         logger.error(error, { metadata: { discordId: interaction.user.id, serverId: interaction.guildId, file: filename(__filename) } });
