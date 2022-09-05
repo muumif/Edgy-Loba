@@ -1,4 +1,4 @@
-import { CommandInteraction, Guild, SlashCommandBuilder, User } from "discord.js";
+import { CommandInteraction, Guild, SlashCommandBuilder } from "discord.js";
 import { filename } from "../../components/const";
 import { DBServer } from "../../components/database";
 import { embed } from "../../components/embeds";
@@ -23,8 +23,8 @@ module.exports = {
                   const topEmbed = new embed().defaultEmbed()
                         .setTitle("Server Leaderboard");
 
-                  for (let i = 0; i < topData.length; i++) {
-                        if (i == 10) break;
+                  for (let i = 0; i < topData.length; i++) { // Limit to top 5 because each request takes about ~1000ms until caching isn't intruduced then it is usless to search for over 5 user because the response time with 10 users is already over ~11000ms
+                        if (i == 5) break;
                         const discordUser = await interaction.client.users.fetch(topData[i].discordId);
                         const username = await UIDToIGN(topData[i].originId, topData[i].platform, interaction.guildId as string, topData[i].discordId);
                         if (i == 0) {
