@@ -24,6 +24,7 @@ module.exports = {
                         .setTitle("Server Leaderboard");
 
                   for (let i = 0; i < topData.length; i++) {
+                        if (i == 10) break;
                         const discordUser = await interaction.client.users.fetch(topData[i].discordId);
                         const username = await UIDToIGN(topData[i].originId, topData[i].platform, interaction.guildId as string, topData[i].discordId);
                         if (i == 0) {
