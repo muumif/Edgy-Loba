@@ -2,7 +2,7 @@ import axios from "axios";
 import { AttachmentBuilder, CommandInteraction, GuildEmoji, SlashCommandBuilder } from "discord.js";
 import { makeStatsChart } from "../../components/charts";
 import { emojis, filename } from "../../components/const";
-import { DBUser } from "../../components/database";
+import { DBUser } from "../../components/mongo";
 import { embed } from "../../components/embeds";
 import { logger } from "../../components/logger";
 import { ALSUserData } from "../../types/als";

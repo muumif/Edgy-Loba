@@ -7,7 +7,7 @@ import { filename, chartBackgroundColor } from "./const";
 import { HistoryDocument } from "../types/mongo";
 import ChartJsAnnotation from "chartjs-plugin-annotation";
 import { Snowflake } from "discord.js";
-import { DBGlobal } from "./database";
+import { DBGlobal } from "./mongo";
 
 export async function makeDistributionChart(distData: DistributionData[]) {
       const labels: string[] = [], data: number[] = [], colors: string[] = [];
@@ -183,6 +183,7 @@ export async function makeStatsChart(historyData: HistoryDocument[], todayRP: nu
             await writeFile(`./temp/history_${discordId}_${currentTime}.png`, imageBuffer).then(function() {logger.info(`Made temp file: history_${discordId}_${currentTime}.png`, { metadata: { file: filename(__filename) } });});
             return `./temp/history_${discordId}_${currentTime}.png`;
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       catch (error:any) {
             logger.error(error, { metadata: { file: filename(__filename) } });
             return "";
