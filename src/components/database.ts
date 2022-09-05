@@ -232,7 +232,7 @@ export class DBUser {
                         servers: [serverId],
                   })
                         .then(function() {
-                              logger.info("Added a user to the DB!", { metadata: { metadata: { serverId: serverId, discordId: id, file: filename(__filename) } } });
+                              logger.info("Added a user to the DB!", { metadata: { serverId: serverId, discordId: id, file: filename(__filename) } });
                               return Promise.resolve("User data inserted");
                         });
             }
