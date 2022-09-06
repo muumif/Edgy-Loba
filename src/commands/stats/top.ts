@@ -7,8 +7,8 @@ import { UIDToIGN } from "../../components/uid";
 import { UserDocument } from "../../types/mongo";
 import { createClient } from "redis";
 
-const client = createClient({ url: process.env.REDIS_CONNECTION });
-client.on("error", (err) => logger.error(err, { metadata: { file: filename(__filename) } }));
+const redisClient = createClient({ url: process.env.REDIS_CONNECTION });
+redisClient.on("error", (err) => logger.error(err, { metadata: { file: filename(__filename) } }));
 
 module.exports = {
       data: new SlashCommandBuilder()
@@ -16,51 +16,61 @@ module.exports = {
             .setDescription("Shows the top 10 users in the server."),
       async execute(interaction: CommandInteraction) {
             try {
-                  await client.connect();
+                  await redisClient.connect();
                   let topData = await new DBServer(interaction.guild as Guild).getTopUsers() as UserDocument[] | string;
                   if (topData == "No user data!") {
                         const topEmbed = new embed().errorEmbed()
-                              .setTitle("An error accrued!")
+                              .setTitle("An error accured!")
                               .setDescription("No users exist in this server!");
                         return await interaction.editReply({ embeds: [topEmbed] });
                   }
                   topData = topData as UserDocument[];
                   const topEmbed = new embed().defaultEmbed()
-                        .setTitle("Server Leaderboard!");
+                        .setTitle("Server Leaderboard");
+
                   for (let i = 0; i < topData.length; i++) {
-                        if (i == 5) break;
-                        if (await client.exists(`top:${topData[i].discordId}`)) {
-                              const data = await client.hGetAll(topData[i].discordId);
-                              topEmbed.addFields({
-                                    name: `${i + 1}. ${data.username} / ${data.discordUsername}`,
-                                    value: `RP: ${data.RP}`,
-                                    inline: false,
-                              });
-                              if (i == 0) topEmbed.setThumbnail(data.thumbnail);
+                        if (i == 10) break;
+                        let discordName, avatarURL, originIGN;
+                        if (await redisClient.exists(topData[i].discordId)) {
+                              [discordName, avatarURL, originIGN] = await redisClient.multi()
+                                    .hGet(topData[i].discordId, "discordName")
+                                    .hGet(topData[i].discordId, "avatarURL")
+                                    .hGet(topData[i].discordId, "originIGN")
+                                    .exec();
                         }
                         else {
                               const discordUser = await interaction.client.users.fetch(topData[i].discordId);
-                              const username = await UIDToIGN(topData[i].originId, topData[i].platform, interaction.guildId as string, topData[i].discordId);
-                              await client
-                                    .multi()
-                                    .hSet(`top:${discordUser.id}`, "RP", topData[i].RP)
-                                    .hSet(`top:${discordUser.id}`, "username", username)
-                                    .hSet(`top:${discordUser.id}`, "discordUsername", discordUser.username)
-                                    .hSet(`top:${discordUser.id}`, "thumbnail", (discordUser.avatarURL()?.toString() as string))
-                                    .expire(`top:${discordUser.id}`, 3600)
+                              const originUser = await UIDToIGN(topData[i].originId, topData[i].platform, interaction.guildId as string, topData[i].discordId);
+                              [discordName, avatarURL, originIGN] = [discordUser.username, discordUser.avatarURL() as string, originUser];
+                              await redisClient.multi()
+                                    .hSet(topData[i].discordId, "discordName", discordName)
+                                    .hSet(topData[i].discordId, "avatarURL", avatarURL)
+                                    .hSet(topData[i].discordId, "originIGN", originIGN)
+                                    .expire(topData[i].discordId, 10800)
                                     .exec();
-                              if (i == 0) {
-                                    if (discordUser.avatarURL() == null) {topEmbed.setThumbnail("https://cdn.discordapp.com/embed/avatars/2.png");}
-                                    else { topEmbed.setThumbnail(discordUser.avatarURL() as string);}
-                              }
+                        }
+                        if (i == 0) {
+                              topEmbed.setThumbnail(avatarURL as string);
+                        }
+                        if (topData[i].discordId == interaction.user.id) {
                               topEmbed.addFields(
                                     {
-                                          name: `${i + 1}. ${username} / ${discordUser.username}`,
+                                          name: `__${i + 1}. ${originIGN} / ${discordName}__`,
                                           value: `RP: ${topData[i].RP}`,
                                           inline: false,
                                     },
                               );
                         }
+                        else {
+                              topEmbed.addFields(
+                                    {
+                                          name: `${i + 1}. ${originIGN} / ${discordName}`,
+                                          value: `RP: ${topData[i].RP}`,
+                                          inline: false,
+                                    },
+                              );
+                        }
+
                   }
                   await interaction.editReply({ embeds: [topEmbed] });
             }
@@ -76,7 +86,7 @@ module.exports = {
                   }
             }
             finally {
-                  await client.disconnect();
+                  await redisClient.disconnect();
             }
       },
 };
