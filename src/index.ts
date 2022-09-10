@@ -3,7 +3,7 @@ import { readdirSync, existsSync, mkdir } from "fs";
 import { logger } from "./components/logger";
 import { hostname, type, version } from "os";
 import { filename } from "./components/const";
-import { DBGlobal, DBServer } from "./components/database";
+import { DBGlobal, DBServer } from "./components/mongo";
 import { AutoPoster } from "topgg-autoposter";
 import path from "path";
 import "./components/scheduler";

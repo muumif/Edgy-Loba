@@ -5,7 +5,7 @@ import { cwd } from "process";
 import { ALSUserData } from "../types/als";
 import { UserDocument } from "../types/mongo";
 import { filename } from "./const";
-import { DBGlobal, DBUser } from "./database";
+import { DBGlobal, DBUser } from "./mongo";
 import { logger } from "./logger";
 
 async function HistoryUpdater() {

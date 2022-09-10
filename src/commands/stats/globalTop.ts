@@ -1,6 +1,6 @@
 import { CommandInteraction, Guild, SlashCommandBuilder } from "discord.js";
 import { filename } from "../../components/const";
-import { DBGlobal } from "../../components/database";
+import { DBGlobal } from "../../components/mongo";
 import { embed } from "../../components/embeds";
 import { logger } from "../../components/logger";
 import { UserDocument } from "../../types/mongo";

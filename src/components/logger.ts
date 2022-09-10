@@ -11,7 +11,7 @@ if (process.env.NODE_ENV == "development") {
 }
 
 const mongoOptions: MongoDBConnectionOptions = {
-      db: `mongodb://${process.env.MONGO_CONNECTION}/${database}?authSource=admin`,
+      db: `${process.env.MONGO_CONNECTION}/${database}?authSource=admin`,
       collection: "logs",
       name: "mongodb",
       decolorize: true,
