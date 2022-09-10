@@ -14,6 +14,7 @@ module.exports = {
             .setDescription("Shows the current and next maps for Battle Royal and Arenas!"),
       async execute(interaction: CommandInteraction) {
             try {
+                  // Redis cache the map until new map by getting second and setting TTL to the second got on the first one
                   const mapData = await (await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/maprotation?version=2&auth=${process.env.ALS_TOKEN}`))).data as MapData;
 
                   const [canvasWidth, canvasHeight] = [1920, 680];

@@ -20,7 +20,7 @@ module.exports = {
                   let topData = await new DBServer(interaction.guild as Guild).getTopUsers() as UserDocument[] | string;
                   if (topData == "No user data!") {
                         const topEmbed = new embed().errorEmbed()
-                              .setTitle("An error accured!")
+                              .setTitle("An error accrued!")
                               .setDescription("No users exist in this server!");
                         return await interaction.editReply({ embeds: [topEmbed] });
                   }

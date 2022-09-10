@@ -22,7 +22,7 @@ module.exports = {
                   if (dbUserData == "User not found!") {
                         const meEmbed = new embed().errorEmbed()
                               .setTitle("User not linked!")
-                              .setDescription("Use the `/link` command to link and use this command!");
+                              .setDescription("Use the `/link` command to link and use this db!");
                         return await interaction.editReply({ embeds: [meEmbed] });
                   }
                   else {
