@@ -1,11 +1,12 @@
 import { CommandInteraction, Guild, SlashCommandBuilder } from "discord.js";
 import { filename } from "../../components/const";
-import { DBServer } from "../../components/mongo";
+import { DBServer, DBUser } from "../../components/mongo";
 import { embed } from "../../components/embeds";
 import { logger } from "../../components/logger";
-import { UIDToIGN } from "../../components/uid";
+import { ALSUserData } from "../../types/als";
 import { UserDocument } from "../../types/mongo";
 import { createClient } from "redis";
+import axios from "axios";
 
 const redisClient = createClient({ url: process.env.REDIS_CONNECTION });
 redisClient.on("error", (err) => logger.error(err, { metadata: { file: filename(__filename) } }));
@@ -30,31 +31,33 @@ module.exports = {
 
                   for (let i = 0; i < topData.length; i++) {
                         if (i == 10) break;
-                        let discordName, avatarURL, originIGN;
+                        let discordName, avatarURL, originIGN, RP;
                         if (await redisClient.exists(topData[i].discordId)) {
-                              [discordName, avatarURL, originIGN] = await redisClient.multi()
+                              [discordName, RP, avatarURL, originIGN] = await redisClient.multi()
                                     .hGet(topData[i].discordId, "discordName")
+                                    .hGet(topData[i].discordId, "RP")
                                     .hGet(topData[i].discordId, "avatarURL")
                                     .hGet(topData[i].discordId, "originIGN")
                                     .exec();
+                              logger.info("Fetched a user from the cache!", { metadata: { discordId: topData[i].discordId, serverId: interaction.guildId, file: filename(__filename) } });
                         }
                         else {
                               const discordUser = await interaction.client.users.fetch(topData[i].discordId);
-                              const originUser = await UIDToIGN(topData[i].originId, topData[i].platform, interaction.guildId as string, topData[i].discordId); // Should query the API and refresh the RP values in the DB
+                              const statsData = await (await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${topData[i].originId}&platform=${topData[i].platform}&merge=true&removeMerged=true`))).data as ALSUserData;
+                              const dbUser = new DBUser(topData[i].discordId);
+                              await dbUser.updateRP(topData[i].RP);
+                              RP = statsData.global.rank.rankScore;
                               let avatar;
-                              if (discordUser.avatarURL() == null) {
-                                    avatar = "https://cdn.discordapp.com/embed/avatars/2.png";
-                              }
-                              else {
-                                    avatar = discordUser.avatarURL() as string;
-                              }
-                              [discordName, avatarURL, originIGN] = [discordUser.username, avatar, originUser];
+                              if (discordUser.avatarURL() == null) {avatar = "https://cdn.discordapp.com/embed/avatars/2.png";}
+                              else {avatar = discordUser.avatarURL() as string;}
+                              [discordName, avatarURL, originIGN] = [discordUser.username, avatar, statsData.global.name];
                               await redisClient.multi()
                                     .hSet(topData[i].discordId, "discordName", discordName)
+                                    .hSet(topData[i].discordId, "RP", statsData.global.rank.rankScore)
                                     .hSet(topData[i].discordId, "avatarURL", avatarURL)
                                     .hSet(topData[i].discordId, "originIGN", originIGN)
                                     .expire(topData[i].discordId, 10800)
-                                    .exec();
+                                    .exec().then(function() {logger.info("Added a user to the cache!", { metadata: { discordId: discordUser.id, serverId: interaction.guildId, file: filename(__filename) } });});
                         }
                         if (i == 0) {
                               topEmbed.setThumbnail(avatarURL as string);
@@ -63,7 +66,7 @@ module.exports = {
                               topEmbed.addFields(
                                     {
                                           name: `__${i + 1}. ${originIGN} / ${discordName}__`,
-                                          value: `RP: ${topData[i].RP}`,
+                                          value: `RP: ${RP}`,
                                           inline: false,
                                     },
                               );
@@ -75,7 +78,7 @@ module.exports = {
                               topEmbed.addFields(
                                     {
                                           name: `__${i + 1}. ${originIGN} / ${discordName}__`,
-                                          value: `RP: ${topData[i].RP}`,
+                                          value: `RP: ${RP}`,
                                           inline: false,
                                     },
                               );
@@ -84,7 +87,7 @@ module.exports = {
                               topEmbed.addFields(
                                     {
                                           name: `${i + 1}. ${originIGN} / ${discordName}`,
-                                          value: `RP: ${topData[i].RP}`,
+                                          value: `RP: ${RP}`,
                                           inline: false,
                                     },
                               );
