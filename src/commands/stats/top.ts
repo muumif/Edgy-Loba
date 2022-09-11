@@ -71,18 +71,6 @@ module.exports = {
                                     },
                               );
                         }
-                        if (i == 0) {
-                              topEmbed.setThumbnail(avatarURL as string);
-                        }
-                        if (topData[i].discordId == interaction.user.id) {
-                              topEmbed.addFields(
-                                    {
-                                          name: `__${i + 1}. ${originIGN} / ${discordName}__`,
-                                          value: `RP: ${RP}`,
-                                          inline: false,
-                                    },
-                              );
-                        }
                         else {
                               topEmbed.addFields(
                                     {
@@ -92,7 +80,6 @@ module.exports = {
                                     },
                               );
                         }
-
                   }
                   await interaction.editReply({ embeds: [topEmbed] });
             }
