@@ -4,7 +4,7 @@ import { HistoryDocument, UserDocument, ServerDocument } from "../types/mongo";
 import { filename } from "./const";
 import { logger } from "./logger";
 
-const server = `mongodb://${process.env.MONGO_CONNECTION}/?authMechanism=DEFAULT`;
+const server = `${process.env.MONGO_CONNECTION}/?authSource=admin`;
 const DBClient = new MongoClient(server);
 
 let usersCollection = DBClient.db("EdgyLoba").collection("users");

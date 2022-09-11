@@ -1,6 +1,6 @@
 import { CommandInteraction, Guild, SlashCommandBuilder } from "discord.js";
 import { filename } from "../../components/const";
-import { DBServer } from "../../components/database";
+import { DBServer } from "../../components/mongo";
 import { embed } from "../../components/embeds";
 import { logger } from "../../components/logger";
 import { UIDToIGN } from "../../components/uid";
@@ -59,6 +59,24 @@ module.exports = {
                         // if (i == 0) {
                         //       topEmbed.setThumbnail(avatarURL as string);
                         // }
+                        if (topData[i].discordId == interaction.user.id) {
+                              topEmbed.addFields(
+                                    {
+                                          name: `__${i + 1}. ${originIGN} / ${discordName}__`,
+                                          value: `RP: ${topData[i].RP}`,
+                                          inline: false,
+                                    },
+                              );
+                        }
+<<<<<<< HEAD
+                        // if (i == 0) {
+                        //       topEmbed.setThumbnail(avatarURL as string);
+                        // }
+=======
+                        if (i == 0) {
+                              topEmbed.setThumbnail(avatarURL as string);
+                        }
+>>>>>>> ab8da9f4da15b74f9705c56fef7557a6fedcb86a
                         if (topData[i].discordId == interaction.user.id) {
                               topEmbed.addFields(
                                     {

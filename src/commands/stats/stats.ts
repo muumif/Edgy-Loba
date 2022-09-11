@@ -1,13 +1,10 @@
 import axios from "axios";
-import { AttachmentBuilder, CommandInteraction, enableValidators, GuildEmoji, SlashCommandBuilder } from "discord.js";
-import { makeStatsChart } from "../../components/charts";
+import { CommandInteraction, GuildEmoji, SlashCommandBuilder } from "discord.js";
 import { emojis, filename } from "../../components/const";
-import { DBUser } from "../../components/database";
 import { embed } from "../../components/embeds";
 import { logger } from "../../components/logger";
 import { getUserUID } from "../../components/uid";
 import { ALSUserData } from "../../types/als";
-import { HistoryDocument, UserDocument } from "../../types/mongo";
 
 module.exports = {
       data: new SlashCommandBuilder()
@@ -54,7 +51,7 @@ module.exports = {
                   };
                   const UID = await getUserUID(username, platform(), interaction.guildId as string, interaction.user.id);
                   await new Promise(resolve => setTimeout(resolve, 500));
-                  const ALSUser = (await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${UID}&platform=${platform()}&merge=true&removeMerged=true`))).data as ALSUserData;
+                  const ALSUser = await (await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${UID}&platform=${platform()}&merge=true&removeMerged=true`))).data as ALSUserData;
                   const selectedLegend = ALSUser.legends.all[ALSUser.legends.selected.LegendName];
 
                   // Set a platform emoji for ALSUser embed
@@ -129,6 +126,7 @@ module.exports = {
 
                   const statsEmbed = new embed().defaultEmbed()
                         .setTitle(`${platformEmoji}  ${ALSUser.global.name}`)
+                        .setDescription(`${stateEmoji} ${currentState}`)
                         .setThumbnail(rankIMG)
                         .addFields(
                               {

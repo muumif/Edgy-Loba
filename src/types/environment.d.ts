@@ -12,6 +12,7 @@ declare global {
                   BITLY_ENDPOINT: URL;
                   TOPGG_TOKEN: string;
                   npm_package_version: string;
+                  REDIS_CONNECTION: string;
             }
       }
 }

@@ -1,5 +1,5 @@
 import { CommandInteraction, SlashCommandBuilder } from "discord.js";
-import { DBUser } from "../../components/database";
+import { DBUser } from "../../components/mongo";
 import { embed } from "../../components/embeds";
 
 module.exports = {

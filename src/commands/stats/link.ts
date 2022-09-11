@@ -1,7 +1,7 @@
 import axios from "axios";
 import { CommandInteraction, SlashCommandBuilder } from "discord.js";
 import { filename } from "../../components/const";
-import { DBUser } from "../../components/database";
+import { DBUser } from "../../components/mongo";
 import { embed } from "../../components/embeds";
 import { logger } from "../../components/logger";
 import { getUserUID } from "../../components/uid";
