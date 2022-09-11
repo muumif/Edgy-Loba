@@ -34,7 +34,7 @@ module.exports = {
                         if (await redisClient.exists(topData[i].discordId)) {
                               [discordName, avatarURL, originIGN] = await redisClient.multi()
                                     .hGet(topData[i].discordId, "discordName")
-                                    .hGet(topData[i].discordId, "avatarURL")
+                                    // .hGet(topData[i].discordId, "avatarURL")
                                     .hGet(topData[i].discordId, "originIGN")
                                     .exec();
                         }
@@ -42,23 +42,23 @@ module.exports = {
                               const discordUser = await interaction.client.users.fetch(topData[i].discordId);
                               const originUser = await UIDToIGN(topData[i].originId, topData[i].platform, interaction.guildId as string, topData[i].discordId); // Should query the API and refresh the RP values in the DB
                               let avatar;
-                              if (discordUser.avatarURL() == null) {
-                                    avatar = "https://cdn.discordapp.com/embed/avatars/2.png";
-                              }
-                              else {
-                                    avatar = discordUser.avatarURL() as string;
-                              }
+                              // if (discordUser.avatarURL() == null) {
+                              //       avatar = "https://cdn.discordapp.com/embed/avatars/2.png";
+                              // }
+                              // else {
+                              //       avatar = discordUser.avatarURL() as string;
+                              // }
                               [discordName, avatarURL, originIGN] = [discordUser.username, avatar, originUser];
                               await redisClient.multi()
                                     .hSet(topData[i].discordId, "discordName", discordName)
-                                    .hSet(topData[i].discordId, "avatarURL", avatarURL)
+                                    // .hSet(topData[i].discordId, "avatarURL", avatarURL)
                                     .hSet(topData[i].discordId, "originIGN", originIGN)
                                     .expire(topData[i].discordId, 10800)
                                     .exec();
                         }
-                        if (i == 0) {
-                              topEmbed.setThumbnail(avatarURL as string);
-                        }
+                        // if (i == 0) {
+                        //       topEmbed.setThumbnail(avatarURL as string);
+                        // }
                         if (topData[i].discordId == interaction.user.id) {
                               topEmbed.addFields(
                                     {
