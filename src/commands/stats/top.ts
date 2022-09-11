@@ -5,6 +5,10 @@ import { embed } from "../../components/embeds";
 import { logger } from "../../components/logger";
 import { UIDToIGN } from "../../components/uid";
 import { UserDocument } from "../../types/mongo";
+import { createClient } from "redis";
+
+const redisClient = createClient({ url: process.env.REDIS_CONNECTION });
+redisClient.on("error", (err) => logger.error(err, { metadata: { file: filename(__filename) } }));
 
 module.exports = {
       data: new SlashCommandBuilder()
@@ -12,10 +16,11 @@ module.exports = {
             .setDescription("Shows the top 10 users in the server."),
       async execute(interaction: CommandInteraction) {
             try {
+                  await redisClient.connect();
                   let topData = await new DBServer(interaction.guild as Guild).getTopUsers() as UserDocument[] | string;
                   if (topData == "No user data!") {
                         const topEmbed = new embed().errorEmbed()
-                              .setTitle("An error accured!")
+                              .setTitle("An error accrued!")
                               .setDescription("No users exist in this server!");
                         return await interaction.editReply({ embeds: [topEmbed] });
                   }
@@ -23,21 +28,56 @@ module.exports = {
                   const topEmbed = new embed().defaultEmbed()
                         .setTitle("Server Leaderboard");
 
-                  for (let i = 0; i < topData.length; i++) { // Limit to top 5 because each request takes about ~1000ms until caching isn't intruduced then it is usless to search for over 5 user because the response time with 10 users is already over ~11000ms
-                        if (i == 5) break;
-                        const discordUser = await interaction.client.users.fetch(topData[i].discordId);
-                        const username = await UIDToIGN(topData[i].originId, topData[i].platform, interaction.guildId as string, topData[i].discordId);
-                        if (i == 0) {
-                              if (discordUser.avatarURL() == null) {topEmbed.setThumbnail("https://cdn.discordapp.com/embed/avatars/2.png");}
-                              else { topEmbed.setThumbnail(discordUser.avatarURL() as string);}
+                  for (let i = 0; i < topData.length; i++) {
+                        if (i == 10) break;
+                        let discordName, avatarURL, originIGN;
+                        if (await redisClient.exists(topData[i].discordId)) {
+                              [discordName, avatarURL, originIGN] = await redisClient.multi()
+                                    .hGet(topData[i].discordId, "discordName")
+                                    .hGet(topData[i].discordId, "avatarURL")
+                                    .hGet(topData[i].discordId, "originIGN")
+                                    .exec();
                         }
-                        topEmbed.addFields(
-                              {
-                                    name: `${i + 1}. ${username} / ${discordUser.username}`,
-                                    value: `RP: ${topData[i].RP}`,
-                                    inline: false,
-                              },
-                        );
+                        else {
+                              const discordUser = await interaction.client.users.fetch(topData[i].discordId);
+                              const originUser = await UIDToIGN(topData[i].originId, topData[i].platform, interaction.guildId as string, topData[i].discordId); // Should query the API and refresh the RP values in the DB
+                              let avatar;
+                              if (discordUser.avatarURL() == null) {
+                                    avatar = "https://cdn.discordapp.com/embed/avatars/2.png";
+                              }
+                              else {
+                                    avatar = discordUser.avatarURL() as string;
+                              }
+                              [discordName, avatarURL, originIGN] = [discordUser.username, avatar, originUser];
+                              await redisClient.multi()
+                                    .hSet(topData[i].discordId, "discordName", discordName)
+                                    .hSet(topData[i].discordId, "avatarURL", avatarURL)
+                                    .hSet(topData[i].discordId, "originIGN", originIGN)
+                                    .expire(topData[i].discordId, 10800)
+                                    .exec();
+                        }
+                        if (i == 0) {
+                              topEmbed.setThumbnail(avatarURL as string);
+                        }
+                        if (topData[i].discordId == interaction.user.id) {
+                              topEmbed.addFields(
+                                    {
+                                          name: `__${i + 1}. ${originIGN} / ${discordName}__`,
+                                          value: `RP: ${topData[i].RP}`,
+                                          inline: false,
+                                    },
+                              );
+                        }
+                        else {
+                              topEmbed.addFields(
+                                    {
+                                          name: `${i + 1}. ${originIGN} / ${discordName}`,
+                                          value: `RP: ${topData[i].RP}`,
+                                          inline: false,
+                                    },
+                              );
+                        }
+
                   }
                   await interaction.editReply({ embeds: [topEmbed] });
             }
@@ -51,6 +91,9 @@ module.exports = {
                         logger.error(error, { metadata: { discordId: interaction.user.id, serverId: interaction.guildId, file: filename(__filename) } });
                         return await interaction.editReply({ embeds: [new embed().errorEmbed().setTitle("Please try again in a few seconds!").setDescription(error.response.request.res.statusMessage.toString())] });
                   }
+            }
+            finally {
+                  await redisClient.disconnect();
             }
       },
 };
