@@ -15,7 +15,10 @@ async function HistoryUpdater() {
             users = users as UserDocument[];
             for (let i = 0; i < users.length; i++) {
                   const user = (await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${users[i].originId}&platform=${users[i].platform}`))).data as ALSUserData;
-                  await new DBUser(users[i].discordId).addHistory(user.global.rank.rankScore, user.global.arena.rankScore);
+                  const dbUser = new DBUser(users[i].discordId);
+                  await dbUser.addHistory(user.global.rank.rankScore, user.global.arena.rankScore);
+                  await dbUser.updateRP(user.global.rank.rankScore);
+                  await dbUser.updateAP(user.global.arena.rankScore);
             }
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
