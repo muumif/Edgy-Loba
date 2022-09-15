@@ -1,4 +1,4 @@
-import { ActivityType, Client, Collection, Command, CommandInteraction, GatewayIntentBits, InteractionType } from "discord.js";
+import { ActivityType, Client, Collection, Command, GatewayIntentBits, InteractionType } from "discord.js";
 import { readdirSync, existsSync, mkdir } from "fs";
 import { logger } from "./components/logger";
 import { hostname, type, version } from "os";
@@ -65,12 +65,12 @@ if (process.env.NODE_ENV == "production") {
             logger.info("Posted stats to top.gg", { metadata: { file: filename(__filename) } });
       });
 
-      client.on("guildCreate", guild => {
-            new DBServer(guild).addServer();
+      client.on("guildCreate", async guild => {
+            await new DBServer(guild).addServer();
       });
 
-      client.on("guildDelete", guild => {
-            new DBServer(guild).deleteServer();
+      client.on("guildDelete", async guild => {
+            await new DBServer(guild).deleteServer();
       });
 }
 
@@ -109,7 +109,7 @@ client.on("interactionCreate", async interaction => {
                   const messageInput = interaction.fields.getTextInputValue("messageInput");
 
                   await new DBGlobal().addBug(interaction.user.id, interaction.guildId as string, commandInput, messageInput);
-                  interaction.reply({ content: "Bug reported!", ephemeral: true });
+                  await interaction.reply({ content: "Bug reported!", ephemeral: true });
             }
       }
 });
