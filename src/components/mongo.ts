@@ -11,15 +11,74 @@ let usersCollection = DBClient.db("EdgyLoba").collection("users");
 let historyCollection = DBClient.db("EdgyLoba").collection("userHistory");
 let guildCollection = DBClient.db("EdgyLoba").collection("guilds");
 let bugCollection = DBClient.db("EdgyLoba").collection("bugs");
+let logsCollection = DBClient.db("EdgyLoba").collection("logs");
 
 if (process.env.NODE_ENV == "development") {
       usersCollection = DBClient.db("EdgyLobaDEV").collection("users");
       historyCollection = DBClient.db("EdgyLobaDEV").collection("userHistory");
       guildCollection = DBClient.db("EdgyLobaDEV").collection("guilds");
       bugCollection = DBClient.db("EdgyLobaDEV").collection("bugs");
+      logsCollection = DBClient.db("EdgyLobaDEV").collection("logs");
 }
 
 export class DBGlobal {
+      userAverageRP = async () => {
+            type RP = {
+                  RP: number
+            };
+            try {
+                  const dateBefore = new Date().getTime();
+                  await DBClient.connect();
+
+                  const users = await usersCollection.find({}).project({ "RP": 1, "_id": 0 }).toArray() as RP[];
+
+                  if (users.length == 0) return Promise.resolve("No user data!");
+
+                  const totalRP = () => {
+                        let total = 0;
+                        for (let i = 0; i < users.length; i++) {
+                              total = total + users[i].RP;
+                        }
+                        return total;
+                  };
+
+                  const dateAfter = new Date().getTime();
+                  logger.info("Fetched average RP from the DB!", { metadata: { file: filename(__filename), databaseResponseTime: dateAfter - dateBefore } });
+                  return Math.floor(totalRP() / users.length);
+            }
+            catch (error) {
+                  return Promise.reject(error);
+            }
+            finally {
+                  await DBClient.close();
+            }
+      };
+
+      statistics = async () => {
+            try {
+                  const dateBefore = new Date().getTime();
+                  await DBClient.connect();
+                  const userCount = await usersCollection.countDocuments();
+                  const serverCount = await guildCollection.countDocuments();
+                  const historyCount = await historyCollection.countDocuments();
+                  const logCount = await logsCollection.countDocuments();
+
+                  const dateAfter = new Date().getTime();
+                  logger.info("Statistics fetched!", { metadata: { file: filename(__filename), databaseResponseTime: dateAfter - dateBefore } });
+                  return {
+                        userCount: userCount,
+                        serverCount: serverCount,
+                        historyCount: historyCount,
+                        logCount: logCount,
+                  };
+            }
+            catch (error) {
+                  return Promise.reject(error);
+            }
+            finally {
+                  await DBClient.close();
+            }
+      };
       public async getAllUsers() {
             try {
                   const dateBefore = new Date().getTime();
@@ -58,38 +117,6 @@ export class DBGlobal {
                   await DBClient.close();
             }
       }
-
-      userAverageRP = async () => {
-            type RP = {
-                  RP: number
-            };
-            try {
-                  const dateBefore = new Date().getTime();
-                  await DBClient.connect();
-
-                  const users = await usersCollection.find({}).project({ "RP": 1, "_id": 0 }).toArray() as RP[];
-
-                  if (users.length == 0) return Promise.resolve("No user data!");
-
-                  const totalRP = () => {
-                        let total = 0;
-                        for (let i = 0; i < users.length; i++) {
-                              total = total + users[i].RP;
-                        }
-                        return total;
-                  };
-
-                  const dateAfter = new Date().getTime();
-                  logger.info("Fetched average RP from the DB!", { metadata: { file: filename(__filename), databaseResponseTime: dateAfter - dateBefore } });
-                  return Math.floor(totalRP() / users.length);
-            }
-            catch (error) {
-                  return Promise.reject(error);
-            }
-            finally {
-                  await DBClient.close();
-            }
-      };
 
       public async addBug(discordId: Snowflake, serverId: Snowflake, command: string, message: string) {
             try {
@@ -426,13 +453,12 @@ export class DBServer {
             }
       }
 
-      public async getTopUsers() {
+      public async getTopUsers(skip: number) {
             try {
                   const dateBefore = new Date().getTime();
-
                   await DBClient.connect();
 
-                  const users = await usersCollection.find({ servers: this.guild.id }).sort({ RP: -1 }).limit(10).toArray();
+                  const users = await usersCollection.find({ servers: this.guild.id }).sort({ RP: -1 }).skip(skip).limit(10).toArray();
 
                   if (users.length == 0) return Promise.resolve("No user data!");
                   const dateAfter = new Date().getTime();

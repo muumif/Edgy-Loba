@@ -1,7 +1,10 @@
-import { SlashCommandBuilder, CommandInteraction } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, CommandInteraction, SlashCommandBuilder, User } from "discord.js";
 import { Api } from "@top-gg/sdk";
 import { embed } from "../../components/embeds";
-import { profilePic, linksField } from "../../components/const";
+import { profilePic } from "../../components/const";
+import * as OS from "os";
+import moment from "moment";
+import { DBGlobal } from "../../components/mongo";
 
 const topAPIInstance = new Api(process.env.TOPGG_TOKEN);
 
@@ -11,33 +14,78 @@ module.exports = {
             .setDescription("Everything about the bot!"),
       async execute(interaction: CommandInteraction) {
             const topGGData = await topAPIInstance.getBot("719542118955090011");
-
-            const aboutEmbed = new embed().defaultEmbed()
-                  .setTitle("About")
-                  .setThumbnail(profilePic(512))
-                  .setDescription("This bot was created to give Apex Legends players their stats in an easy and convenient way inside of Discord.\n\n At first the bot was just developed for fun in a private server but now it is being actively worked on for everyone to use. \n\nAll of the data comes from https://apexlegendsstatus.com a great project definitely check them out as well. Thanks Hugo :)")
-                  .addFields(
-                        {
-                              name: "Statistics",
-                              value: `
-						Servers: **${interaction.client.guilds.cache.size}**
-						Monthly Votes: **${topGGData.monthlyPoints}**
-						Total Votes: **${topGGData.points}**
-						`,
-                              inline: false,
-                        },
-                        {
-                              name: "Features",
-                              value: `
-						Latest Feature: **Slash commands (/)**
-						Next Planned Feature: **Data caching with Redis**
-						`,
-                              inline:false,
-                        },
-                        linksField("Links", false),
+            await interaction.client.application?.fetch();
+            const author = interaction.client.application?.owner as User;
+            const uptime = moment.duration(Number(interaction.client.uptime));
+            const statistics = await new DBGlobal().statistics();
+            const aboutButtons = new ActionRowBuilder<ButtonBuilder>()
+                  .addComponents(
+                        new ButtonBuilder()
+                              .setLabel("Invite me")
+                              .setURL("https://bit.ly/3wo2Tkh")
+                              .setStyle(ButtonStyle.Link),
+                        new ButtonBuilder()
+                              .setLabel("Vote")
+                              .setURL("https://top.gg/bot/719542118955090011/vote")
+                              .setStyle(ButtonStyle.Link),
+                        new ButtonBuilder()
+                              .setLabel("GitHub")
+                              .setURL("https://github.com/muumif/")
+                              .setStyle(ButtonStyle.Link),
+                        new ButtonBuilder()
+                              .setLabel("Terms Of Service")
+                              .setURL("https://github.com/muumif/Edgy-Loba/blob/master/TOS.md")
+                              .setStyle(ButtonStyle.Link),
+                        new ButtonBuilder()
+                              .setLabel("Privacy Policy")
+                              .setURL("https://github.com/muumif/Edgy-Loba/blob/master/PRIVACY.md")
+                              .setStyle(ButtonStyle.Link),
                   );
 
-            return await interaction.editReply({ embeds: [aboutEmbed] });
 
+            const aboutEmbed = new embed().defaultEmbed()
+                  .setAuthor({
+                        name: `${author.username}#${author.discriminator}`,
+                        url: "https://github.com/muumif/",
+                        iconURL: author.avatarURL()?.toString(),
+                  })
+                  .setDescription("This bot was created to give Apex Legends players their stats in an easy and convenient way inside of Discord.\n\n At first the bot was just developed for fun in a private server but now it is being actively worked on for everyone to use. \n\nAll of the data comes from https://apexlegendsstatus.com a great project definitely check them out as well. Thanks Hugo :)\n\n⠀")
+                  .setThumbnail(profilePic(512))
+                  .addFields(
+                        {
+                              name: "Host",
+                              // eslint-disable-next-line @typescript-eslint/no-var-requires
+                              value: `${OS.version()}\nNode ${process.version}\n Discord v${require("discord.js").version}`,
+                              inline: true,
+                        },
+                        {
+                              name: "Database",
+                              value: `${statistics.userCount} users\n${statistics.historyCount} history data\n${statistics.logCount} logs saved\n${statistics.serverCount} servers`,
+                              inline: true,
+                        },
+                        {
+                              name: "Votes",
+                              value: `${topGGData.monthlyPoints} monthly\n${topGGData.points} total`,
+                              inline: true,
+                        },
+                        {
+                              name: "Servers",
+                              value: `${interaction.client.guilds.cache.size}`,
+                              inline:true,
+                        },
+
+                        {
+                              name: "Channels",
+                              value: `${interaction.client.channels.cache.size} total`,
+                              inline: true,
+                        },
+                        {
+                              name: "Uptime",
+                              value: `${uptime.hours()}h ${uptime.minutes()}m ${uptime.seconds()}s`,
+                              inline: true,
+                        },
+                  );
+
+            return await interaction.editReply({ embeds: [aboutEmbed], components: [aboutButtons] });
       },
 };
