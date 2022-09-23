@@ -1,5 +1,5 @@
 import { ActivityType, Client, Collection, Command, GatewayIntentBits, InteractionType } from "discord.js";
-import { readdirSync, existsSync, mkdir } from "fs";
+import { existsSync, mkdir, readdirSync } from "fs";
 import { logger } from "./components/logger";
 import { hostname, type, version } from "os";
 import { filename } from "./components/const";
@@ -31,26 +31,30 @@ if (!existsSync(tempFolder)) {
       });
 }
 
-
 client.once("ready", async () => {
       logger.info("▬▬ι═══════ﺤ Edgy Loba is now online -═══════ι▬▬", { metadata: { file: filename(__filename) } });
       logger.info(`Hostname: ${hostname} | Environment: ${process.env.NODE_ENV} | Version: ${process.env.npm_package_version} | OS: ${type} ${version}`, { metadata: { file: filename(__filename) } });
 
       await new DBGlobal().verifyServers(client);
+      const statistics = await new DBGlobal().statistics();
 
       if (process.env.NODE_ENV == "production") {
-            const presences = [
-                  { type: 3, name: `${client.guilds.cache.size} servers!` },
-                  { type: 1, name: `${client.guilds.cache.size} servers!` },
-                  { type: 2, name: `${client.guilds.cache.size} servers!` },
-                  { type: 2, name: "/help" },
-                  { type: 2, name: "/about" },
-                  { type: 1, name: `version ${process.env.npm_package_version}` },
-            ];
-            client.user?.setPresence({ activities: [{ name: `${client.guilds.cache.size} servers!`, type: ActivityType.Playing }], status: "online" });
-            setInterval(() => {
-                  const presence = presences[Math.floor(Math.random() * presences.length)];
-                  client.user?.setPresence({ activities: [{ name: `${presence.name}`, type: presence.type }], status: "online" });
+            const presences = (statistics: {userCount: number, serverCount: number, historyCount: number, logCount: number}) => {
+                  const activities = [
+                        { type: ActivityType.Watching, name: `${statistics.serverCount} servers!` },
+                        { type: ActivityType.Listening, name: "/help" },
+                        { type: ActivityType.Listening, name: "/about" },
+                        { type: ActivityType.Playing, name: `version ${process.env.npm_package_version}` },
+                        { type: ActivityType.Listening, name: `${statistics.userCount} users!` },
+                  ];
+
+                  return activities[Math.floor(Math.random() * presences.length)];
+            };
+            client.user?.setPresence({ activities: [{ name: presences(statistics).name, type: ActivityType.Playing }], status: "online" });
+            setInterval(async () => {
+                  const statistics = await new DBGlobal().statistics();
+                  const presence = presences(statistics);
+                  client.user?.setPresence({ activities: [{ name: `${presence.name}`, type: ActivityType.Playing }], status: "online" });
             }, 600000);
       }
       else {
