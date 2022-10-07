@@ -102,8 +102,8 @@ client.on("interactionCreate", async interaction => {
             }
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             catch (error:any) {
-                  // logger.error(error, { metadata: { file: filename(__filename) } });
-                  await interaction.reply({ content: "There was an error while executing this command!", ephemeral: true });
+                  logger.error(error, { metadata: { file: filename(__filename) } });
+                  await interaction.editReply({ content: "There was an error while executing this command!" });
             }
       }
 

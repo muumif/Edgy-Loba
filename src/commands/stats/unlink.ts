@@ -8,7 +8,7 @@ module.exports = {
             .setDescription("Unlink your discord account from your Apex username."),
       async execute(interaction: CommandInteraction) {
 
-            const dbUser = new DBUser(interaction.user.id);
+            const dbUser = new DBUser(interaction.user);
             if (await dbUser.getUser() == "User not found!") {
                   const unlinkEmbed = new embed().errorEmbed()
                         .setTitle("You don't have any linked usernames!")

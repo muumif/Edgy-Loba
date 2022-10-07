@@ -45,13 +45,13 @@ module.exports = {
                   }
             };
 
-            const dbUser = new DBUser(interaction.user.id);
+            const dbUser = new DBUser(interaction.user);
             if (await dbUser.getUser() == "User not found!") {
                   try {
                         const userUID = await getUserUID(user, platform(), interaction.guild?.id, interaction.user.id);
                         const userData = await (await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${userUID}&platform=${platform()}`))).data as ALSUserData;
 
-                        await dbUser.addUser(userUID, userData.global.rank.rankScore, userData.global.arena.rankScore, platform(), interaction.guild?.id);
+                        await dbUser.addUser(userData.global.name, userUID, userData.global.rank.rankScore, userData.global.arena.rankScore, platform(), interaction.guild?.id);
 
                         const linkEmbed = new embed().defaultEmbed()
                               .setTitle("IGN has been successfully linked!")

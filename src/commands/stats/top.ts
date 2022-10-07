@@ -1,12 +1,19 @@
-import { CommandInteraction, Guild, SlashCommandBuilder } from "discord.js";
-import { filename } from "../../components/const";
-import { DBServer, DBUser } from "../../components/mongo";
+import {
+      ActionRowBuilder,
+      ButtonBuilder,
+      ButtonStyle,
+      CacheType,
+      ChatInputCommandInteraction,
+      Guild,
+      SlashCommandBuilder,
+} from "discord.js";
+import { filename, profilePic } from "../../components/const";
+import { DBServer } from "../../components/mongo";
 import { embed } from "../../components/embeds";
 import { logger } from "../../components/logger";
-import { ALSUserData } from "../../types/als";
 import { UserDocument } from "../../types/mongo";
 import { createClient } from "redis";
-import axios from "axios";
+import { setTimeout } from "node:timers/promises";
 
 const redisClient = createClient({ url: process.env.REDIS_CONNECTION });
 redisClient.on("error", (err) => logger.error(err, { metadata: { file: filename(__filename) } }));
@@ -14,88 +21,82 @@ redisClient.on("error", (err) => logger.error(err, { metadata: { file: filename(
 module.exports = {
       data: new SlashCommandBuilder()
             .setName("top")
-            .setDescription("Shows the top 10 users in the server."),
-      async execute(interaction: CommandInteraction) {
-            try {
-                  await redisClient.connect();
-                  let topData = await new DBServer(interaction.guild as Guild).getTopUsers() as UserDocument[] | string;
-                  if (topData == "No user data!") {
-                        const topEmbed = new embed().errorEmbed()
-                              .setTitle("An error accrued!")
-                              .setDescription("No users exist in this server!");
-                        return await interaction.editReply({ embeds: [topEmbed] });
-                  }
-                  topData = topData as UserDocument[];
-                  const topEmbed = new embed().defaultEmbed()
-                        .setTitle("Server Leaderboard");
+            .setDescription("Shows the server leaderboard!"),
+      async execute(interaction: ChatInputCommandInteraction<CacheType>) {
+            const buttonTimeout = 30000;
+            let topData = await new DBServer(interaction.guild as Guild).getTopUsers() as UserDocument[] | string;
+            if (topData == "No user data!") {
+                  const topEmbed = new embed().errorEmbed()
+                        .setTitle("An error accrued!")
+                        .setDescription("No users exist in this server!");
+                  return await interaction.editReply({ embeds: [topEmbed] });
+            }
+            topData = topData as UserDocument[];
 
-                  for (let i = 0; i < topData.length; i++) {
-                        if (i == 10) break;
-                        let discordName, avatarURL, originIGN, RP;
-                        if (await redisClient.exists(topData[i].discordId)) {
-                              [discordName, RP, avatarURL, originIGN] = await redisClient.multi()
-                                    .hGet(topData[i].discordId, "discordName")
-                                    .hGet(topData[i].discordId, "RP")
-                                    .hGet(topData[i].discordId, "avatarURL")
-                                    .hGet(topData[i].discordId, "originIGN")
-                                    .exec();
-                              logger.info("Fetched a user from the cache!", { metadata: { discordId: topData[i].discordId, serverId: interaction.guildId, file: filename(__filename) } });
+            const backButton = new ButtonBuilder()
+                  .setStyle(ButtonStyle.Danger)
+                  .setLabel("⬅ Back")
+                  .setCustomId("back");
+
+            const nextButton = new ButtonBuilder()
+                  .setStyle(ButtonStyle.Success)
+                  .setLabel("Next ➡")
+                  .setCustomId("next");
+
+            let currentIndex = 0;
+            const generateEmbed = async (start: number) => {
+                  const current = topData.slice(start, start + 10) as UserDocument[];
+
+                  const generatedEmbed = new embed().defaultEmbed()
+                        .setTitle(`${interaction.guild?.name} leaderboard!`)
+                        .setDescription(`Showing users **${start + 1}-${start + current.length}** out of **${topData.length}**`);
+
+                  const pageCount = () => {
+                        if (topData.length <= 10) {
+                              return 1;
+                        }
+                        return Math.round(topData.length / 10);
+                  };
+
+                  generatedEmbed.setFooter({ text: `Page ${(currentIndex / 10) + 1} / ${pageCount()}`, iconURL: profilePic(128) });
+                  generatedEmbed.setThumbnail(String((await interaction.client.users.fetch(current[0].discordId)).avatarURL()) ?? "https://cdn.discordapp.com/embed/avatars/2.png");
+                  for (let i = 0; i < current.length; i++) {
+                        if (interaction.user.id == current[i].discordId) {
+                              generatedEmbed.addFields({
+                                    name: `__${start + i + 1}. ${current[i].names.player} | ${current[i].names.discord}__`,
+                                    value: `RP: ${current[i].RP}`,
+                                    inline: false,
+                              });
                         }
                         else {
-                              const discordUser = await interaction.client.users.fetch(topData[i].discordId);
-                              const statsData = await (await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${topData[i].originId}&platform=${topData[i].platform}&merge=true&removeMerged=true`))).data as ALSUserData;
-                              const dbUser = new DBUser(topData[i].discordId);
-                              await dbUser.updateRP(topData[i].RP);
-                              RP = statsData.global.rank.rankScore;
-                              let avatar;
-                              if (discordUser.avatarURL() == null) {avatar = "https://cdn.discordapp.com/embed/avatars/2.png";}
-                              else {avatar = discordUser.avatarURL() as string;}
-                              [discordName, avatarURL, originIGN] = [discordUser.username, avatar, statsData.global.name];
-                              await redisClient.multi()
-                                    .hSet(topData[i].discordId, "discordName", discordName)
-                                    .hSet(topData[i].discordId, "RP", statsData.global.rank.rankScore)
-                                    .hSet(topData[i].discordId, "avatarURL", avatarURL)
-                                    .hSet(topData[i].discordId, "originIGN", originIGN)
-                                    .expire(topData[i].discordId, 10800)
-                                    .exec().then(function() {logger.info("Added a user to the cache!", { metadata: { discordId: discordUser.id, serverId: interaction.guildId, file: filename(__filename) } });});
-                        }
-                        if (i == 0) {
-                              topEmbed.setThumbnail(avatarURL as string);
-                        }
-                        if (topData[i].discordId == interaction.user.id) {
-                              topEmbed.addFields(
-                                    {
-                                          name: `__${i + 1}. ${originIGN} / ${discordName}__`,
-                                          value: `RP: ${RP}`,
-                                          inline: false,
-                                    },
-                              );
-                        }
-                        else {
-                              topEmbed.addFields(
-                                    {
-                                          name: `${i + 1}. ${originIGN} / ${discordName}`,
-                                          value: `RP: ${RP}`,
-                                          inline: false,
-                                    },
-                              );
+                              generatedEmbed.addFields({
+                                    name: `${start + i + 1}. ${current[i].names.player} | ${current[i].names.discord}`,
+                                    value: `RP: ${current[i].RP}`,
+                                    inline: false,
+                              });
                         }
                   }
-                  await interaction.editReply({ embeds: [topEmbed] });
-            }
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            catch (error: any) {
-                  if (error.response) {
-                        logger.error(error, { metadata: { discordId: interaction.user.id, serverId: interaction.guildId, file: filename(__filename) } });
-                        return await interaction.editReply({ embeds: [new embed().errorEmbed().setTitle("An error accrued!").setDescription(error.response.request.res.statusMessage.toString())] });
-                  }
-                  if (error) {
-                        logger.error(error, { metadata: { discordId: interaction.user.id, serverId: interaction.guildId, file: filename(__filename) } });
-                        return await interaction.editReply({ embeds: [new embed().errorEmbed().setTitle("Please try again in a few seconds!").setDescription(error.response.request.res.statusMessage.toString())] });
-                  }
-            }
-            finally {
-                  await redisClient.disconnect();
-            }
+
+                  return generatedEmbed;
+            };
+
+            const canFitOnePage = topData.length <= 10;
+            const embedMessage = await interaction.editReply({ embeds: [await generateEmbed(0)], components: canFitOnePage ? [] : [new ActionRowBuilder<ButtonBuilder>({ components: [nextButton] })] });
+            if (canFitOnePage) return;
+
+            const collector = embedMessage.createMessageComponentCollector({
+                  filter: ({ user }) => user.id === interaction.user.id,
+                  time: buttonTimeout,
+            });
+
+            collector.on("collect", async interaction => {
+                  interaction.customId === "back" ? (currentIndex -= 10) : (currentIndex += 10);
+                  const dateBefore = new Date().getTime();
+                  await interaction.update({ embeds: [await generateEmbed(currentIndex)], components: [new ActionRowBuilder<ButtonBuilder>({ components: [...(currentIndex ? [backButton] : []), ...(currentIndex + 10 < topData.length ? [nextButton] : [])] })] });
+                  const dateAfter = new Date().getTime();
+                  logger.info(`[${interaction.user.username}] used [/top] button for page [${(currentIndex / 10) + 1}] in [${interaction.guild?.name}]. Bot response time: ${dateAfter - dateBefore}ms`, { metadata: { file: filename(__filename), responseTime: dateAfter - dateBefore } });
+                  await setTimeout(buttonTimeout);
+                  await interaction.editReply({ embeds: [await generateEmbed(currentIndex)], components: [new ActionRowBuilder<ButtonBuilder>({ components: [...(currentIndex ? [backButton.setDisabled(true)] : []), ...(currentIndex + 10 < topData.length ? [nextButton.setDisabled(true)] : [])] })] });
+            });
       },
 };
