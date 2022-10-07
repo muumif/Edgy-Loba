@@ -31,3 +31,14 @@ export function emojis(interaction: CommandInteraction) {
 
       return [PCEmoji, PSEmoji, XboxEmoji, OnlineEmoji, IdleEmoji, OfflineEmoji] as GuildEmoji[];
 }
+
+export const ansiColors = {
+      Gray: "\u001b[0;30m",
+      Red: "\u001b[0;31m",
+      Green: "\u001b[0;32m",
+      Yellow: "\u001b[0;33m",
+      Blue: "\u001b[0;34m",
+      Pink: "\u001b[0;35m",
+      Cyan: "\u001b[0;36m",
+      White: "\u001b[0;37m",
+};
