@@ -1,6 +1,6 @@
 //Constants that are required in multiple files and when changed need to be same everywhere
 
-import { APIEmbedField, CommandInteraction, GuildEmoji } from "discord.js";
+import { APIEmbedField, CommandInteraction, GuildEmoji, Snowflake } from "discord.js";
 
 export function profilePic(size: number): string {
       return `https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=${size}`;
@@ -42,3 +42,5 @@ export const ansiColors = {
       Cyan: "\u001b[0;36m",
       White: "\u001b[0;37m",
 };
+
+export const updateQueue: Snowflake[] = [];

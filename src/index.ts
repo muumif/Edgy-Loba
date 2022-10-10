@@ -2,7 +2,7 @@ import { ActivityType, Client, Collection, Command, GatewayIntentBits, Interacti
 import { existsSync, mkdir, readdirSync } from "fs";
 import { logger } from "./components/logger";
 import { hostname, type, version } from "os";
-import { filename } from "./components/const";
+import { filename, updateQueue } from "./components/const";
 import { DBGlobal, DBServer } from "./components/mongo";
 import { AutoPoster } from "topgg-autoposter";
 import path from "path";
@@ -98,7 +98,6 @@ client.on("interactionCreate", async interaction => {
                   const dateAfter = new Date().getTime();
 
                   logger.info(`[${interaction.user.username}] used [/${interaction.commandName}] in [${interaction.guild?.name}]. Bot response time: ${dateAfter - dateBefore}ms`, { metadata: { command: interaction.commandName, discordId: interaction.user.id, serverId: interaction.guild?.id, file: filename(__filename), responseTime: dateAfter - dateBefore } });
-
             }
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             catch (error:any) {

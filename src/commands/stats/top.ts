@@ -7,16 +7,12 @@ import {
       Guild,
       SlashCommandBuilder,
 } from "discord.js";
-import { filename, profilePic } from "../../components/const";
+import { filename, profilePic, updateQueue } from "../../components/const";
 import { DBServer } from "../../components/mongo";
 import { embed } from "../../components/embeds";
 import { logger } from "../../components/logger";
 import { UserDocument } from "../../types/mongo";
-import { createClient } from "redis";
 import { setTimeout } from "node:timers/promises";
-
-const redisClient = createClient({ url: process.env.REDIS_CONNECTION });
-redisClient.on("error", (err) => logger.error(err, { metadata: { file: filename(__filename) } }));
 
 module.exports = {
       data: new SlashCommandBuilder()
@@ -46,7 +42,7 @@ module.exports = {
             let currentIndex = 0;
             const generateEmbed = async (start: number) => {
                   const current = topData.slice(start, start + 10) as UserDocument[];
-
+                  topData = topData as UserDocument[];
                   const generatedEmbed = new embed().defaultEmbed()
                         .setTitle(`${interaction.guild?.name} leaderboard!`)
                         .setDescription(`Showing users **${start + 1}-${start + current.length}** out of **${topData.length}**`);
@@ -59,8 +55,15 @@ module.exports = {
                   };
 
                   generatedEmbed.setFooter({ text: `Page ${(currentIndex / 10) + 1} / ${pageCount()}`, iconURL: profilePic(128) });
-                  generatedEmbed.setThumbnail(String((await interaction.client.users.fetch(current[0].discordId)).avatarURL()) ?? "https://cdn.discordapp.com/embed/avatars/2.png");
+                  const avatar = (await interaction.client.users.fetch(topData[0].discordId)).avatarURL();
+                  if (avatar == null) {
+                        generatedEmbed.setThumbnail("https://cdn.discordapp.com/embed/avatars/2.png");
+                  }
+                  else {
+                        generatedEmbed.setThumbnail(avatar);
+                  }
                   for (let i = 0; i < current.length; i++) {
+                        updateQueue.push(current[i].discordId);
                         if (interaction.user.id == current[i].discordId) {
                               generatedEmbed.addFields({
                                     name: `__${start + i + 1}. ${current[i].names.player} | ${current[i].names.discord}__`,
