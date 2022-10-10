@@ -13,6 +13,11 @@ export interface UserDocument {
       AP: number;
       platform: "PC" | "X1" | "PS4";
       servers: [ UserServers ];
+      names: {
+            player: string;
+            discord: string;
+      }
+      updatedAt: Date;
 }
 
 export interface ServerDocument {

@@ -7,6 +7,7 @@ import { UserDocument } from "../types/mongo";
 import { filename } from "./const";
 import { DBGlobal, DBUser } from "./mongo";
 import { logger } from "./logger";
+import { client } from "../index";
 
 async function HistoryUpdater() {
       try {
@@ -15,7 +16,8 @@ async function HistoryUpdater() {
             users = users as UserDocument[];
             for (let i = 0; i < users.length; i++) {
                   const user = (await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${users[i].originId}&platform=${users[i].platform}`))).data as ALSUserData;
-                  const dbUser = new DBUser(users[i].discordId);
+                  const discordUser = await client.users.fetch(users[i].discordId);
+                  const dbUser = new DBUser(discordUser);
                   await dbUser.addHistory(user.global.rank.rankScore, user.global.arena.rankScore);
                   await dbUser.updateRP(user.global.rank.rankScore);
                   await dbUser.updateAP(user.global.arena.rankScore);

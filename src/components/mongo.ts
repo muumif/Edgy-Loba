@@ -1,4 +1,4 @@
-import { Client, Guild, Snowflake } from "discord.js";
+import { Client, Guild, Snowflake, User } from "discord.js";
 import { MongoClient } from "mongodb";
 import { HistoryDocument, UserDocument, ServerDocument } from "../types/mongo";
 import { filename } from "./const";
@@ -192,10 +192,10 @@ export class DBGlobal {
 }
 
 export class DBUser {
-      discordId: Snowflake;
+      discordUser: User;
 
-      constructor(discordId: Snowflake) {
-            this.discordId = discordId;
+      constructor(discordUser: User) {
+            this.discordUser = discordUser;
       }
 
       public async getUser() {
@@ -204,12 +204,12 @@ export class DBUser {
 
                   await DBClient.connect();
 
-                  const user = await usersCollection.findOne({ discordId: this.discordId.toString() }) as UserDocument | null;
+                  const user = await usersCollection.findOne({ discordId: this.discordUser.id.toString() }) as UserDocument | null;
 
                   if (user == null) return Promise.resolve("User not found!");
 
                   const dateAfter = new Date().getTime();
-                  logger.info("Fetched a user from the DB!", { metadata: { discordId: this.discordId, file: filename(__filename), databaseResponseTime: dateAfter - dateBefore } });
+                  logger.info("Fetched a user from the DB!", { metadata: { discordId: this.discordUser.id, file: filename(__filename), databaseResponseTime: dateAfter - dateBefore } });
                   return Promise.resolve(user);
             }
             catch (error) {
@@ -220,18 +220,18 @@ export class DBUser {
             }
       }
 
-      public async getHistory(): Promise<string | HistoryDocument[]> {
+      public async getHistory() {
             try {
                   const dateBefore = new Date().getTime();
 
                   await DBClient.connect();
 
-                  const history = await historyCollection.find({ discordId: this.discordId.toString() }).sort({ date: 1 }).toArray() as HistoryDocument[] | [];
+                  const history = await historyCollection.find({ discordId: this.discordUser.id.toString() }).sort({ date: 1 }).toArray() as HistoryDocument[] | [];
 
                   if (history.length == 0) return Promise.resolve("No history data was found!");
 
                   const dateAfter = new Date().getTime();
-                  logger.info("Fetched a users history from the DB!", { metadata: { discordId: this.discordId, file: filename(__filename), databaseResponseTime: dateAfter - dateBefore } });
+                  logger.info("Fetched a users history from the DB!", { metadata: { discordId: this.discordUser.id, file: filename(__filename), databaseResponseTime: dateAfter - dateBefore } });
                   return Promise.resolve(history as HistoryDocument[]);
             }
             catch (error) {
@@ -248,11 +248,11 @@ export class DBUser {
 
                   await DBClient.connect();
 
-                  const server = await usersCollection.findOne({ discordId: this.discordId.toString(), servers: serverId });
+                  const server = await usersCollection.findOne({ discordId: this.discordUser.id.toString(), servers: serverId });
                   if (server == null) return Promise.resolve("No server found!");
 
                   const dateAfter = new Date().getTime();
-                  logger.info("Fetched a users server from the DB!", { metadata: { serverId: serverId, discordId: this.discordId, file: filename(__filename), databaseResponseTime: dateAfter - dateBefore } });
+                  logger.info("Fetched a users server from the DB!", { metadata: { serverId: serverId, discordId: this.discordUser.id, file: filename(__filename), databaseResponseTime: dateAfter - dateBefore } });
                   return Promise.resolve(server);
             }
             catch (error) {
@@ -263,19 +263,24 @@ export class DBUser {
             }
       }
 
-      public async addUser(originId: string, RP: number, AP: number, platform: string, serverId: Snowflake | undefined) {
+      public async addUser(player: string, originId: string, RP: number, AP: number, platform: string, serverId: Snowflake | undefined) {
             try {
                   const dateBefore = new Date().getTime();
 
                   await DBClient.connect();
-                  const id = this.discordId;
+                  const id = this.discordUser.id;
                   return await usersCollection.insertOne({
-                        discordId: this.discordId,
+                        discordId: this.discordUser.id,
                         originId: originId,
                         RP: RP,
                         AP: AP,
                         platform: platform,
                         servers: [serverId],
+                        names: {
+                              player: player,
+                              discord: `${this.discordUser.username}#${this.discordUser.discriminator}`,
+                        },
+                        updatedAt: new Date(),
                   })
                         .then(function() {
                               const dateAfter = new Date().getTime();
@@ -296,9 +301,9 @@ export class DBUser {
                   const dateBefore = new Date().getTime();
 
                   await DBClient.connect();
-                  const id = this.discordId;
+                  const id = this.discordUser.id;
                   return await historyCollection.insertOne({
-                        discordId: this.discordId,
+                        discordId: this.discordUser.id,
                         date: new Date(),
                         RP: RP,
                         AP: AP,
@@ -322,8 +327,8 @@ export class DBUser {
                   const dateBefore = new Date().getTime();
 
                   await DBClient.connect();
-                  const id = this.discordId;
-                  return await usersCollection.updateOne({ discordId: this.discordId }, { $push: { servers: serverId } })
+                  const id = this.discordUser.id;
+                  return await usersCollection.updateOne({ discordId: this.discordUser.id }, { $push: { servers: serverId } })
                         .then(function() {
                               const dateAfter = new Date().getTime();
                               logger.info("Updated a users servers in the DB!", { metadata: { serverId: serverId, discordId: id, file: filename(__filename), databaseResponseTime: dateAfter - dateBefore } });
@@ -344,8 +349,8 @@ export class DBUser {
                   const dateBefore = new Date().getTime();
 
                   await DBClient.connect();
-                  const id = this.discordId;
-                  return await usersCollection.updateOne({ discordId: this.discordId }, { $set:{ RP: RP } })
+                  const id = this.discordUser.id;
+                  return await usersCollection.updateOne({ discordId: this.discordUser.id }, { $set:{ RP: RP } })
                         .then(function() {
                               const dateAfter = new Date().getTime();
                               logger.info("Updated a users RP in the DB!", { metadata: { discordId: id, file: filename(__filename), databaseResponseTime: dateAfter - dateBefore } });
@@ -365,8 +370,8 @@ export class DBUser {
                   const dateBefore = new Date().getTime();
 
                   await DBClient.connect();
-                  const id = this.discordId;
-                  return await usersCollection.updateOne({ discordId: this.discordId }, { $set:{ AP: AP } })
+                  const id = this.discordUser.id;
+                  return await usersCollection.updateOne({ discordId: this.discordUser.id }, { $set:{ AP: AP } })
                         .then(function() {
                               const dateAfter = new Date().getTime();
                               logger.info("Updated a users AP in the DB!", { metadata: { discordId: id, file: filename(__filename), databaseResponseTime: dateAfter - dateBefore } });
@@ -386,8 +391,8 @@ export class DBUser {
                   const dateBefore = new Date().getTime();
 
                   await DBClient.connect();
-                  const id = this.discordId;
-                  return await usersCollection.deleteOne({ discordId: this.discordId })
+                  const id = this.discordUser.id;
+                  return await usersCollection.deleteOne({ discordId: this.discordUser.id })
                         .then(function() {
                               const dateAfter = new Date().getTime();
                               logger.info("Deleted a user from the DB!", { metadata: { discordId: id, file: filename(__filename), databaseResponseTime: dateAfter - dateBefore } });
@@ -453,12 +458,12 @@ export class DBServer {
             }
       }
 
-      public async getTopUsers(skip: number) {
+      public async getTopUsers() {
             try {
                   const dateBefore = new Date().getTime();
                   await DBClient.connect();
 
-                  const users = await usersCollection.find({ servers: this.guild.id }).sort({ RP: -1 }).skip(skip).limit(10).toArray();
+                  const users = await usersCollection.find({ servers: this.guild.id }).sort({ RP: -1 }).toArray();
 
                   if (users.length == 0) return Promise.resolve("No user data!");
                   const dateAfter = new Date().getTime();

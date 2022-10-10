@@ -14,7 +14,7 @@ module.exports = {
             .setDescription("Shows your own stats if an account has been linked!"),
       async execute(interaction: CommandInteraction) {
             try {
-                  const dbUser = new DBUser(interaction.user.id);
+                  const dbUser = new DBUser(interaction.user);
                   let dbUserData = await dbUser.getUser() as UserDocument | string;
                   if (await dbUser.getServer(interaction.guildId as string) == "No server found!") {
                         await dbUser.addServer(interaction.guildId as string);
@@ -148,7 +148,7 @@ module.exports = {
 
                         let dbUserHistory = await dbUser.getHistory() as HistoryDocument[] | string;
                         if (dbUserHistory == "No history data was found!") {
-                              const discordUser = await interaction.client.users.fetch(dbUser.discordId);
+                              const discordUser = await interaction.client.users.fetch(dbUser.discordUser.id);
                               meEmbed.setDescription(`${stateEmoji} ${currentState} \n Linked to **${discordUser.username}#${discordUser.discriminator}**`);
 
                               await interaction.editReply({ embeds: [meEmbed] });
@@ -157,11 +157,11 @@ module.exports = {
                               await dbUser.updateRP(ALSUser.global.rank.rankScore);
                               await dbUser.updateAP(ALSUser.global.arena.rankScore);
 
-                              const discordUser = await interaction.client.users.fetch(dbUser.discordId);
+                              const discordUser = await interaction.client.users.fetch(dbUser.discordUser.id);
                               meEmbed.setDescription(`${stateEmoji} ${currentState} \n Linked to **${discordUser.username}#${discordUser.discriminator}**`);
 
                               dbUserHistory = dbUserHistory as HistoryDocument[];
-                              const fileName = await makeStatsChart(dbUserHistory, ALSUser.global.rank.rankScore, dbUser.discordId);
+                              const fileName = await makeStatsChart(dbUserHistory, ALSUser.global.rank.rankScore, dbUser.discordUser.id);
                               const meFile = new AttachmentBuilder(`${fileName}`);
                               meEmbed.setImage(`attachment://${filename(fileName)}`);
 
