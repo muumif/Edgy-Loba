@@ -111,7 +111,7 @@ module.exports = {
                                           inline: true,
                                     },
                                     {
-                                          name: "Battle Royale",
+                                          name: "Battle Royal",
                                           value: `${"```ansi"}\n\u001b[0;33m${rankBR} \n\u001b[0;37mRP: \u001b[0;33m${ALSUser.global.rank.rankScore}${"```"}`,
                                           inline: true,
                                     },
@@ -145,6 +145,9 @@ module.exports = {
                               });
                         }
 
+                        await dbUser.updateRP(ALSUser.global.rank.rankScore);
+                        await dbUser.updateAP(ALSUser.global.arena.rankScore);
+                        await dbUser.updateNames(ALSUser.global.name);
 
                         let dbUserHistory = await dbUser.getHistory() as HistoryDocument[] | string;
                         if (dbUserHistory == "No history data was found!") {
@@ -154,9 +157,6 @@ module.exports = {
                               await interaction.editReply({ embeds: [meEmbed] });
                         }
                         else {
-                              await dbUser.updateRP(ALSUser.global.rank.rankScore);
-                              await dbUser.updateAP(ALSUser.global.arena.rankScore);
-
                               const discordUser = await interaction.client.users.fetch(dbUser.discordUser.id);
                               meEmbed.setDescription(`${stateEmoji} ${currentState} \n Linked to **${discordUser.username}#${discordUser.discriminator}**`);
 

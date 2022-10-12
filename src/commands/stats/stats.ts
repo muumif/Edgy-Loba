@@ -135,7 +135,7 @@ module.exports = {
                                     inline: true,
                               },
                               {
-                                    name: "Battle Royale",
+                                    name: "Battle Royal",
                                     value: `${"```ansi"}\n\u001b[0;33m${rankBR} \n\u001b[0;37mRP: \u001b[0;33m${ALSUser.global.rank.rankScore}${"```"}`,
                                     inline: true,
                               },

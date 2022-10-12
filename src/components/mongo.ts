@@ -350,10 +350,35 @@ export class DBUser {
 
                   await DBClient.connect();
                   const id = this.discordUser.id;
+
+                  await usersCollection.updateOne({ discordId: this.discordUser.id }, { $set: { updatedAt: new Date() } });
                   return await usersCollection.updateOne({ discordId: this.discordUser.id }, { $set:{ RP: RP } })
                         .then(function() {
                               const dateAfter = new Date().getTime();
                               logger.info("Updated a users RP in the DB!", { metadata: { discordId: id, file: filename(__filename), databaseResponseTime: dateAfter - dateBefore } });
+                              return Promise.resolve("Updated RP");
+                        });
+            }
+            catch (error) {
+                  return Promise.reject(error);
+            }
+            finally {
+                  await DBClient.close();
+            }
+      }
+
+      public async updateNames(playerName: string) {
+            try {
+                  const dateBefore = new Date().getTime();
+
+                  await DBClient.connect();
+                  const id = this.discordUser.id;
+
+                  await usersCollection.updateOne({ discordId: this.discordUser.id }, { $set: { updatedAt: new Date() } });
+                  return await usersCollection.updateOne({ discordId: this.discordUser.id }, { $set: { names: { discord: `${this.discordUser.username}#${this.discordUser.discriminator}`, player: playerName } } })
+                        .then(function() {
+                              const dateAfter = new Date().getTime();
+                              logger.info("Updated a users usernames in the DB!", { metadata: { discordId: id, file: filename(__filename), databaseResponseTime: dateAfter - dateBefore } });
                               return Promise.resolve("Updated RP");
                         });
             }
@@ -371,6 +396,8 @@ export class DBUser {
 
                   await DBClient.connect();
                   const id = this.discordUser.id;
+
+                  await usersCollection.updateOne({ discordId: this.discordUser.id }, { $set: { updatedAt: new Date() } });
                   return await usersCollection.updateOne({ discordId: this.discordUser.id }, { $set:{ AP: AP } })
                         .then(function() {
                               const dateAfter = new Date().getTime();
