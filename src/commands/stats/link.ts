@@ -1,5 +1,5 @@
 import axios from "axios";
-import { CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { CommandInteraction, SlashCommandBuilder, Snowflake } from "discord.js";
 import { filename } from "../../components/const";
 import { DBUser } from "../../components/mongo";
 import { embed } from "../../components/embeds";
@@ -51,7 +51,19 @@ module.exports = {
                         const userUID = await getUserUID(user, platform(), interaction.guild?.id, interaction.user.id);
                         const userData = await (await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${userUID}&platform=${platform()}`))).data as ALSUserData;
 
-                        await dbUser.addUser(userData.global.name, userUID, userData.global.rank.rankScore, userData.global.arena.rankScore, platform(), interaction.guild?.id);
+                        await dbUser.addUser({
+                              discordId: interaction.user.id,
+                              originId: userUID,
+                              RP: userData.global.rank.rankScore,
+                              AP: userData.global.arena.rankScore,
+                              platform: platform(),
+                              servers: [ interaction.guild?.id as Snowflake],
+                              names: {
+                                    player: userData.global.name,
+                                    discord: `${interaction.user.username}#${interaction.user.discriminator}`,
+                              },
+                              updatedAt: new Date(),
+                        });
 
                         const linkEmbed = new embed().defaultEmbed()
                               .setTitle("IGN has been successfully linked!")

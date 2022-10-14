@@ -7,6 +7,8 @@ import { DBGlobal, DBServer } from "./components/mongo";
 import { AutoPoster } from "topgg-autoposter";
 import path from "path";
 import "./components/scheduler";
+import "./components/express";
+import { ServerDocument } from "./types/mongo";
 
 export const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -35,7 +37,6 @@ client.once("ready", async () => {
       logger.info("▬▬ι═══════ﺤ Edgy Loba is now online -═══════ι▬▬", { metadata: { file: filename(__filename) } });
       logger.info(`Hostname: ${hostname} | Environment: ${process.env.NODE_ENV} | Version: ${process.env.npm_package_version} | OS: ${type} ${version}`, { metadata: { file: filename(__filename) } });
 
-      await new DBGlobal().verifyServers(client);
       const statistics = await new DBGlobal().statistics();
 
       if (process.env.NODE_ENV == "production") {
@@ -60,6 +61,7 @@ client.once("ready", async () => {
       else {
             client.user?.setPresence({ activities: [{ name: "Internal Build!" }], status: "dnd" });
       }
+      await new DBGlobal().verifyServers(client);
 });
 
 if (process.env.NODE_ENV == "production") {
@@ -77,6 +79,7 @@ if (process.env.NODE_ENV == "production") {
             await new DBServer(guild).deleteServer();
       });
 }
+
 
 client.on("interactionCreate", async interaction => {
       if (interaction.type === InteractionType.ApplicationCommand) {

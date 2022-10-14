@@ -1,6 +1,6 @@
 import { Client, Guild, Snowflake, User } from "discord.js";
 import { MongoClient } from "mongodb";
-import { HistoryDocument, UserDocument, ServerDocument } from "../types/mongo";
+import { HistoryDocument, UserDocument, ServerDocument, ActiveVotesDocument } from "../types/mongo";
 import { filename } from "./const";
 import { logger } from "./logger";
 
@@ -12,6 +12,7 @@ let historyCollection = DBClient.db("EdgyLoba").collection("userHistory");
 let guildCollection = DBClient.db("EdgyLoba").collection("guilds");
 let bugCollection = DBClient.db("EdgyLoba").collection("bugs");
 let logsCollection = DBClient.db("EdgyLoba").collection("logs");
+let votingCollection = DBClient.db("EdgyLoba").collection("voting");
 
 if (process.env.NODE_ENV == "development") {
       usersCollection = DBClient.db("EdgyLobaDEV").collection("users");
@@ -19,6 +20,7 @@ if (process.env.NODE_ENV == "development") {
       guildCollection = DBClient.db("EdgyLobaDEV").collection("guilds");
       bugCollection = DBClient.db("EdgyLobaDEV").collection("bugs");
       logsCollection = DBClient.db("EdgyLobaDEV").collection("logs");
+      votingCollection = DBClient.db("EdgyLobaDEV").collection("voting");
 }
 
 export class DBGlobal {
@@ -147,26 +149,67 @@ export class DBGlobal {
             }
       }
 
+      public async addVote(voteDocument: ActiveVotesDocument) {
+            try {
+                  const dateBefore = new Date().getTime();
+
+                  await DBClient.connect();
+
+                  await votingCollection.insertOne(voteDocument)
+                        .then(() => {
+                              const dateAfter = new Date().getTime();
+                              logger.info("Added a vote into the DB!", { metadata: { discordId: voteDocument.discordId, file: filename(__filename), databaseResponseTime: dateAfter - dateBefore } });
+                        });
+                  return Promise.resolve(true);
+            }
+            catch (error) {
+                  return Promise.reject(error);
+            }
+            finally {
+                  await DBClient.close();
+            }
+      }
+
+      public async removeVote(discordId: Snowflake) {
+            try {
+                  const dateBefore = new Date().getTime();
+
+                  await DBClient.connect();
+
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // @ts-ignore
+                  await votingCollection.updateMany({ discordId: discordId, active: true }, { $set: { active: false } })
+                        .then(function() {
+                              const dateAfter = new Date().getTime();
+                              logger.info("Removed a vote from a user!", { metadata: { discordId: discordId, file: filename(__filename), databaseResponseTime: dateAfter - dateBefore } });
+                              return Promise.resolve("Removed a vote!");
+                        });
+            }
+            catch (error) {
+                  return Promise.reject(error);
+            }
+            finally {
+                  await DBClient.close();
+            }
+      }
+
       public async verifyServers(client: Client) {
             try {
-
                   const addGuilds = async () => {
                         const guilds = client.guilds.cache.map(guild => guild);
                         for (let i = 0; i < guilds.length; i++) {
+                              await DBClient.connect();
                               const DBGuild = await guildCollection.findOne({ serverId: guilds[i].id }) as ServerDocument | null;
+                              await DBClient.close();
                               if (DBGuild == null) {
-                                    await guildCollection.insertOne({
-                                          serverId: guilds[i].id,
-                                          name: guilds[i].name,
-                                    }) .then(function() {
-                                          logger.info("Added a server to the DB!", { metadata: { serverId: guilds[i].id, file: filename(__filename) } });
-                                    });
+                                    await new DBServer(guilds[i]).addServer();
                               }
                         }
                         return;
                   };
 
                   const deleteGuilds = async () => {
+                        await DBClient.connect();
                         const DBGuilds = await guildCollection.find({}).toArray() as ServerDocument[] | [];
                         for (let i = 0; i < DBGuilds.length; i++) {
                               if (client.guilds.cache.get(DBGuilds[i].serverId) == undefined) {
@@ -174,9 +217,9 @@ export class DBGlobal {
                                     logger.info("Deleted a server from the DB!", { metadata: { serverId: DBGuilds[i].serverId, file: filename(__filename) } });
                               }
                         }
+                        await DBClient.close();
                         return;
                   };
-                  await DBClient.connect();
                   await addGuilds();
                   await deleteGuilds();
                   return;
@@ -184,9 +227,6 @@ export class DBGlobal {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             catch (error:any) {
                   return logger.error(error, { metadata: { file: filename(__filename) } });
-            }
-            finally {
-                  await DBClient.close();
             }
       }
 }
@@ -242,6 +282,27 @@ export class DBUser {
             }
       }
 
+      public async getServers() {
+            try {
+                  const dateBefore = new Date().getTime();
+
+                  await DBClient.connect();
+
+                  let userDocument = await usersCollection.findOne({ discordId: this.discordUser.id }) as UserDocument | null;
+                  if (userDocument == null) return Promise.resolve("User doesn't exist in the DB!");
+                  userDocument = userDocument as UserDocument;
+                  const dateAfter = new Date().getTime();
+                  logger.info("Fetched a users servers from the DB!", { metadata: { discordId: this.discordUser.id, file: filename(__filename), databaseResponseTime: dateAfter - dateBefore } });
+                  return Promise.resolve(userDocument.servers);
+            }
+            catch (error) {
+                  return Promise.reject(error);
+            }
+            finally {
+                  await DBClient.close();
+            }
+      }
+
       public async getServer(serverId: Snowflake) {
             try {
                   const dateBefore = new Date().getTime();
@@ -263,28 +324,16 @@ export class DBUser {
             }
       }
 
-      public async addUser(player: string, originId: string, RP: number, AP: number, platform: string, serverId: Snowflake | undefined) {
+      public async addUser(user: UserDocument) { //player: string, originId: string, RP: number, AP: number, platform: string, serverId: Snowflake | undefined
             try {
                   const dateBefore = new Date().getTime();
 
                   await DBClient.connect();
                   const id = this.discordUser.id;
-                  return await usersCollection.insertOne({
-                        discordId: this.discordUser.id,
-                        originId: originId,
-                        RP: RP,
-                        AP: AP,
-                        platform: platform,
-                        servers: [serverId],
-                        names: {
-                              player: player,
-                              discord: `${this.discordUser.username}#${this.discordUser.discriminator}`,
-                        },
-                        updatedAt: new Date(),
-                  })
+                  return await usersCollection.insertOne(user)
                         .then(function() {
                               const dateAfter = new Date().getTime();
-                              logger.info("Added a user to the DB!", { metadata: { serverId: serverId, discordId: id, file: filename(__filename), databaseResponseTime: dateAfter - dateBefore } });
+                              logger.info("Added a user to the DB!", { metadata: { serverId: user.servers, discordId: id, file: filename(__filename), databaseResponseTime: dateAfter - dateBefore } });
                               return Promise.resolve("User data inserted");
                         });
             }
@@ -302,6 +351,8 @@ export class DBUser {
 
                   await DBClient.connect();
                   const id = this.discordUser.id;
+                  await this.updateAt(new Date());
+                  await usersCollection.updateOne({ discordId: this.discordUser.id }, { $set: { RP: RP, AP: AP } });
                   return await historyCollection.insertOne({
                         discordId: this.discordUser.id,
                         date: new Date(),
@@ -328,6 +379,7 @@ export class DBUser {
 
                   await DBClient.connect();
                   const id = this.discordUser.id;
+                  await this.updateAt(new Date());
                   return await usersCollection.updateOne({ discordId: this.discordUser.id }, { $push: { servers: serverId } })
                         .then(function() {
                               const dateAfter = new Date().getTime();
@@ -351,6 +403,7 @@ export class DBUser {
                   await DBClient.connect();
                   const id = this.discordUser.id;
 
+                  await this.updateAt(new Date());
                   await usersCollection.updateOne({ discordId: this.discordUser.id }, { $set: { updatedAt: new Date() } });
                   return await usersCollection.updateOne({ discordId: this.discordUser.id }, { $set:{ RP: RP } })
                         .then(function() {
@@ -374,6 +427,7 @@ export class DBUser {
                   await DBClient.connect();
                   const id = this.discordUser.id;
 
+                  await this.updateAt(new Date());
                   await usersCollection.updateOne({ discordId: this.discordUser.id }, { $set: { updatedAt: new Date() } });
                   return await usersCollection.updateOne({ discordId: this.discordUser.id }, { $set: { names: { discord: `${this.discordUser.username}#${this.discordUser.discriminator}`, player: playerName } } })
                         .then(function() {
@@ -397,6 +451,7 @@ export class DBUser {
                   await DBClient.connect();
                   const id = this.discordUser.id;
 
+                  await this.updateAt(new Date());
                   await usersCollection.updateOne({ discordId: this.discordUser.id }, { $set: { updatedAt: new Date() } });
                   return await usersCollection.updateOne({ discordId: this.discordUser.id }, { $set:{ AP: AP } })
                         .then(function() {
@@ -433,6 +488,20 @@ export class DBUser {
                   await DBClient.close();
             }
       }
+
+      public async updateAt(date: Date) {
+            try {
+                  await DBClient.connect();
+
+                  await usersCollection.updateOne({ discordId: this.discordUser.id }, { $set: { updatedAt: new Date() } });
+            }
+            catch (error) {
+                  return Promise.reject(error);
+            }
+            finally {
+                  await DBClient.close();
+            }
+      }
 }
 
 export class DBServer {
@@ -447,16 +516,21 @@ export class DBServer {
 
                   await DBClient.connect();
                   const id = this.guild.id;
-                  return await guildCollection.insertOne({
+
+                  const memberCount = await this.memberCount();
+
+                  const serverDocument: ServerDocument = {
                         serverId: this.guild.id,
                         name: this.guild.name,
-                  })
+                        memberCount: memberCount,
+                  };
+
+                  return await guildCollection.insertOne(serverDocument)
                         .then(function() {
                               const dateAfter = new Date().getTime();
                               logger.info("Added a server to the DB!", { metadata: { serverId: id, file: filename(__filename), databaseResponseTime: dateAfter - dateBefore } });
                               return Promise.resolve("Inserted server");
                         });
-
             }
             catch (error) {
                   return Promise.reject(error);
@@ -504,4 +578,93 @@ export class DBServer {
                   await DBClient.close();
             }
       }
+
+      public async hasFeatureAccess() {
+            try {
+                  const dateBefore = new Date().getTime();
+                  await DBClient.connect();
+
+                  let votes = await votingCollection.find({ servers: this.guild.id, active: true }).toArray() as ActiveVotesDocument[] | [];
+                  if (votes == []) return false;
+                  votes = votes as ActiveVotesDocument[];
+
+                  const neededVotes = await this.neededVotes();
+                  if (neededVotes <= votes.length) {
+                        const dateAfter = new Date().getTime();
+                        logger.info("Fetched voting collection from the DB!", { metadata:{ serverId: this.guild.id, file: filename(__filename), databaseResponseTime: dateAfter - dateBefore } });
+                        return true;
+                  }
+            }
+            catch (error) {
+                  return Promise.reject(error);
+            }
+            finally {
+                  await DBClient.close();
+            }
+      }
+
+      neededVotes = async () => {
+            try {
+                  const dateBefore = new Date().getTime();
+                  await DBClient.connect();
+
+                  let serverDocument = await guildCollection.findOne({ serverId: this.guild.id }) as ServerDocument | null;
+                  if (serverDocument == null) return Promise.reject("No server found in the DB!");
+                  serverDocument = serverDocument as ServerDocument;
+
+                  let neededVotes = 0;
+                  const votesMultiplier = 5; // The amount of users need to get 1 full vote
+                  for (let i = 0; i < serverDocument.memberCount; i++) {
+                        if (i % votesMultiplier == 0) {
+                              neededVotes++;
+                        }
+                  }
+
+                  const dateAfter = new Date().getTime();
+                  logger.info("Needed votes fetched", { metadata:{ serverId: this.guild.id, file: filename(__filename), databaseResponseTime: dateAfter - dateBefore } });
+                  return neededVotes;
+            }
+            catch (error) {
+                  return Promise.reject(error);
+            }
+            finally {
+                  await DBClient.close();
+            }
+      };
+
+      memberCount = async () => {
+            try {
+                  await DBClient.connect();
+                  const memberCount = (await usersCollection.find({ servers: this.guild.id }).toArray()).length;
+
+                  return memberCount;
+            }
+            catch (error) {
+                  return Promise.reject(error);
+            }
+            finally {
+                  await DBClient.close();
+            }
+      };
+
+      activeVotes = async () => {
+            try {
+                  const dateBefore = new Date().getTime();
+                  await DBClient.connect();
+
+                  let votes = await votingCollection.find({ servers: this.guild.id, active: true }).toArray() as ActiveVotesDocument[] | [];
+                  if (votes == []) return false;
+                  votes = votes as ActiveVotesDocument[];
+
+                  const dateAfter = new Date().getTime();
+                  logger.info("Active votes fetched", { metadata:{ serverId: this.guild.id, file: filename(__filename), databaseResponseTime: dateAfter - dateBefore } });
+                  return votes.length;
+            }
+            catch (error) {
+                  return Promise.reject(error);
+            }
+            finally {
+                  await DBClient.close();
+            }
+      };
 }

@@ -13,6 +13,8 @@ declare global {
                   TOPGG_TOKEN: string;
                   npm_package_version: string;
                   REDIS_CONNECTION: string;
+                  WEBSERVER_PORT: number;
+                  WEBHOOK_PASSWORD: string;
             }
       }
 }

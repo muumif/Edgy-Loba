@@ -1,8 +1,13 @@
 import { Snowflake } from "discord.js";
 import { ObjectId } from "mongodb";
 
-interface UserServers {
-      serverId: Snowflake;
+export interface ActiveVotesDocument {
+      id?: ObjectId,
+      discordId: Snowflake,
+      servers: [ string ],
+      voteDate: Date,
+      endDate: Date | undefined,
+      active: boolean,
 }
 
 export interface UserDocument {
@@ -12,10 +17,10 @@ export interface UserDocument {
       RP: number;
       AP: number;
       platform: "PC" | "X1" | "PS4";
-      servers: [ UserServers ];
+      servers: [ string ];
       names: {
             player: string;
-            discord: string;
+            discord: string | undefined;
       }
       updatedAt: Date;
 }
@@ -24,6 +29,7 @@ export interface ServerDocument {
       id?: ObjectId;
       serverId: Snowflake;
       name: string;
+      memberCount: number,
 }
 
 export interface HistoryDocument {

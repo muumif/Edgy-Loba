@@ -20,7 +20,8 @@ module.exports = {
             .setDescription("Shows the server leaderboard!"),
       async execute(interaction: ChatInputCommandInteraction<CacheType>) {
             const buttonTimeout = 30000;
-            let topData = await new DBServer(interaction.guild as Guild).getTopUsers() as UserDocument[] | string;
+            const dbServer = new DBServer(interaction.guild as Guild);
+            let topData = await dbServer.getTopUsers() as UserDocument[] | string;
             if (topData == "No user data!") {
                   const topEmbed = new embed().errorEmbed()
                         .setTitle("An error accrued!")
@@ -28,6 +29,14 @@ module.exports = {
                   return await interaction.editReply({ embeds: [topEmbed] });
             }
             topData = topData as UserDocument[];
+
+            if (!await dbServer.hasFeatureAccess()) {
+                  const topEmbed = new embed().errorEmbed()
+                        .setTitle("Not enough votes!")
+                        .setDescription(`Needed votes: ${await dbServer.neededVotes()} \nActive Votes: ${await dbServer.activeVotes()}\n\n[Vote Top.gg](https://top.gg/bot/719542118955090011/vote)`);
+                  return await interaction.editReply({ embeds: [topEmbed] });
+            }
+
 
             const backButton = new ButtonBuilder()
                   .setStyle(ButtonStyle.Danger)
