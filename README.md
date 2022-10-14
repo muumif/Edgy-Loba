@@ -1,4 +1,6 @@
 <p float="left">
+  <a href="https://wakatime.com/badge/user/beebd855-1e84-427e-b984-e55c35b4fe3b/project/da9ebe09-78f6-423b-9990-594f8219901a"><img src="https://wakatime.com/badge/user/beebd855-1e84-427e-b984-e55c35b4fe3b/project/da9ebe09-78f6-423b-9990-594f8219901a.svg" alt="wakatime"></a>
+  <br>
   <img src = "https://badgen.net/github/release/muumif/Edgy-Loba/stable/?cache=360" alt="Version" />
   <img src="https://badgen.net/github/open-issues/muumif/Edgy-Loba/?cache=360" alt="Open Issues"/>
   <img src="https://badgen.net/github/commits/muumif/Edgy-Loba/?cache=360" alt="Commits"/>
