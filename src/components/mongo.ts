@@ -427,8 +427,7 @@ export class DBUser {
                   await DBClient.connect();
                   const id = this.discordUser.id;
 
-                  await this.updateAt(new Date());
-                  await usersCollection.updateOne({ discordId: this.discordUser.id }, { $set: { updatedAt: new Date() } });
+                  // await this.updateAt(new Date());
                   return await usersCollection.updateOne({ discordId: this.discordUser.id }, { $set: { names: { discord: `${this.discordUser.username}#${this.discordUser.discriminator}`, player: playerName } } })
                         .then(function() {
                               const dateAfter = new Date().getTime();
