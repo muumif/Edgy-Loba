@@ -52,7 +52,7 @@ async function deleteTemp() {
       }
 }
 
-export const cronHistoryUpdate = schedule.scheduleJob("55 23 * * *", async function() {
+export const cronHistoryUpdate = schedule.scheduleJob("50 23 * * *", async function() {
       logger.info("▬▬ι═══════ﺤ History updating started -═══════ι▬▬", { metadata: { file: filename(__filename) } }),
       await HistoryUpdater();
       logger.info("▬▬ι═══════ﺤ History updating stopped -═══════ι▬▬", { metadata: { file: filename(__filename) } });
