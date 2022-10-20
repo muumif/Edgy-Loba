@@ -30,12 +30,12 @@ module.exports = {
             }
             topData = topData as UserDocument[];
 
-            if (!await dbServer.hasFeatureAccess()) {
-                  const topEmbed = new embed().errorEmbed()
-                        .setTitle("Not enough votes!")
-                        .setDescription(`Needed votes: ${await dbServer.neededVotes()} \nActive Votes: ${await dbServer.activeVotes()}\n\n[Vote Top.gg](https://top.gg/bot/719542118955090011/vote)`);
-                  return await interaction.editReply({ embeds: [topEmbed] });
-            }
+            //if (!await dbServer.hasFeatureAccess()) {
+            //    const topEmbed = new embed().errorEmbed()
+            //        .setTitle("Not enough votes!")
+            //      .setDescription(`Needed votes: ${await dbServer.neededVotes()} \nActive Votes: ${await dbServer.activeVotes()}\n\n[Vote Top.gg](https://top.gg/bot/719542118955090011/vote)`);
+            //return await interaction.editReply({ embeds: [topEmbed] });
+            //}
 
 
             const backButton = new ButtonBuilder()
