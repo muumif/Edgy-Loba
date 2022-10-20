@@ -8,7 +8,6 @@ import { AutoPoster } from "topgg-autoposter";
 import path from "path";
 import "./components/scheduler";
 import "./components/express";
-import { ServerDocument } from "./types/mongo";
 
 export const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -95,7 +94,9 @@ client.on("interactionCreate", async interaction => {
                   }
                   const dateBefore = new Date().getTime();
 
-                  await interaction.deferReply();
+                  if (interaction.commandName != "top") await interaction.deferReply();
+                  if (interaction.commandName == "top") await interaction.deferReply({ ephemeral: true });
+
                   await command.execute(interaction);
 
                   const dateAfter = new Date().getTime();
