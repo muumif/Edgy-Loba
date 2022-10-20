@@ -3,7 +3,7 @@
 import { APIEmbedField, CommandInteraction, GuildEmoji, Snowflake } from "discord.js";
 
 export function profilePic(size: number): string {
-      return `https://cdn.discordapp.com/avatars/719542118955090011/82a82af55e896972d1a6875ff129f2f7.png?size=${size}`;
+      return `https://cdn.discordapp.com/avatars/719542118955090011/812d9cde81554928e2cd7bd92d032060.webp?size=${size}`;
 }
 
 export function linksField(name: string, inline: boolean): APIEmbedField {
