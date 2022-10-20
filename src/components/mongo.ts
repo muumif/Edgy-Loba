@@ -202,9 +202,25 @@ export class DBGlobal {
                               const DBGuild = await guildCollection.findOne({ serverId: guilds[i].id }) as ServerDocument | null;
                               await DBClient.close();
                               if (DBGuild == null) {
-                                    await new DBServer(guilds[i]).addServer();
+                                    const memberCount = await new DBServer(guilds[i]).memberCount();
+
+                                    const serverDocument: ServerDocument = {
+                                          serverId: guilds[i].id,
+                                          name: guilds[i].name,
+                                          memberCount: memberCount,
+                                    };
+
+                                    await DBClient.connect();
+                                    await guildCollection.insertOne(serverDocument)
+                                          .then(function() {
+                                                const dateAfter = new Date().getTime();
+                                                logger.info("Added a server to the DB!", { metadata: { file: filename(__filename) } });
+                                                return Promise.resolve("Inserted server");
+                                          });
+                                    await DBClient.close();
                               }
                         }
+
                         return;
                   };
 
@@ -220,6 +236,7 @@ export class DBGlobal {
                         await DBClient.close();
                         return;
                   };
+
                   await addGuilds();
                   await deleteGuilds();
                   return;
@@ -585,7 +602,7 @@ export class DBServer {
                   votes = votes as ActiveVotesDocument[];
 
                   const neededVotes = await this.neededVotes();
-                  if (neededVotes <= votes.length) {
+                  if (votes.length >= 0) {
                         const dateAfter = new Date().getTime();
                         logger.info("Fetched voting collection from the DB!", { metadata:{ serverId: this.guild.id, file: filename(__filename), databaseResponseTime: dateAfter - dateBefore } });
                         return true;
