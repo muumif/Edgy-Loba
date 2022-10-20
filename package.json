@@ -1,6 +1,6 @@
 {
   "name": "edgy-loba",
-  "version": "2.5.0",
+  "version": "2.5.3",
   "description": "",
   "main": "./prod/index.js",
   "scripts": {
