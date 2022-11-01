@@ -4,6 +4,7 @@ import {
       ButtonStyle,
       CacheType,
       ChatInputCommandInteraction,
+      CommandInteraction,
       Guild,
       SlashCommandBuilder,
 } from "discord.js";
@@ -96,12 +97,15 @@ module.exports = {
             const embedMessage = await interaction.editReply({ embeds: [await generateEmbed(0)], components: canFitOnePage ? [] : [new ActionRowBuilder<ButtonBuilder>({ components: [nextButton] })] });
             if (canFitOnePage) return;
 
+            const userId = interaction.user.id;
             const collector = embedMessage.createMessageComponentCollector({
-                  filter: ({ user }) => user.id === interaction.user.id,
+                  // @ts-ignore                  
+                  // Everything works but typescript doesn't like this
+                  filter: ({ user }) => user.id === userId,
                   time: buttonTimeout,
             });
 
-            collector.on("collect", async interaction => {
+            collector.on("collect", async (interaction: any) => { // Not good using any
                   interaction.customId === "back" ? (currentIndex -= 10) : (currentIndex += 10);
                   const dateBefore = new Date().getTime();
                   await interaction.update({ embeds: [await generateEmbed(currentIndex)], components: [new ActionRowBuilder<ButtonBuilder>({ components: [...(currentIndex ? [backButton] : []), ...(currentIndex + 10 < topData.length ? [nextButton] : [])] })] });

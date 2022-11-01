@@ -598,7 +598,6 @@ export class DBServer {
                   await DBClient.connect();
 
                   let votes = await votingCollection.find({ servers: this.guild.id, active: true }).toArray() as ActiveVotesDocument[] | [];
-                  if (votes == []) return false;
                   votes = votes as ActiveVotesDocument[];
 
                   const neededVotes = await this.neededVotes();
@@ -666,7 +665,6 @@ export class DBServer {
                   await DBClient.connect();
 
                   let votes = await votingCollection.find({ servers: this.guild.id, active: true }).toArray() as ActiveVotesDocument[] | [];
-                  if (votes == []) return false;
                   votes = votes as ActiveVotesDocument[];
 
                   const dateAfter = new Date().getTime();
