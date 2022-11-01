@@ -11,7 +11,7 @@ import { cwd } from "process";
 module.exports = {
       data: new SlashCommandBuilder()
             .setName("map")
-            .setDescription("Shows the current and next maps for Battle Royal and Arenas!"),
+            .setDescription("Shows the current map rotation"),
       async execute(interaction: CommandInteraction) {
             try {
                   // Redis cache the map until new map by getting second and setting TTL to the second got on the first one

@@ -9,7 +9,7 @@ import { makeDistributionChart } from "../../components/charts";
 module.exports = {
       data: new SlashCommandBuilder()
             .setName("distribution")
-            .setDescription("Shows the rank distribution."),
+            .setDescription("See the rank distribution!"),
       async execute(interaction: CommandInteraction) {
             try {
                   const distData = await (await axios.get(encodeURI("https://apexlegendsstatus.com/lib/php/rankdistrib.php?unranked=yes"), { headers:{ "User-Agent": "muumif" } })).data as DistributionData[];

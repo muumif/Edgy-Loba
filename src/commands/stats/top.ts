@@ -18,7 +18,7 @@ import { setTimeout } from "node:timers/promises";
 module.exports = {
       data: new SlashCommandBuilder()
             .setName("top")
-            .setDescription("Shows the server leaderboard!"),
+            .setDescription("Shows the server leaderboard"),
       async execute(interaction: ChatInputCommandInteraction<CacheType>) {
             const buttonTimeout = 30000;
             const dbServer = new DBServer(interaction.guild as Guild);

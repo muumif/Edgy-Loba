@@ -5,7 +5,7 @@ import { embed } from "../../components/embeds";
 module.exports = {
       data: new SlashCommandBuilder()
             .setName("unlink")
-            .setDescription("Unlink your discord account from your Apex username."),
+            .setDescription("Unlink your discord account from your Apex username"),
       async execute(interaction: CommandInteraction) {
 
             const dbUser = new DBUser(interaction.user);

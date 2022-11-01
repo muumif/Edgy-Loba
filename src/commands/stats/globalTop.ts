@@ -8,7 +8,7 @@ import { UserDocument } from "../../types/mongo";
 module.exports = {
       data: new SlashCommandBuilder()
             .setName("gtop")
-            .setDescription("Shows the top 3 global users on the bot."),
+            .setDescription("Shows the top 3 global users on the bot"),
       async execute(interaction: CommandInteraction) {
             try {
                   let globalTopData = await new DBGlobal().getGlobalTopUsers(interaction.guild as Guild) as UserDocument[] | string;

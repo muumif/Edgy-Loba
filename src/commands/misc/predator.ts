@@ -8,7 +8,7 @@ import { PredatorData } from "../../types/als";
 module.exports = {
       data: new SlashCommandBuilder()
             .setName("predator")
-            .setDescription("Shows how much RP/AP is needed to reach Predator on all platforms.")
+            .setDescription("Shows how much RP/AP is needed to reach Predator on all platforms")
             .addStringOption(option =>
                   option.setName("platform")
                         .setDescription("For what platform to search on!")

@@ -4,7 +4,7 @@ import { CommandInteraction, ModalBuilder, SlashCommandBuilder, TextInputStyle }
 module.exports = {
       data: new SlashCommandBuilder()
             .setName("bug")
-            .setDescription("Report a bug!"),
+            .setDescription("Report a bug"),
       async execute(interaction: CommandInteraction) {
             const bugModal = new ModalBuilder()
                   .setCustomId("bugReport")

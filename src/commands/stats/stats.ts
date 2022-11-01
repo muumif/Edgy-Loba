@@ -9,7 +9,7 @@ import { ALSUserData } from "../../types/als";
 module.exports = {
       data: new SlashCommandBuilder()
             .setName("stats")
-            .setDescription("Shows users stats.")
+            .setDescription("Shows users stats")
             .addStringOption(option => {
                   option
                         .setName("username")

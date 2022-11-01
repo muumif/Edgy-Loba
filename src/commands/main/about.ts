@@ -11,7 +11,7 @@ const topAPIInstance = new Api(process.env.TOPGG_TOKEN);
 module.exports = {
       data: new SlashCommandBuilder()
             .setName("about")
-            .setDescription("Everything about the bot!"),
+            .setDescription("Shows statistics about the bot"),
       async execute(interaction: CommandInteraction) {
             const topGGData = await topAPIInstance.getBot("719542118955090011");
             await interaction.client.application?.fetch();

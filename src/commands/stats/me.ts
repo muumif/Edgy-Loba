@@ -11,7 +11,7 @@ import { HistoryDocument, UserDocument } from "../../types/mongo";
 module.exports = {
       data: new SlashCommandBuilder()
             .setName("me")
-            .setDescription("Shows your own stats if an account has been linked!"),
+            .setDescription("Shows your own stats if an account has been linked"),
       async execute(interaction: CommandInteraction) {
             try {
                   const dbUser = new DBUser(interaction.user);

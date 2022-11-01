@@ -10,7 +10,7 @@ import { ALSUserData } from "../../types/als";
 module.exports = {
       data: new SlashCommandBuilder()
             .setName("link")
-            .setDescription("Link your Discord account to your Apex Legends username.")
+            .setDescription("Link your Discord account to your Apex Legends username")
             .addStringOption(option => {
                   option
                         .setName("username")

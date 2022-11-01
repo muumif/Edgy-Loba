@@ -8,7 +8,7 @@ import { filename, profilePic } from "../../components/const";
 module.exports = {
       data: new SlashCommandBuilder()
             .setName("next")
-            .setDescription("Shows when a new split or season starts."),
+            .setDescription("Shows when a new split/season starts"),
       async execute(interaction: CommandInteraction) {
             try {
                   const nextData = await (await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/maprotation?version=2&auth=${process.env.ALS_TOKEN}`))).data as MapData;
