@@ -42,5 +42,3 @@ export const ansiColors = {
       Cyan: "\u001b[0;36m",
       White: "\u001b[0;37m",
 };
-
-export const updateQueue: Snowflake[] = [];

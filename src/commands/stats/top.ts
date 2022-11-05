@@ -8,7 +8,7 @@ import {
       Guild,
       SlashCommandBuilder,
 } from "discord.js";
-import { filename, profilePic, updateQueue } from "../../components/const";
+import { filename, profilePic } from "../../components/const";
 import { DBServer } from "../../components/mongo";
 import { embed } from "../../components/embeds";
 import { logger } from "../../components/logger";
@@ -73,7 +73,6 @@ module.exports = {
                         generatedEmbed.setThumbnail(avatar);
                   }
                   for (let i = 0; i < current.length; i++) {
-                        updateQueue.push(current[i].discordId);
                         if (interaction.user.id == current[i].discordId) {
                               generatedEmbed.addFields({
                                     name: `__${start + i + 1}. ${current[i].names.player} | ${current[i].names.discord}__`,
