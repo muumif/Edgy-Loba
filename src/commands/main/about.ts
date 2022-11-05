@@ -84,7 +84,8 @@ module.exports = {
                               value: `${uptime.hours()}h ${uptime.minutes()}m ${uptime.seconds()}s`,
                               inline: true,
                         },
-                  );
+                  )
+                  .setFooter({ text: `Running on version ${process.env.npm_package_version}`, iconURL: profilePic(128) });
 
             return await interaction.editReply({ embeds: [aboutEmbed], components: [aboutButtons] });
       },
