@@ -5,7 +5,7 @@ import { embed } from "../../components/embeds";
 module.exports = {
       data: new SlashCommandBuilder()
             .setName("help")
-            .setDescription("Show every commands!")
+            .setDescription("Shows every commands and their description")
             .addStringOption(option =>
                   option
                         .setName("category")

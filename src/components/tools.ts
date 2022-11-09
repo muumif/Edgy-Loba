@@ -23,7 +23,6 @@ export async function updateMemberCount() {
             await DBClient.connect();
 
             let guilds = await guildCollection.find().toArray() as ServerDocument[] | [];
-            if (guilds != []) guilds = guilds as ServerDocument[];
             const updatedServers = [];
             for (let i = 0; i < guilds.length; i++) {
                   const guild = await client.guilds.cache.get(guilds[i].serverId) as Guild;
@@ -48,7 +47,6 @@ export async function updateUserNames() {
             await DBClient.connect();
 
             let users = await usersCollection.find().toArray() as UserDocument[] | [];
-            if (users != []) users = users as UserDocument[];
             const updatedUsers = [];
             for (let i = 0; i < users.length; i++) {
                   const ALSUser = (await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${users[i].originId}&platform=${users[i].platform}&merge=true&removeMerged=true`))).data as ALSUserData;

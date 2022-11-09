@@ -8,7 +8,7 @@ import { CraftingData } from "../../types/als";
 module.exports = {
       data: new SlashCommandBuilder()
             .setName("crafting")
-            .setDescription("Shows the current items that can be crafted at the replicator!"),
+            .setDescription("Shows the current items that can be crafted at the replicator"),
 
       async execute(interaction: CommandInteraction) {
             try {

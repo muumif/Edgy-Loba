@@ -8,7 +8,7 @@ import { StatusData } from "../../types/als";
 module.exports = {
       data: new SlashCommandBuilder()
             .setName("status")
-            .setDescription("Shows the EA servers status and the response time."),
+            .setDescription("Shows the EA servers status and the response time"),
       async execute(interaction: CommandInteraction) {
             try {
                   const statusData = await (await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/servers?auth=${process.env.ALS_TOKEN}`))).data as StatusData;

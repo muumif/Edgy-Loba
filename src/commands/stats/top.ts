@@ -4,10 +4,11 @@ import {
       ButtonStyle,
       CacheType,
       ChatInputCommandInteraction,
+      CommandInteraction,
       Guild,
       SlashCommandBuilder,
 } from "discord.js";
-import { filename, profilePic, updateQueue } from "../../components/const";
+import { filename, profilePic } from "../../components/const";
 import { DBServer } from "../../components/mongo";
 import { embed } from "../../components/embeds";
 import { logger } from "../../components/logger";
@@ -17,7 +18,7 @@ import { setTimeout } from "node:timers/promises";
 module.exports = {
       data: new SlashCommandBuilder()
             .setName("top")
-            .setDescription("Shows the server leaderboard!"),
+            .setDescription("Shows the server leaderboard"),
       async execute(interaction: ChatInputCommandInteraction<CacheType>) {
             const buttonTimeout = 30000;
             const dbServer = new DBServer(interaction.guild as Guild);
@@ -72,7 +73,6 @@ module.exports = {
                         generatedEmbed.setThumbnail(avatar);
                   }
                   for (let i = 0; i < current.length; i++) {
-                        updateQueue.push(current[i].discordId);
                         if (interaction.user.id == current[i].discordId) {
                               generatedEmbed.addFields({
                                     name: `__${start + i + 1}. ${current[i].names.player} | ${current[i].names.discord}__`,
@@ -96,12 +96,15 @@ module.exports = {
             const embedMessage = await interaction.editReply({ embeds: [await generateEmbed(0)], components: canFitOnePage ? [] : [new ActionRowBuilder<ButtonBuilder>({ components: [nextButton] })] });
             if (canFitOnePage) return;
 
+            const userId = interaction.user.id;
             const collector = embedMessage.createMessageComponentCollector({
-                  filter: ({ user }) => user.id === interaction.user.id,
+                  // @ts-ignore                  
+                  // Everything works but typescript doesn't like this
+                  filter: ({ user }) => user.id === userId,
                   time: buttonTimeout,
             });
 
-            collector.on("collect", async interaction => {
+            collector.on("collect", async (interaction: any) => { // Not good using any
                   interaction.customId === "back" ? (currentIndex -= 10) : (currentIndex += 10);
                   const dateBefore = new Date().getTime();
                   await interaction.update({ embeds: [await generateEmbed(currentIndex)], components: [new ActionRowBuilder<ButtonBuilder>({ components: [...(currentIndex ? [backButton] : []), ...(currentIndex + 10 < topData.length ? [nextButton] : [])] })] });

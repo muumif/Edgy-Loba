@@ -11,7 +11,7 @@ const topAPIInstance = new Api(process.env.TOPGG_TOKEN);
 module.exports = {
       data: new SlashCommandBuilder()
             .setName("about")
-            .setDescription("Everything about the bot!"),
+            .setDescription("Shows statistics about the bot"),
       async execute(interaction: CommandInteraction) {
             const topGGData = await topAPIInstance.getBot("719542118955090011");
             await interaction.client.application?.fetch();
@@ -84,7 +84,8 @@ module.exports = {
                               value: `${uptime.hours()}h ${uptime.minutes()}m ${uptime.seconds()}s`,
                               inline: true,
                         },
-                  );
+                  )
+                  .setFooter({ text: `Running on version ${process.env.npm_package_version}`, iconURL: profilePic(128) });
 
             return await interaction.editReply({ embeds: [aboutEmbed], components: [aboutButtons] });
       },

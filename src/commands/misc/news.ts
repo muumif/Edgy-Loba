@@ -15,7 +15,7 @@ async function shortenUrl(link:string) {
 module.exports = {
       data: new SlashCommandBuilder()
             .setName("news")
-            .setDescription("Shows the latest news from EA news feed about Apex Legends."),
+            .setDescription("Shows the latest news from EA news feed about Apex Legends"),
       async execute(interaction: CommandInteraction) {
             try {
                   const newsData = await (await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/news?auth=${process.env.ALS_TOKEN}`))).data as NewsData[];
