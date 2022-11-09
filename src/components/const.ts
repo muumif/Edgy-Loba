@@ -1,6 +1,6 @@
 //Constants that are required in multiple files and when changed need to be same everywhere
 
-import { APIEmbedField, CommandInteraction, GuildEmoji, Snowflake } from "discord.js";
+import { APIEmbedField, CommandInteraction, GuildEmoji } from "discord.js";
 
 export function profilePic(size: number): string {
       return `https://cdn.discordapp.com/avatars/719542118955090011/812d9cde81554928e2cd7bd92d032060.webp?size=${size}`;
