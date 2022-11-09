@@ -27,7 +27,8 @@ const tempFolder = "./temp";
 if (!existsSync(tempFolder)) {
       mkdirSync(tempFolder);
       logger.info("Made temp directory!", { metadata: { file: filename(__filename) } });
-} else {
+}
+else {
       const files = readdirSync("./temp");
       for (const file of files) {
             rmSync("./temp/" + file);
@@ -44,7 +45,7 @@ client.once("ready", async () => {
       await new DBGlobal().verifyServers(client);
 
       if (process.env.NODE_ENV == "development") {
-            client.user?.setPresence({ activities: [{name: "Internal Build!"}], status: "dnd"});
+            client.user?.setPresence({ activities: [{ name: "Internal Build!" }], status: "dnd" });
             return;
       }
 

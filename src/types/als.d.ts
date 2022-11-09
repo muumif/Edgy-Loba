@@ -12,7 +12,20 @@ interface Tracker {
 	}
 }
 
-export interface ALSUserData {
+export interface currentSeasonData {
+	info: {
+		ID: number,
+		Name: string,
+		Split: 1 | 2
+	},
+	dates: {
+		Start: number,
+		Split: number,
+		End: number
+	}
+}
+
+export interface ALSUserData { // Missing new legend
 		global: {
 			name: string,
 			uid: string,
