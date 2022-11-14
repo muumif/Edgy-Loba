@@ -1,12 +1,9 @@
 ﻿import express, { Express, Request, Response } from "express";
 import { logger } from "./logger";
 import { filename } from "./const";
-import { DBGlobal, DBServer, DBUser } from "./mongo";
-import { ActiveVotesDocument } from "../types/mongo";
+import { DBUser } from "./mongo";
 import { client } from "../index";
 import { updateMemberCount, updateUserNames } from "./tools";
-import schedule from "node-schedule";
-
 
 const webServer: Express = express();
 const port = process.env.WEBSERVER_PORT;
@@ -18,30 +15,21 @@ webServer.get("/", (req: Request, res: Response) => {
 });
 
 webServer.post("/hooks/topgg", async (req: Request, res: Response) => {
-      if (req.headers.authorization == process.env.WEBHOOK_PASSWORD) {
-            logger.info(`Got post request from ${req.ip} to /hooks/topgg`, { metadata: { file: filename(__filename) } });
-            const voteDate = new Date();
-            const endDate = new Date();
-            endDate.setDate(voteDate.getDate() + 1);
-            const discordUser = (await client.users.fetch(req.body.user.toString()));
-            const servers = await new DBUser(discordUser).getServers() as [string];
-            const voteDocument: ActiveVotesDocument = {
-                  discordId: req.body.user,
-                  servers: servers,
-                  voteDate: voteDate,
-                  endDate: endDate,
-                  active: true,
-            };
-            await new DBGlobal().addVote(voteDocument);
-            schedule.scheduleJob(endDate, async function() {
-                  await new DBGlobal().removeVote(req.body.user);
-            });
-            res.sendStatus(200);
-      }
-      else {
+      if (req.headers.authorization != process.env.WEBHOOK_PASSWORD) {
             logger.error(`Unauthorized access from: ${req.ip}`, { metadata: { file: filename(__filename) } });
             res.sendStatus(401);
+            return;
       }
+
+      logger.info(`Got post request from ${req.ip} to /hooks/topgg`, { metadata: { file: filename(__filename) } });
+      const voteDate = new Date();
+      const endDate = new Date();
+      endDate.setDate(voteDate.getDate() + 1);
+      const discordUser = (await client.users.fetch(req.body.user.toString()));
+
+      await new DBUser(discordUser).addVote();
+
+      res.sendStatus(200);
 });
 
 webServer.get("/tools/update/members", async (req: Request, res: Response) => {

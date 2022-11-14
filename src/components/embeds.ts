@@ -1,6 +1,5 @@
-import { EmbedBuilder, Message } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 import { profilePic } from "./const";
-import { DBGlobal } from "./mongo";
 
 const randomFooterDefault = () => {
       const messages = [

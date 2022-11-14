@@ -1,8 +1,8 @@
 import { ActivityType, Client, Collection, Command, GatewayIntentBits, InteractionType } from "discord.js";
-import { existsSync, mkdir, readdirSync } from "fs";
+import { existsSync, mkdirSync, readdirSync, rmSync } from "fs";
 import { logger } from "./components/logger";
 import { hostname, type, version } from "os";
-import { filename, updateQueue } from "./components/const";
+import { filename } from "./components/const";
 import { DBGlobal, DBServer } from "./components/mongo";
 import { AutoPoster } from "topgg-autoposter";
 import path from "path";
@@ -23,13 +23,17 @@ for (const folder of readdirSync(commandsPath)) {
       }
 }
 
-const tempFolder = path.join(__dirname, "temp");
+const tempFolder = "./temp";
 if (!existsSync(tempFolder)) {
-      logger.info("Temp directory doesn't exist!", { metadata: { file: filename(__filename) } });
-      mkdir(tempFolder, error => {
-            if (error) return logger.error(error);
-            logger.info("Made temp directory!", { metadata: { file: filename(__filename) } });
-      });
+      mkdirSync(tempFolder);
+      logger.info("Made temp directory!", { metadata: { file: filename(__filename) } });
+}
+else {
+      const files = readdirSync("./temp");
+      for (const file of files) {
+            rmSync("./temp/" + file);
+            logger.info("Cleared temp folder!", { metadata: { file: filename(__filename) } });
+      }
 }
 
 client.once("ready", async () => {
@@ -38,29 +42,31 @@ client.once("ready", async () => {
 
       const statistics = await new DBGlobal().statistics();
 
-      if (process.env.NODE_ENV == "production") {
-            const presences = (statistics: {userCount: number, serverCount: number, historyCount: number, logCount: number}) => {
-                  const activities = [
-                        { type: ActivityType.Watching, name: `${statistics.serverCount} servers!` },
-                        { type: ActivityType.Listening, name: "/help" },
-                        { type: ActivityType.Listening, name: "/about" },
-                        { type: ActivityType.Playing, name: `version ${process.env.npm_package_version}` },
-                        { type: ActivityType.Listening, name: `${statistics.userCount} users!` },
-                  ];
-
-                  return activities[Math.floor(Math.random() * presences.length)];
-            };
-            client.user?.setPresence({ activities: [{ name: presences(statistics).name, type: ActivityType.Playing }], status: "online" });
-            setInterval(async () => {
-                  const statistics = await new DBGlobal().statistics();
-                  const presence = presences(statistics);
-                  client.user?.setPresence({ activities: [{ name: `${presence.name}`, type: ActivityType.Playing }], status: "online" });
-            }, 600000);
-      }
-      else {
-            client.user?.setPresence({ activities: [{ name: "Internal Build!" }], status: "dnd" });
-      }
       await new DBGlobal().verifyServers(client);
+
+      if (process.env.NODE_ENV == "development") {
+            client.user?.setPresence({ activities: [{ name: "Internal Build!" }], status: "dnd" });
+            return;
+      }
+
+      const presences = (statistics: {userCount: number, serverCount: number, historyCount: number, logCount: number}) => {
+            const activities = [
+                  { type: ActivityType.Watching, name: `${statistics.serverCount} servers!` },
+                  { type: ActivityType.Listening, name: "/help" },
+                  { type: ActivityType.Listening, name: "/about" },
+                  { type: ActivityType.Playing, name: `version ${process.env.npm_package_version}` },
+                  { type: ActivityType.Listening, name: `${statistics.userCount} users!` },
+            ];
+
+            return activities[Math.floor(Math.random() * presences.length)];
+      };
+      client.user?.setPresence({ activities: [{ name: presences(statistics).name, type: ActivityType.Playing }], status: "online" });
+      setInterval(async () => {
+            const statistics = await new DBGlobal().statistics();
+            const presence = presences(statistics);
+            client.user?.setPresence({ activities: [{ name: `${presence.name}`, type: ActivityType.Playing }], status: "online" });
+      }, 600000);
+
 });
 
 if (process.env.NODE_ENV == "production") {

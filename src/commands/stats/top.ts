@@ -4,12 +4,11 @@ import {
       ButtonStyle,
       CacheType,
       ChatInputCommandInteraction,
-      CommandInteraction,
       Guild,
       SlashCommandBuilder,
 } from "discord.js";
-import { filename, profilePic, updateQueue } from "../../components/const";
-import { DBServer } from "../../components/mongo";
+import { filename, profilePic } from "../../components/const";
+import { DBServer, DBUser } from "../../components/mongo";
 import { embed } from "../../components/embeds";
 import { logger } from "../../components/logger";
 import { UserDocument } from "../../types/mongo";
@@ -21,6 +20,18 @@ module.exports = {
             .setDescription("Shows the server leaderboard"),
       async execute(interaction: ChatInputCommandInteraction<CacheType>) {
             const buttonTimeout = 30000;
+
+            if (!await new DBUser(interaction.user).hasFeatureAccess()) {
+                  const voteButton = new ButtonBuilder()
+                        .setLabel("Vote")
+                        .setURL("https://top.gg/bot/719542118955090011/vote")
+                        .setStyle(ButtonStyle.Link);
+                  const topEmbed = new embed().errorEmbed()
+                        .setTitle("No vote detected!")
+                        .setDescription("To use this command you need to have voted!\n\nThis is done to get the bot self running, so that the developer doesn't need to intervene as much.");
+                  return await interaction.editReply({ embeds: [topEmbed], components: [new ActionRowBuilder<ButtonBuilder>({ components: [voteButton] })] });
+            }
+
             const dbServer = new DBServer(interaction.guild as Guild);
             let topData = await dbServer.getTopUsers() as UserDocument[] | string;
             if (topData == "No user data!") {
@@ -30,14 +41,6 @@ module.exports = {
                   return await interaction.editReply({ embeds: [topEmbed] });
             }
             topData = topData as UserDocument[];
-
-            if (!await dbServer.hasFeatureAccess()) {
-                  const topEmbed = new embed().errorEmbed()
-                        .setTitle("Not enough votes!")
-                        .setDescription(`Needed votes: ${await dbServer.neededVotes()} \nActive Votes: ${await dbServer.activeVotes()}\n\n[Vote Top.gg](https://top.gg/bot/719542118955090011/vote)`);
-                  return await interaction.editReply({ embeds: [topEmbed] });
-            }
-
 
             const backButton = new ButtonBuilder()
                   .setStyle(ButtonStyle.Danger)
@@ -73,7 +76,6 @@ module.exports = {
                         generatedEmbed.setThumbnail(avatar);
                   }
                   for (let i = 0; i < current.length; i++) {
-                        updateQueue.push(current[i].discordId);
                         if (interaction.user.id == current[i].discordId) {
                               generatedEmbed.addFields({
                                     name: `__${start + i + 1}. ${current[i].names.player} | ${current[i].names.discord}__`,
@@ -99,7 +101,7 @@ module.exports = {
 
             const userId = interaction.user.id;
             const collector = embedMessage.createMessageComponentCollector({
-                  // @ts-ignore                  
+                  // @ts-ignore
                   // Everything works but typescript doesn't like this
                   filter: ({ user }) => user.id === userId,
                   time: buttonTimeout,

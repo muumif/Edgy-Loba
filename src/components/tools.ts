@@ -1,8 +1,8 @@
 ﻿import { MongoClient } from "mongodb";
 import { ServerDocument, UserDocument } from "../types/mongo";
 import { client } from "../index";
-import { logger } from "../components/logger";
-import { filename } from "../components/const";
+import { logger } from "./logger";
+import { filename } from "./const";
 import axios from "axios";
 import { ALSUserData } from "../types/als";
 import { DBServer, DBUser } from "./mongo";
@@ -22,7 +22,7 @@ export async function updateMemberCount() {
       try {
             await DBClient.connect();
 
-            let guilds = await guildCollection.find().toArray() as ServerDocument[] | [];
+            const guilds = await guildCollection.find().toArray() as ServerDocument[] | [];
             const updatedServers = [];
             for (let i = 0; i < guilds.length; i++) {
                   const guild = await client.guilds.cache.get(guilds[i].serverId) as Guild;
@@ -46,7 +46,7 @@ export async function updateUserNames() {
       try {
             await DBClient.connect();
 
-            let users = await usersCollection.find().toArray() as UserDocument[] | [];
+            const users = await usersCollection.find().toArray() as UserDocument[] | [];
             const updatedUsers = [];
             for (let i = 0; i < users.length; i++) {
                   const ALSUser = (await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${users[i].originId}&platform=${users[i].platform}&merge=true&removeMerged=true`))).data as ALSUserData;
