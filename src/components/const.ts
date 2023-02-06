@@ -54,7 +54,7 @@ export const presences = (statistics: {userCount: number, serverCount: number, h
             { type: ActivityType.Listening, name: `${statistics.userCount} users!` },
       ];
 
-      return activities[Math.floor(Math.random() * presences.length)];
+      return activities[4];
 };
 
 export const linksButtons = new ActionRowBuilder<ButtonBuilder>()

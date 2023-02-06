@@ -35,7 +35,7 @@ client.once("ready", async () => {
             GlobalDB.verifyServers(client),
       ]);
 
-      client.user?.setPresence({ activities: [{ name: presences(statistics).name, type: ActivityType.Playing }], status: "online" });
+      client.user?.setPresence({ activities: [{ name: presences(statistics).name, type: ActivityType.Listening }], status: "online" });
 
       checkTemp();
 });
