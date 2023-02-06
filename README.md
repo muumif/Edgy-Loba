@@ -47,9 +47,9 @@ Commands
 | Misc Commands | Description 
 |  ---          |     ---    
 | /crafting     | Shows the current items that can be crafted at the Replicator.
-| /map          | Shows the current and next maps for Battle Royale and Arenas. Also the time remaining until the next map. 
+| /map          | Shows the current and next maps for Battle Royale and LTM-s. Also the time remaining until the next map. 
 | /news         | Shows the latest news from EA news feed about Apex Legends. 
-| /predator     | Shows how much RP/AP is needed to reach Predator on all platforms. Also how many predators are on every platform. 
+| /predator     | Shows how much RP is needed to reach Predator on all platforms. Also how many predators are on every platform. 
 | /status       | Shows the gameplay servers status. Also the response time.
 | /distribution | Shows the rank distribution.
 | /next         | Shows when a new split or season starts.

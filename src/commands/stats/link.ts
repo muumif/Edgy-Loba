@@ -55,7 +55,6 @@ module.exports = {
                               discordId: interaction.user.id,
                               originId: userUID,
                               RP: userData.global.rank.rankScore,
-                              AP: userData.global.arena.rankScore,
                               platform: platform(),
                               servers: [ interaction.guild?.id as Snowflake],
                               names: {

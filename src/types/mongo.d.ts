@@ -15,7 +15,6 @@ export interface UserDocument {
       discordId: Snowflake;
       originId: string;
       RP: number;
-      AP: number;
       platform: "PC" | "X1" | "PS4";
       servers: [ string ];
       names: {
@@ -37,7 +36,7 @@ export interface HistoryDocument {
       discordId: Snowflake;
       date: Date;
       RP: number;
-      AP: number;
+      // AP: number;
 }
 
 export interface BugDocument {

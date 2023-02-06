@@ -8,7 +8,7 @@ import { PredatorData } from "../../types/als";
 module.exports = {
       data: new SlashCommandBuilder()
             .setName("predator")
-            .setDescription("Shows how much RP/AP is needed to reach Predator on all platforms")
+            .setDescription("Shows how much RP is needed to reach Predator on all platforms")
             .addStringOption(option =>
                   option.setName("platform")
                         .setDescription("For what platform to search on!")
@@ -34,15 +34,6 @@ module.exports = {
                               }
                         };
 
-                        const totalMastersAR = () => {
-                              if (predatorData.AP.PC.totalMastersAndPreds >= 750) {
-                                    return predatorData.AP.PC.totalMastersAndPreds - 750;
-                              }
-                              else {
-                                    return "No master players!";
-                              }
-                        };
-
                         const predEmbed = new embed().defaultEmbed()
                               .setTitle("Platform PC!")
                               .setThumbnail("https://api.mozambiquehe.re/assets/ranks/apexpredator1.png")
@@ -53,12 +44,6 @@ module.exports = {
                                           value: "PC: **" + predatorData.RP.PC.val + ` RP**\nTotal Masters: **${totalMastersBR()}**`,
                                           inline: true,
                                     },
-                                    {
-                                          name: "Arenas",
-                                          value: "PC: **" + predatorData.AP.PC.val + ` AP**\nTotal Masters: **${totalMastersAR()}**`,
-                                          inline: true,
-                                    },
-
                               );
                         return await interaction.editReply({ embeds: [predEmbed] });
                   }
@@ -66,15 +51,6 @@ module.exports = {
                         const totalMastersBR = () => {
                               if (predatorData.RP.X1.totalMastersAndPreds >= 750) {
                                     return predatorData.RP.X1.totalMastersAndPreds - 750;
-                              }
-                              else {
-                                    return "No master players!";
-                              }
-                        };
-
-                        const totalMastersAR = () => {
-                              if (predatorData.AP.X1.totalMastersAndPreds >= 750) {
-                                    return predatorData.AP.X1.totalMastersAndPreds - 750;
                               }
                               else {
                                     return "No master players!";
@@ -91,12 +67,6 @@ module.exports = {
                                           value: "XBOX: **" + predatorData.RP.X1.val + ` RP**\nTotal Masters: **${totalMastersBR()}**`,
                                           inline: true,
                                     },
-                                    {
-                                          name: "Arenas",
-                                          value: "XBOX: **" + predatorData.AP.X1.val + ` AP**\nTotal Masters: **${totalMastersAR()}**`,
-                                          inline: true,
-                                    },
-
                               );
                         return await interaction.editReply({ embeds: [predEmbed] });
                   }
@@ -105,15 +75,6 @@ module.exports = {
                         const totalMastersBR = () => {
                               if (predatorData.RP.PS4.totalMastersAndPreds >= 750) {
                                     return predatorData.RP.PS4.totalMastersAndPreds - 750;
-                              }
-                              else {
-                                    return "No master players!";
-                              }
-                        };
-
-                        const totalMastersAR = () => {
-                              if (predatorData.AP.PS4.totalMastersAndPreds >= 750) {
-                                    return predatorData.AP.PS4.totalMastersAndPreds - 750;
                               }
                               else {
                                     return "No master players!";
@@ -130,12 +91,6 @@ module.exports = {
                                           value: "Playstation: **" + predatorData.RP.PS4.val + ` RP**\nTotal Masters: **${totalMastersBR()}**`,
                                           inline: true,
                                     },
-                                    {
-                                          name: "Arenas",
-                                          value: "Playstation: **" + predatorData.AP.PS4.val + ` AP**\nTotal Masters: **${totalMastersAR()}**`,
-                                          inline: true,
-                                    },
-
                               );
                         return await interaction.editReply({ embeds: [predEmbed] });
                   }

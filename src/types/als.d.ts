@@ -606,33 +606,33 @@ export interface MapData {
 			asset: string,
 		}
 	},
-	arenas: {
-		current: {
-			start: number,
-			end: number,
-			readableDate_start: string,
-			readableDate_end: string,
-			map: string,
-			code: string,
-			DurationInSecs: number,
-			DurationInMinutes: number,
-			asset: string,
-			remainingSecs: number,
-			remainingMins: number,
-			remainingTimer: string
-		},
-		next: {
-			start: number,
-			end: number,
-			readableDate_start: string,
-			readableDate_end: string,
-			map: string,
-			code: string,
-			DurationInSecs: number,
-			DurationInMinutes: number,
-			asset: string
-		}
-	},
+	// arenas: { // No more arenas in season 16
+	// 	current: {
+	// 		start: number,
+	// 		end: number,
+	// 		readableDate_start: string,
+	// 		readableDate_end: string,
+	// 		map: string,
+	// 		code: string,
+	// 		DurationInSecs: number,
+	// 		DurationInMinutes: number,
+	// 		asset: string,
+	// 		remainingSecs: number,
+	// 		remainingMins: number,
+	// 		remainingTimer: string
+	// 	},
+	// 	next: {
+	// 		start: number,
+	// 		end: number,
+	// 		readableDate_start: string,
+	// 		readableDate_end: string,
+	// 		map: string,
+	// 		code: string,
+	// 		DurationInSecs: number,
+	// 		DurationInMinutes: number,
+	// 		asset: string
+	// 	}
+	// },
 	ranked: {
 		current: {
 			start: number,
@@ -660,33 +660,33 @@ export interface MapData {
 			asset: string
 		}
 	},
-	arenasRanked: {
-		current: {
-			start: number,
-			end: number,
-			readableDate_start: string,
-			readableDate_end: string,
-			map: string,
-			code: string,
-			DurationInSecs: number,
-			DurationInMinutes: number,
-			asset: string,
-			remainingSecs: 1483,
-			remainingMins: 25,
-			remainingTimer: string
-		},
-		next: {
-			start: number,
-			end: number,
-			readableDate_start: string,
-			readableDate_end: string,
-			map: string,
-			code: string,
-			DurationInSecs: number,
-			DurationInMinutes: number,
-			asset:string
-		}
-	},
+	// arenasRanked: { // Already mentioned
+	// 	current: {
+	// 		start: number,
+	// 		end: number,
+	// 		readableDate_start: string,
+	// 		readableDate_end: string,
+	// 		map: string,
+	// 		code: string,
+	// 		DurationInSecs: number,
+	// 		DurationInMinutes: number,
+	// 		asset: string,
+	// 		remainingSecs: 1483,
+	// 		remainingMins: 25,
+	// 		remainingTimer: string
+	// 	},
+	// 	next: {
+	// 		start: number,
+	// 		end: number,
+	// 		readableDate_start: string,
+	// 		readableDate_end: string,
+	// 		map: string,
+	// 		code: string,
+	// 		DurationInSecs: number,
+	// 		DurationInMinutes: number,
+	// 		asset:string
+	// 	}
+	// },
 }
 
 export interface StatusData {
@@ -953,34 +953,34 @@ export interface PredatorData {
 				totalMastersAndPreds: number
 			}
 		},
-		AP: {
-			PC: {
-				foundRank: number,
-				val: 8000,
-				uid: string,
-				updateTimestamp: number,
-				totalMastersAndPreds: number
-			},
-			PS4: {
-				foundRank: number,
-				val: 8000,
-				uid: string,
-				updateTimestamp: number,
-				totalMastersAndPreds: number
-			},
-			X1: {
-				foundRank: number,
-				val: 8000,
-				uid: string,
-				updateTimestamp: number,
-				totalMastersAndPreds: number
-			},
-			SWITCH: {
-				foundRank: number,
-				val: 8000,
-				uid: string,
-				updateTimestamp: number,
-				totalMastersAndPreds: number
-			}
-		}
+		// AP: {
+		// 	PC: {
+		// 		foundRank: number,
+		// 		val: 8000,
+		// 		uid: string,
+		// 		updateTimestamp: number,
+		// 		totalMastersAndPreds: number
+		// 	},
+		// 	PS4: {
+		// 		foundRank: number,
+		// 		val: 8000,
+		// 		uid: string,
+		// 		updateTimestamp: number,
+		// 		totalMastersAndPreds: number
+		// 	},
+		// 	X1: {
+		// 		foundRank: number,
+		// 		val: 8000,
+		// 		uid: string,
+		// 		updateTimestamp: number,
+		// 		totalMastersAndPreds: number
+		// 	},
+		// 	SWITCH: {
+		// 		foundRank: number,
+		// 		val: 8000,
+		// 		uid: string,
+		// 		updateTimestamp: number,
+		// 		totalMastersAndPreds: number
+		// 	}
+		// }
 }

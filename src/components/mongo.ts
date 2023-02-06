@@ -277,18 +277,17 @@ export class DBUser {
             }
       }
 
-      public async addHistory(RP: number, AP: number) {
+      public async addHistory(RP: number) {
             try {
                   const dateBefore = new Date().getTime();
 
                   const id = this.discordUser.id;
 
-                  await usersCollection.updateOne({ discordId: this.discordUser.id }, { $set: { RP: RP, AP: AP } });
+                  await usersCollection.updateOne({ discordId: this.discordUser.id }, { $set: { RP: RP } });
                   return await historyCollection.insertOne({
                         discordId: this.discordUser.id,
                         date: new Date(),
                         RP: RP,
-                        AP: AP,
                   })
                         .then(function() {
                               const dateAfter = new Date().getTime();
@@ -369,25 +368,6 @@ export class DBUser {
                               const dateAfter = new Date().getTime();
                               logger.info("Updated a users usernames in the DB!", { metadata: { discordId: id, file: filename(__filename), actionDuration: dateAfter - dateBefore } });
                               return Promise.resolve("Updated RP");
-                        });
-            }
-            catch (error) {
-                  return Promise.reject(error);
-            }
-      }
-
-      public async updateAP(AP: number) {
-            try {
-                  const dateBefore = new Date().getTime();
-
-                  const id = this.discordUser.id;
-
-                  await usersCollection.updateOne({ discordId: this.discordUser.id }, { $set: { updatedAt: new Date() } });
-                  return await usersCollection.updateOne({ discordId: this.discordUser.id }, { $set:{ AP: AP } })
-                        .then(function() {
-                              const dateAfter = new Date().getTime();
-                              logger.info("Updated a users AP in the DB!", { metadata: { discordId: id, file: filename(__filename), actionDuration: dateAfter - dateBefore } });
-                              return Promise.resolve("Updated AP");
                         });
             }
             catch (error) {

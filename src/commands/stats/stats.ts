@@ -92,8 +92,7 @@ module.exports = {
                   }
 
                   const rankBR = ALSUser.global.rank.rankName == "Apex Predator" ? `\u001b[0;37m#${ALSUser.global.rank.ladderPosPlatform} \u001b[0;31mPredator` : `\u001b[0;37m${ALSUser.global.rank.rankName} \u001b[0;33m${ALSUser.global.rank.rankDiv}`;
-                  const rankAR = ALSUser.global.arena.rankName == "Apex Predator" ? `\u001b[0;37m#${ALSUser.global.arena.ladderPosPlatform} \u001b[0;31mPredator` : `\u001b[0;37m${ALSUser.global.arena.rankName} \u001b[0;33m${ALSUser.global.arena.rankDiv}`;
-                  const rankIMG = ALSUser.global.rank.rankScore >= ALSUser.global.arena.rankScore ? ALSUser.global.rank.rankImg : ALSUser.global.arena.rankImg;
+                  const rankIMG = ALSUser.global.rank.rankImg;
                   const level = ALSUser.global.levelPrestige == 0 ? `${"```ansi"}\n\u001b[0;33m${ALSUser.global.level} \n${ALSUser.global.toNextLevelPercent}\u001b[0;37m% /\u001b[0;33m 100\u001b[0;37m%${"```"}` : `${"```ansi"}\n\u001b[0;33m${ALSUser.global.level}\n\u001b[0;37mPrestige \u001b[0;33m${ALSUser.global.levelPrestige} \n${ALSUser.global.toNextLevelPercent}\u001b[0;37m% /\u001b[0;33m 100\u001b[0;37m%${"```"}`;
 
                   const statsEmbed = new embed().defaultEmbed()
@@ -107,19 +106,11 @@ module.exports = {
                                     inline: true,
                               },
                               {
-                                    name: "Battle Royal",
+                                    name: "Ranked",
                                     value: `${"```ansi"}\n\u001b[0;33m${rankBR} \n\u001b[0;37mRP: \u001b[0;33m${ALSUser.global.rank.rankScore}${"```"}`,
                                     inline: true,
                               },
                         );
-
-                  if (ALSUser.global.arena.rankScore != 0) {
-                        statsEmbed.addFields({
-                              name: "Arenas",
-                              value: `${"```ansi"}\n${rankAR} \n\u001b[0;37mAP: \u001b[0;33m${ALSUser.global.arena.rankScore}${"```"}`,
-                              inline: true,
-                        });
-                  }
 
                   if (selectedLegend.data == undefined) {
                         statsEmbed.addFields({

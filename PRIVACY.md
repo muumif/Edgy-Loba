@@ -18,16 +18,14 @@ The Bot stores the following information on /link command:
 * `discordID` - User ID as the value.
 * `originUID` - Origin user ID as the value.
 * `RP` - Apex Legends ranked points as the value.
-* `AP` - Apex Legends arenas points as the value.
 * `platform` - Apex Legends platform as the value.
 * `guilds` - Guilds array as the value.
 
-The Bot refreshes RP/AP values everyday and stores them as history data:
+The Bot refreshes RP values everyday and stores them as history data:
 
 * `discordID` - User ID as the value.
 * `date` - The date when the data was added.
 * `RP` - Apex Legends ranked points as the value.
-* `AP` - Apex Legends arenas points as the value.
 
 The Bot may also save PNG images for history data graphs, top data graphs and map image.
 The Bot also saves logs of every command ran and the parameters given to the Bot. The logs are cleared every Friday.<br>
