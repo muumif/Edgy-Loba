@@ -4,7 +4,7 @@ import { filename } from "../../components/const";
 import { DBUser } from "../../components/mongo";
 import { embed } from "../../components/embeds";
 import { logger } from "../../components/logger";
-import { getUserUID } from "../../components/uid";
+import { IGNToUID } from "../../components/uid";
 import { ALSUserData } from "../../types/als";
 
 module.exports = {
@@ -48,7 +48,7 @@ module.exports = {
             const dbUser = new DBUser(interaction.user);
             if (await dbUser.getUser() == "User not found!") {
                   try {
-                        const userUID = await getUserUID(user, platform(), interaction.guild?.id, interaction.user.id);
+                        const userUID = await IGNToUID(user, platform(), interaction.guild?.id, interaction.user.id);
                         const userData = await (await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${userUID}&platform=${platform()}`))).data as ALSUserData;
 
                         await dbUser.addUser({

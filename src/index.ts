@@ -2,8 +2,8 @@ import { ActivityType, Client, Collection, Command, GatewayIntentBits, Interacti
 import { existsSync, mkdirSync, readdirSync, rmSync } from "fs";
 import { logger } from "./components/logger";
 import { hostname, type, version } from "os";
-import { filename } from "./components/const";
-import { DBGlobal, DBServer } from "./components/mongo";
+import { filename, presences } from "./components/const";
+import { DBGlobal, DBServer, start_mongo } from "./components/mongo";
 import { AutoPoster } from "topgg-autoposter";
 import path from "path";
 import "./components/scheduler";
@@ -23,58 +23,25 @@ for (const folder of readdirSync(commandsPath)) {
       }
 }
 
-const tempFolder = "./temp";
-if (!existsSync(tempFolder)) {
-      mkdirSync(tempFolder);
-      logger.info("Made temp directory!", { metadata: { file: filename(__filename) } });
-}
-else {
-      const files = readdirSync("./temp");
-      for (const file of files) {
-            rmSync("./temp/" + file);
-            logger.info("Cleared temp folder!", { metadata: { file: filename(__filename) } });
-      }
-}
-
 client.once("ready", async () => {
       logger.info("▬▬ι═══════ﺤ Edgy Loba is now online -═══════ι▬▬", { metadata: { file: filename(__filename) } });
       logger.info(`Hostname: ${hostname} | Environment: ${process.env.NODE_ENV} | Version: ${process.env.npm_package_version} | OS: ${type} ${version}`, { metadata: { file: filename(__filename) } });
 
-      const statistics = await new DBGlobal().statistics();
+      start_mongo().then(() => logger.info("Connected to MongoDB!", { metadata: { file: filename(__filename) } }));
 
-      await new DBGlobal().verifyServers(client);
+      const GlobalDB = new DBGlobal();
+      const [statistics, serverResult] = await Promise.all([
+            GlobalDB.statistics(),
+            GlobalDB.verifyServers(client),
+      ]);
 
-      if (process.env.NODE_ENV == "development") {
-            client.user?.setPresence({ activities: [{ name: "Internal Build!" }], status: "dnd" });
-            return;
-      }
-
-      const presences = (statistics: {userCount: number, serverCount: number, historyCount: number, logCount: number}) => {
-            const activities = [
-                  { type: ActivityType.Watching, name: `${statistics.serverCount} servers!` },
-                  { type: ActivityType.Listening, name: "/help" },
-                  { type: ActivityType.Listening, name: "/about" },
-                  { type: ActivityType.Playing, name: `version ${process.env.npm_package_version}` },
-                  { type: ActivityType.Listening, name: `${statistics.userCount} users!` },
-            ];
-
-            return activities[Math.floor(Math.random() * presences.length)];
-      };
       client.user?.setPresence({ activities: [{ name: presences(statistics).name, type: ActivityType.Playing }], status: "online" });
-      setInterval(async () => {
-            const statistics = await new DBGlobal().statistics();
-            const presence = presences(statistics);
-            client.user?.setPresence({ activities: [{ name: `${presence.name}`, type: ActivityType.Playing }], status: "online" });
-      }, 600000);
 
+      checkTemp();
 });
 
 if (process.env.NODE_ENV == "production") {
-      const ap = AutoPoster(process.env.TOPGG_TOKEN, client);
-
-      ap.on("posted", () => {
-            logger.info("Posted stats to top.gg", { metadata: { file: filename(__filename) } });
-      });
+      AutoPoster(process.env.TOPGG_TOKEN, client);
 
       client.on("guildCreate", async guild => {
             await new DBServer(guild).addServer();
@@ -112,7 +79,7 @@ client.on("interactionCreate", async interaction => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             catch (error:any) {
                   logger.error(error, { metadata: { file: filename(__filename) } });
-                  await interaction.editReply({ content: "There was an error while executing this command!" });
+                  await interaction.editReply({ content: "There was an error while executing this command!\nIf this happens more than once, please report it as a bug!" });
             }
       }
 
@@ -126,5 +93,19 @@ client.on("interactionCreate", async interaction => {
             }
       }
 });
+
+function checkTemp() {
+      if (!existsSync("./temp")) {
+            mkdirSync("./temp");
+            logger.info("Made temp directory!", { metadata: { file: filename(__filename) } });
+      }
+      else {
+            const files = readdirSync("./temp");
+            for (const file of files) {
+                  rmSync("./temp/" + file);
+                  logger.info("Cleared temp folder!", { metadata: { file: filename(__filename) } });
+            }
+      }
+}
 
 client.login(process.env.DISCORD_TOKEN);

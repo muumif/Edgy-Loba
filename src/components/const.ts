@@ -1,6 +1,6 @@
 //Constants that are required in multiple files and when changed need to be same everywhere
 
-import { APIEmbedField, CommandInteraction, GuildEmoji } from "discord.js";
+import { ActivityType, APIEmbedField, CommandInteraction, GuildEmoji } from "discord.js";
 
 export function profilePic(size: number): string {
       return `https://cdn.discordapp.com/avatars/719542118955090011/812d9cde81554928e2cd7bd92d032060.webp?size=${size}`;
@@ -41,4 +41,16 @@ export const ansiColors = {
       Pink: "\u001b[0;35m",
       Cyan: "\u001b[0;36m",
       White: "\u001b[0;37m",
+};
+
+export const presences = (statistics: {userCount: number, serverCount: number, historyCount: number, logCount: number}) => {
+      const activities = [
+            { type: ActivityType.Watching, name: `${statistics.serverCount} servers!` },
+            { type: ActivityType.Listening, name: "/help" },
+            { type: ActivityType.Listening, name: "/about" },
+            { type: ActivityType.Playing, name: `version ${process.env.npm_package_version}` },
+            { type: ActivityType.Listening, name: `${statistics.userCount} users!` },
+      ];
+
+      return activities[Math.floor(Math.random() * presences.length)];
 };

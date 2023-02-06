@@ -3,7 +3,7 @@ import { CommandInteraction, GuildEmoji, SlashCommandBuilder } from "discord.js"
 import { emojis, filename } from "../../components/const";
 import { embed } from "../../components/embeds";
 import { logger } from "../../components/logger";
-import { getUserUID } from "../../components/uid";
+import { IGNToUID } from "../../components/uid";
 import { ALSUserData } from "../../types/als";
 
 module.exports = {
@@ -33,7 +33,7 @@ module.exports = {
             try {
                   const [username, platformString] = [interaction.options.get("username")?.value as string, interaction.options.get("platform")?.value];
 
-                  let selectedTrackers = "```ansi", level: string, platformEmoji: GuildEmoji, stateEmoji: GuildEmoji, rankBR: string, rankAR: string, rankIMG: string, currentState: string;
+                  let selectedTrackers = "```ansi", platformEmoji: GuildEmoji, stateEmoji: GuildEmoji, currentState: string;
                   const [PCEmoji, PSEmoji, XboxEmoji, OnlineEmoji, IdleEmoji, OfflineEmoji] = emojis(interaction);
 
                   const platform = () => {
@@ -49,8 +49,7 @@ module.exports = {
                         }
 
                   };
-                  const UID = await getUserUID(username, platform(), interaction.guildId as string, interaction.user.id);
-                  await new Promise(resolve => setTimeout(resolve, 500));
+                  const UID = await IGNToUID(username, platform(), interaction.guildId as string, interaction.user.id);
                   const ALSUser = await (await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${UID}&platform=${platform()}&merge=true&removeMerged=true`))).data as ALSUserData;
                   const selectedLegend = ALSUser.legends.all[ALSUser.legends.selected.LegendName];
 
@@ -92,37 +91,10 @@ module.exports = {
                         break;
                   }
 
-                  // Check if ALSUser is an Apex Predator
-                  if (ALSUser.global.rank.rankName == "Apex Predator") {
-                        rankBR = `\u001b[0;37m#${ALSUser.global.rank.ladderPosPlatform} \u001b[0;31mPredator`;
-                  }
-                  else {
-                        rankBR = `\u001b[0;37m${ALSUser.global.rank.rankName} \u001b[0;33m${ALSUser.global.rank.rankDiv}`;
-                  }
-
-                  if (ALSUser.global.arena.rankName == "Apex Predator") {
-                        rankAR = `\u001b[0;31m#${ALSUser.global.arena.ladderPosPlatform} Predator`;
-                  }
-                  else {
-                        rankAR = `\u001b[0;37m${ALSUser.global.arena.rankName} \u001b[0;33m${ALSUser.global.arena.rankDiv}`;
-                  }
-
-                  // Show the img for which the player has more score for
-                  if (ALSUser.global.rank.rankScore >= ALSUser.global.arena.rankScore) {
-                        rankIMG = ALSUser.global.rank.rankImg;
-                  }
-                  else {
-                        rankIMG = ALSUser.global.arena.rankImg;
-                  }
-
-                  // Check if the ALSUser has reached any prestige levels
-                  if (ALSUser.global.levelPrestige == 0) {
-                        level = `${"```ansi"}\n\u001b[0;33m${ALSUser.global.level} \n${ALSUser.global.toNextLevelPercent}\u001b[0;37m% /\u001b[0;33m 100\u001b[0;37m%${"```"}`;
-                  }
-                  else {
-                        level = `${"```ansi"}\n\u001b[0;33m${ALSUser.global.level}\n\u001b[0;37mPrestige \u001b[0;33m${ALSUser.global.levelPrestige} \n${ALSUser.global.toNextLevelPercent}\u001b[0;37m% /\u001b[0;33m 100\u001b[0;37m%${"```"}`;
-                  }
-
+                  const rankBR = ALSUser.global.rank.rankName == "Apex Predator" ? `\u001b[0;37m#${ALSUser.global.rank.ladderPosPlatform} \u001b[0;31mPredator` : `\u001b[0;37m${ALSUser.global.rank.rankName} \u001b[0;33m${ALSUser.global.rank.rankDiv}`;
+                  const rankAR = ALSUser.global.arena.rankName == "Apex Predator" ? `\u001b[0;37m#${ALSUser.global.arena.ladderPosPlatform} \u001b[0;31mPredator` : `\u001b[0;37m${ALSUser.global.arena.rankName} \u001b[0;33m${ALSUser.global.arena.rankDiv}`;
+                  const rankIMG = ALSUser.global.rank.rankScore >= ALSUser.global.arena.rankScore ? ALSUser.global.rank.rankImg : ALSUser.global.arena.rankImg;
+                  const level = ALSUser.global.levelPrestige == 0 ? `${"```ansi"}\n\u001b[0;33m${ALSUser.global.level} \n${ALSUser.global.toNextLevelPercent}\u001b[0;37m% /\u001b[0;33m 100\u001b[0;37m%${"```"}` : `${"```ansi"}\n\u001b[0;33m${ALSUser.global.level}\n\u001b[0;37mPrestige \u001b[0;33m${ALSUser.global.levelPrestige} \n${ALSUser.global.toNextLevelPercent}\u001b[0;37m% /\u001b[0;33m 100\u001b[0;37m%${"```"}`;
 
                   const statsEmbed = new embed().defaultEmbed()
                         .setTitle(`${platformEmoji}  ${ALSUser.global.name}`)
@@ -140,6 +112,7 @@ module.exports = {
                                     inline: true,
                               },
                         );
+
                   if (ALSUser.global.arena.rankScore != 0) {
                         statsEmbed.addFields({
                               name: "Arenas",
