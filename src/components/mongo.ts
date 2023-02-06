@@ -5,7 +5,7 @@ import { filename } from "./const";
 import { logger } from "./logger";
 import { createClient } from "redis";
 
-const server = `${process.env.MONGO_CONNECTION}/?authSource=admin`;
+const server = `${process.env.MONGO_CONNECTION}`;
 const DBClient = new MongoClient(server);
 const CacheClient = createClient({ url: process.env.REDIS_CONNECTION });
 
@@ -23,6 +23,11 @@ if (process.env.NODE_ENV == "development") {
       logsCollection = DBClient.db("EdgyLobaDEV").collection("logs");
 }
 
+export async function start_mongo() {
+      logger.info("Starting mongo!", { metadata: { file: filename(__filename) } });
+      return DBClient.connect();
+}
+
 export class DBGlobal {
       userAverageRP = async () => {
             type RP = {
@@ -30,7 +35,6 @@ export class DBGlobal {
             };
             try {
                   const dateBefore = new Date().getTime();
-                  await DBClient.connect();
 
                   const users = await usersCollection.find({}).project({ "RP": 1, "_id": 0 }).toArray() as RP[];
 
@@ -51,19 +55,17 @@ export class DBGlobal {
             catch (error) {
                   return Promise.reject(error);
             }
-            finally {
-                  await DBClient.close();
-            }
       };
 
       statistics = async () => {
             try {
                   const dateBefore = new Date().getTime();
-                  await DBClient.connect();
-                  const userCount = await usersCollection.countDocuments();
-                  const serverCount = await guildCollection.countDocuments();
-                  const historyCount = await historyCollection.countDocuments();
-                  const logCount = await logsCollection.countDocuments();
+                  const [userCount, serverCount, historyCount, logCount] = await Promise.all([
+                        usersCollection.countDocuments(),
+                        guildCollection.countDocuments(),
+                        historyCollection.countDocuments(),
+                        logsCollection.countDocuments(),
+                  ]);
 
                   const dateAfter = new Date().getTime();
                   logger.info("Statistics fetched!", { metadata: { file: filename(__filename), actionDuration: dateAfter - dateBefore } });
@@ -77,54 +79,44 @@ export class DBGlobal {
             catch (error) {
                   return Promise.reject(error);
             }
-            finally {
-                  await DBClient.close();
-            }
       };
+
       public async getAllUsers() {
             try {
                   const dateBefore = new Date().getTime();
-                  await DBClient.connect();
 
                   const users = await usersCollection.find().toArray();
 
                   if (users == null) return Promise.resolve("No user data!");
                   const dateAfter = new Date().getTime();
+
                   logger.info("Fetched all users from the DB!", { metadata: { file: filename(__filename), actionDuration: dateAfter - dateBefore } });
                   return Promise.resolve(users);
             }
             catch (error) {
                   return Promise.reject(error);
             }
-            finally {
-                  await DBClient.close();
-            }
       }
 
       public async getGlobalTopUsers(guild: Guild) {
             try {
                   const dateBefore = new Date().getTime();
-                  await DBClient.connect();
                   const users = await usersCollection.find().sort({ RP: -1 }).limit(3).toArray();
 
                   if (users.length == 0) return Promise.resolve("No user data!");
                   const dateAfter = new Date().getTime();
+
                   logger.info("Fetched users from the DB!", { metadata: { serverId: guild.id, file: filename(__filename), actionDuration: dateAfter - dateBefore } });
                   return Promise.resolve(users);
             }
             catch (error) {
                   return Promise.reject(error);
             }
-            finally {
-                  await DBClient.close();
-            }
       }
 
       public async addBug(discordId: Snowflake, serverId: Snowflake, command: string, message: string) {
             try {
                   const dateBefore = new Date().getTime();
-
-                  await DBClient.connect();
 
                   return await bugCollection.insertOne({
                         serverId: serverId,
@@ -135,7 +127,7 @@ export class DBGlobal {
                               message: message,
                         },
                   })
-                        .then(function() {
+                        .then(() => {
                               const dateAfter = new Date().getTime();
                               logger.info("Added a bug into the DB!", { metadata: { serverId: serverId, discordId: discordId, file: filename(__filename), actionDuration: dateAfter - dateBefore } });
                               return Promise.resolve("Server data inserted");
@@ -144,9 +136,6 @@ export class DBGlobal {
             catch (error) {
                   return Promise.reject(error);
             }
-            finally {
-                  await DBClient.close();
-            }
       }
 
       public async verifyServers(client: Client) {
@@ -154,9 +143,7 @@ export class DBGlobal {
                   const addGuilds = async () => {
                         const guilds = client.guilds.cache.map(guild => guild);
                         for (let i = 0; i < guilds.length; i++) {
-                              await DBClient.connect();
                               const DBGuild = await guildCollection.findOne({ serverId: guilds[i].id }) as ServerDocument | null;
-                              await DBClient.close();
                               if (DBGuild == null) {
                                     const memberCount = await new DBServer(guilds[i]).memberCount();
 
@@ -166,13 +153,11 @@ export class DBGlobal {
                                           memberCount: memberCount,
                                     };
 
-                                    await DBClient.connect();
                                     await guildCollection.insertOne(serverDocument)
                                           .then(function() {
                                                 logger.info("Added a server to the DB!", { metadata: { file: filename(__filename) } });
                                                 return Promise.resolve("Inserted server");
                                           });
-                                    await DBClient.close();
                               }
                         }
 
@@ -180,7 +165,6 @@ export class DBGlobal {
                   };
 
                   const deleteGuilds = async () => {
-                        await DBClient.connect();
                         const DBGuilds = await guildCollection.find({}).toArray() as ServerDocument[] | [];
                         for (let i = 0; i < DBGuilds.length; i++) {
                               if (client.guilds.cache.get(DBGuilds[i].serverId) == undefined) {
@@ -188,17 +172,15 @@ export class DBGlobal {
                                     logger.info("Deleted a server from the DB!", { metadata: { serverId: DBGuilds[i].serverId, file: filename(__filename) } });
                               }
                         }
-                        await DBClient.close();
                         return;
                   };
 
-                  await addGuilds();
-                  await deleteGuilds();
+                  await Promise.all([addGuilds(), deleteGuilds()]);
                   return;
             }
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             catch (error:any) {
-                  return logger.error(error, { metadata: { file: filename(__filename) } });
+                  logger.error(error, { metadata: { file: filename(__filename) } });
             }
       }
 }
@@ -214,8 +196,6 @@ export class DBUser {
             try {
                   const dateBefore = new Date().getTime();
 
-                  await DBClient.connect();
-
                   const user = await usersCollection.findOne({ discordId: this.discordUser.id.toString() }) as UserDocument | null;
 
                   if (user == null) return Promise.resolve("User not found!");
@@ -227,16 +207,11 @@ export class DBUser {
             catch (error) {
                   return Promise.reject(error);
             }
-            finally {
-                  await DBClient.close();
-            }
       }
 
       public async getHistory() {
             try {
                   const dateBefore = new Date().getTime();
-
-                  await DBClient.connect();
 
                   const history = await historyCollection.find({ discordId: this.discordUser.id.toString() }).sort({ date: 1 }).toArray() as HistoryDocument[] | [];
 
@@ -249,20 +224,17 @@ export class DBUser {
             catch (error) {
                   return Promise.reject(error);
             }
-            finally {
-                  await DBClient.close();
-            }
       }
 
       public async getServers() {
             try {
                   const dateBefore = new Date().getTime();
 
-                  await DBClient.connect();
-
                   let userDocument = await usersCollection.findOne({ discordId: this.discordUser.id }) as UserDocument | null;
                   if (userDocument == null) return Promise.resolve("User doesn't exist in the DB!");
+
                   userDocument = userDocument as UserDocument;
+
                   const dateAfter = new Date().getTime();
                   logger.info("Fetched a users servers from the DB!", { metadata: { discordId: this.discordUser.id, file: filename(__filename), actionDuration: dateAfter - dateBefore } });
                   return Promise.resolve(userDocument.servers);
@@ -270,16 +242,11 @@ export class DBUser {
             catch (error) {
                   return Promise.reject(error);
             }
-            finally {
-                  await DBClient.close();
-            }
       }
 
       public async getServer(serverId: Snowflake) {
             try {
                   const dateBefore = new Date().getTime();
-
-                  await DBClient.connect();
 
                   const server = await usersCollection.findOne({ discordId: this.discordUser.id.toString(), servers: serverId });
                   if (server == null) return Promise.resolve("No server found!");
@@ -291,16 +258,12 @@ export class DBUser {
             catch (error) {
                   return Promise.reject(error);
             }
-            finally {
-                  await DBClient.close();
-            }
       }
 
-      public async addUser(user: UserDocument) { //player: string, originId: string, RP: number, AP: number, platform: string, serverId: Snowflake | undefined
+      public async addUser(user: UserDocument) {
             try {
                   const dateBefore = new Date().getTime();
 
-                  await DBClient.connect();
                   const id = this.discordUser.id;
                   return await usersCollection.insertOne(user)
                         .then(function() {
@@ -312,16 +275,12 @@ export class DBUser {
             catch (error) {
                   return Promise.reject(error);
             }
-            finally {
-                  await DBClient.close();
-            }
       }
 
       public async addHistory(RP: number, AP: number) {
             try {
                   const dateBefore = new Date().getTime();
 
-                  await DBClient.connect();
                   const id = this.discordUser.id;
 
                   await usersCollection.updateOne({ discordId: this.discordUser.id }, { $set: { RP: RP, AP: AP } });
@@ -340,16 +299,12 @@ export class DBUser {
             catch (error) {
                   return Promise.reject(error);
             }
-            finally {
-                  await DBClient.close();
-            }
       }
 
       public async addServer(serverId: Snowflake) {
             try {
                   const dateBefore = new Date().getTime();
 
-                  await DBClient.connect();
                   const id = this.discordUser.id;
 
                   return await usersCollection.updateOne({ discordId: this.discordUser.id }, { $push: { servers: serverId } })
@@ -362,9 +317,6 @@ export class DBUser {
             }
             catch (error) {
                   return Promise.reject(error);
-            }
-            finally {
-                  await DBClient.close();
             }
       }
 
@@ -385,16 +337,12 @@ export class DBUser {
             catch (error) {
                   return Promise.reject(error);
             }
-            finally {
-                  await DBClient.close();
-            }
       }
 
       public async updateRP(RP: number) {
             try {
                   const dateBefore = new Date().getTime();
 
-                  await DBClient.connect();
                   const id = this.discordUser.id;
 
                   await usersCollection.updateOne({ discordId: this.discordUser.id }, { $set: { updatedAt: new Date() } });
@@ -408,16 +356,12 @@ export class DBUser {
             catch (error) {
                   return Promise.reject(error);
             }
-            finally {
-                  await DBClient.close();
-            }
       }
 
       public async updateNames(playerName: string) {
             try {
                   const dateBefore = new Date().getTime();
 
-                  await DBClient.connect();
                   const id = this.discordUser.id;
 
                   return await usersCollection.updateOne({ discordId: this.discordUser.id }, { $set: { names: { discord: `${this.discordUser.username}#${this.discordUser.discriminator}`, player: playerName } } })
@@ -430,16 +374,12 @@ export class DBUser {
             catch (error) {
                   return Promise.reject(error);
             }
-            finally {
-                  await DBClient.close();
-            }
       }
 
       public async updateAP(AP: number) {
             try {
                   const dateBefore = new Date().getTime();
 
-                  await DBClient.connect();
                   const id = this.discordUser.id;
 
                   await usersCollection.updateOne({ discordId: this.discordUser.id }, { $set: { updatedAt: new Date() } });
@@ -452,9 +392,6 @@ export class DBUser {
             }
             catch (error) {
                   return Promise.reject(error);
-            }
-            finally {
-                  await DBClient.close();
             }
       }
 
@@ -473,16 +410,12 @@ export class DBUser {
             catch (error) {
                   return Promise.reject(error);
             }
-            finally {
-                  await DBClient.close();
-            }
       }
 
       public async deleteUser() {
             try {
                   const dateBefore = new Date().getTime();
 
-                  await DBClient.connect();
                   const id = this.discordUser.id;
                   return await usersCollection.deleteOne({ discordId: this.discordUser.id })
                         .then(function() {
@@ -493,9 +426,6 @@ export class DBUser {
             }
             catch (error) {
                   return Promise.reject(error);
-            }
-            finally {
-                  await DBClient.close();
             }
       }
 }
@@ -510,7 +440,6 @@ export class DBServer {
             try {
                   const dateBefore = new Date().getTime();
 
-                  await DBClient.connect();
                   const id = this.guild.id;
 
                   const memberCount = await this.memberCount();
@@ -531,16 +460,12 @@ export class DBServer {
             catch (error) {
                   return Promise.reject(error);
             }
-            finally {
-                  await DBClient.close();
-            }
       }
 
       public async deleteServer() {
             try {
                   const dateBefore = new Date().getTime();
 
-                  await DBClient.connect();
                   await guildCollection.deleteOne({ serverId: this.guild.id });
 
                   const dateAfter = new Date().getTime();
@@ -550,15 +475,11 @@ export class DBServer {
             catch (error) {
                   return Promise.reject(error);
             }
-            finally {
-                  await DBClient.close();
-            }
       }
 
       public async getTopUsers() {
             try {
                   const dateBefore = new Date().getTime();
-                  await DBClient.connect();
 
                   const users = await usersCollection.find({ servers: this.guild.id }).sort({ RP: -1 }).toArray();
 
@@ -570,21 +491,14 @@ export class DBServer {
             catch (error) {
                   return Promise.reject(error);
             }
-            finally {
-                  await DBClient.close();
-            }
       }
 
       memberCount = async () => {
             try {
-                  await DBClient.connect();
                   return (await usersCollection.find({ servers: this.guild.id }).toArray()).length;
             }
             catch (error) {
                   return Promise.reject(error);
-            }
-            finally {
-                  await DBClient.close();
             }
       };
 }
