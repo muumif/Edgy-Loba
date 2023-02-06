@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, CommandInteraction, SlashCommandBuilder, User } from "discord.js";
+import { CommandInteraction, SlashCommandBuilder, User } from "discord.js";
 import { Api } from "@top-gg/sdk";
 import { embed } from "../../components/embeds";
 import { linksButtons, profilePic } from "../../components/const";
@@ -32,12 +32,12 @@ module.exports = {
                         {
                               name: "Host",
                               // eslint-disable-next-line @typescript-eslint/no-var-requires
-                              value: `${OS.version()}\nNode ${process.version}\nDiscord v${require("discord.js").version}`,
+                              value: `nNode ${process.version}\nDiscord v${require("discord.js").version}`,
                               inline: true,
                         },
                         {
                               name: "Database",
-                              value: `${statistics.userCount} users\n${statistics.historyCount} history data\n${statistics.logCount} logs saved\n${statistics.serverCount} servers`,
+                              value: `${statistics.userCount} users\n${statistics.historyCount} history data points\n${statistics.logCount} logs saved\n${statistics.serverCount} servers`,
                               inline: true,
                         },
                         {
