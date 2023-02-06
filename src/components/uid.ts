@@ -20,7 +20,7 @@ export async function IGNToUID(IGN: string, platform: "PC" | "X1" | "PS4", guild
                   }
             }
 
-            if (JSONBigInt.parse(response.data).uid == undefined || JSONBigInt.parse(response.data).result == undefined) {
+            if (JSONBigInt.parse(response.data).uid == undefined) {
                   throw new Error("Unknown user! Please use Origin or console username!");
             }
 
