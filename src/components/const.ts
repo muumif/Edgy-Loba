@@ -1,6 +1,6 @@
 //Constants that are required in multiple files and when changed need to be same everywhere
 
-import { ActivityType, APIEmbedField, CommandInteraction, GuildEmoji } from "discord.js";
+import { ActionRowBuilder, ActivityType, APIEmbedField, ButtonBuilder, ButtonStyle, CommandInteraction, GuildEmoji } from "discord.js";
 
 export function profilePic(size: number): string {
       return `https://cdn.discordapp.com/avatars/719542118955090011/812d9cde81554928e2cd7bd92d032060.webp?size=${size}`;
@@ -54,3 +54,27 @@ export const presences = (statistics: {userCount: number, serverCount: number, h
 
       return activities[Math.floor(Math.random() * presences.length)];
 };
+
+export const linksButtons = new ActionRowBuilder<ButtonBuilder>()
+      .addComponents(
+            new ButtonBuilder()
+                  .setLabel("Invite me")
+                  .setURL("https://bit.ly/3wo2Tkh")
+                  .setStyle(ButtonStyle.Link),
+            new ButtonBuilder()
+                  .setLabel("Vote")
+                  .setURL("https://top.gg/bot/719542118955090011/vote")
+                  .setStyle(ButtonStyle.Link),
+            new ButtonBuilder()
+                  .setLabel("GitHub")
+                  .setURL("https://github.com/muumif/")
+                  .setStyle(ButtonStyle.Link),
+            new ButtonBuilder()
+                  .setLabel("Terms Of Service")
+                  .setURL("https://github.com/muumif/Edgy-Loba/blob/master/TOS.md")
+                  .setStyle(ButtonStyle.Link),
+            new ButtonBuilder()
+                  .setLabel("Privacy Policy")
+                  .setURL("https://github.com/muumif/Edgy-Loba/blob/master/PRIVACY.md")
+                  .setStyle(ButtonStyle.Link),
+      );

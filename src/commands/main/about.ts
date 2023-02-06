@@ -1,7 +1,7 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, CommandInteraction, SlashCommandBuilder, User } from "discord.js";
 import { Api } from "@top-gg/sdk";
 import { embed } from "../../components/embeds";
-import { profilePic } from "../../components/const";
+import { linksButtons, profilePic } from "../../components/const";
 import * as OS from "os";
 import moment from "moment";
 import { DBGlobal } from "../../components/mongo";
@@ -13,34 +13,11 @@ module.exports = {
             .setName("about")
             .setDescription("Shows statistics about the bot"),
       async execute(interaction: CommandInteraction) {
-            const topGGData = await topAPIInstance.getBot("719542118955090011");
+            const [statistics, topGGData] = await Promise.all([new DBGlobal().statistics(), topAPIInstance.getBot("719542118955090011")]);
+
             await interaction.client.application?.fetch();
             const author = interaction.client.application?.owner as User;
             const uptime = moment.duration(Number(interaction.client.uptime));
-            const statistics = await new DBGlobal().statistics();
-            const aboutButtons = new ActionRowBuilder<ButtonBuilder>()
-                  .addComponents(
-                        new ButtonBuilder()
-                              .setLabel("Invite me")
-                              .setURL("https://bit.ly/3wo2Tkh")
-                              .setStyle(ButtonStyle.Link),
-                        new ButtonBuilder()
-                              .setLabel("Vote")
-                              .setURL("https://top.gg/bot/719542118955090011/vote")
-                              .setStyle(ButtonStyle.Link),
-                        new ButtonBuilder()
-                              .setLabel("GitHub")
-                              .setURL("https://github.com/muumif/")
-                              .setStyle(ButtonStyle.Link),
-                        new ButtonBuilder()
-                              .setLabel("Terms Of Service")
-                              .setURL("https://github.com/muumif/Edgy-Loba/blob/master/TOS.md")
-                              .setStyle(ButtonStyle.Link),
-                        new ButtonBuilder()
-                              .setLabel("Privacy Policy")
-                              .setURL("https://github.com/muumif/Edgy-Loba/blob/master/PRIVACY.md")
-                              .setStyle(ButtonStyle.Link),
-                  );
 
 
             const aboutEmbed = new embed().defaultEmbed()
@@ -55,7 +32,7 @@ module.exports = {
                         {
                               name: "Host",
                               // eslint-disable-next-line @typescript-eslint/no-var-requires
-                              value: `${OS.version()}\nNode ${process.version}\n Discord v${require("discord.js").version}`,
+                              value: `${OS.version()}\nNode ${process.version}\nDiscord v${require("discord.js").version}`,
                               inline: true,
                         },
                         {
@@ -87,6 +64,6 @@ module.exports = {
                   )
                   .setFooter({ text: `Running on version ${process.env.npm_package_version}`, iconURL: profilePic(128) });
 
-            return await interaction.editReply({ embeds: [aboutEmbed], components: [aboutButtons] });
+            return await interaction.editReply({ embeds: [aboutEmbed], components: [linksButtons] });
       },
 };
