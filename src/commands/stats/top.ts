@@ -101,8 +101,6 @@ module.exports = {
 
             const userId = interaction.user.id;
             const collector = embedMessage.createMessageComponentCollector({
-                  // @ts-ignore
-                  // Everything works but typescript doesn't like this
                   filter: ({ user }) => user.id === userId,
                   time: buttonTimeout,
             });
