@@ -1,7 +1,19 @@
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v10";
-import { commands } from ".";
+import { readdirSync } from "fs";
+import path from "path";
 
+
+const commands = [];
+const commandsPath = path.join(__dirname, "commands");
+for (const folder of readdirSync(commandsPath)) {
+      const files = readdirSync(path.join(commandsPath, folder)).filter(file => file.endsWith(".js"));
+      for (const file of files) {
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const command = require(path.join(commandsPath, folder, file));
+            commands.push(command.data.toJSON());
+      }
+}
 
 const rest = new REST({ version: "10" }).setToken(process.env.DISCORD_TOKEN);
 

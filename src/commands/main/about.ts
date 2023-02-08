@@ -18,7 +18,6 @@ module.exports = {
             const author = interaction.client.application?.owner as User;
             const uptime = moment.duration(Number(interaction.client.uptime));
 
-
             const aboutEmbed = new embed().defaultEmbed()
                   .setAuthor({
                         name: `${author.username}#${author.discriminator}`,
