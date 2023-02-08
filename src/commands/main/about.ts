@@ -2,7 +2,6 @@ import { CommandInteraction, SlashCommandBuilder, User } from "discord.js";
 import { Api } from "@top-gg/sdk";
 import { embed } from "../../components/embeds";
 import { linksButtons, profilePic } from "../../components/const";
-import * as OS from "os";
 import moment from "moment";
 import { DBGlobal } from "../../components/mongo";
 

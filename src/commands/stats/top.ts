@@ -105,7 +105,7 @@ module.exports = {
                   time: buttonTimeout,
             });
 
-            collector.on("collect", async (interaction: any) => { // Not good using any
+            collector.on("collect", async (interaction) => {
                   interaction.customId === "back" ? (currentIndex -= 10) : (currentIndex += 10);
                   const dateBefore = new Date().getTime();
                   await interaction.update({ embeds: [await generateEmbed(currentIndex)], components: [new ActionRowBuilder<ButtonBuilder>({ components: [...(currentIndex ? [backButton] : []), ...(currentIndex + 10 < topData.length ? [nextButton] : [])] })] });

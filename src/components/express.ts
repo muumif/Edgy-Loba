@@ -22,9 +22,6 @@ webServer.post("/hooks/topgg", async (req: Request, res: Response) => {
       }
 
       logger.info(`Got post request from ${req.ip} to /hooks/topgg`, { metadata: { file: filename(__filename) } });
-      const voteDate = new Date();
-      const endDate = new Date();
-      endDate.setDate(voteDate.getDate() + 1);
       const discordUser = (await client.users.fetch(req.body.user.toString()));
 
       await new DBUser(discordUser).addVote();
