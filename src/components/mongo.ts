@@ -183,43 +183,6 @@ export class DBGlobal {
                   logger.error(error, { metadata: { file: filename(__filename) } });
             }
       }
-
-      public async cacheMap(battle_royale_current: string, ltm_current: string, battle_royale_remaining: number, ltm_remaining: number, current_time: number) {
-            try {
-                  const dateBefore = new Date().getTime();
-                  await CacheClient.connect();
-                  await CacheClient.multi()
-                        .HSET("map_rotation", "battle_royale", battle_royale_current)
-                        .HSET("map_rotation", "ltm", ltm_current)
-                        .HSET("map_rotation", "current_time", current_time)
-                        .expire("map_rotation", Math.min(battle_royale_remaining, ltm_remaining))
-                        .exec();
-                  await CacheClient.disconnect();
-                  const dateAfter = new Date().getTime();
-                  logger.info("Added map to cache!", { metadata: { file: filename(__filename), actionDuration: dateAfter - dateBefore } });
-
-                  return Promise.resolve(true);
-            }
-            catch (error) {
-                  return Promise.reject(error);
-            }
-      }
-
-      public async getMap() {
-            try {
-                  const dateBefore = new Date().getTime();
-                  await CacheClient.connect();
-                  const map = await CacheClient.HGETALL("map_rotation") as { battle_royale: string; ltm: string, current_time: string};
-                  await CacheClient.disconnect();
-                  const dateAfter = new Date().getTime();
-                  logger.info("Fetched map from cache!", { metadata: { file: filename(__filename), actionDuration: dateAfter - dateBefore } });
-
-                  return Promise.resolve(map);
-            }
-            catch (error) {
-                  return Promise.reject(error);
-            }
-      }
 }
 
 export class DBUser {
