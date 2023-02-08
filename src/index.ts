@@ -95,17 +95,17 @@ client.on("interactionCreate", async interaction => {
 });
 
 function checkTemp() {
-      if (!existsSync("./temp")) {
-            mkdirSync("./temp");
-            logger.info("Made temp directory!", { metadata: { file: filename(__filename) } });
-      }
-      else {
-            const files = readdirSync("./temp");
-            for (const file of files) {
-                  rmSync("./temp/" + file);
-                  logger.info("Cleared temp folder!", { metadata: { file: filename(__filename) } });
-            }
-      }
+      // if (!existsSync("./temp")) {
+      //       mkdirSync("./temp");
+      //       logger.info("Made temp directory!", { metadata: { file: filename(__filename) } });
+      // }
+      // else {
+      //       const files = readdirSync("./temp");
+      //       for (const file of files) {
+      //             rmSync("./temp/" + file);
+      //             logger.info("Cleared temp folder!", { metadata: { file: filename(__filename) } });
+      //       }
+      // }
 }
 
 client.login(process.env.DISCORD_TOKEN);
