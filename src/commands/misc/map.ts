@@ -1,12 +1,13 @@
 import { createCanvas, Image } from "@napi-rs/canvas";
 import axios from "axios";
-import { AttachmentBuilder, CommandInteraction, SlashCommandBuilder } from "discord.js";
-import { readFileSync, writeFile } from "fs";
+import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { readFile, writeFile } from "fs/promises";
 import { MapData } from "../../types/als";
 import { embed } from "../../components/embeds";
 import { filename } from "../../components/const";
 import { logger } from "../../components/logger";
 import { cwd } from "process";
+import { scheduleJob } from "node-schedule";
 
 module.exports = {
       data: new SlashCommandBuilder()
@@ -16,15 +17,17 @@ module.exports = {
             try {
                   const mapData = await (await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/maprotation?version=2&auth=${process.env.ALS_TOKEN}`))).data as MapData;
 
+                  const buttonTimeout = 30000;
+
                   const [canvasWidth, canvasHeight] = [1920, 680];
                   const [BRMap, rankedBRMap, LTMMap ] = [new Image(), new Image(), new Image()];
 
                   const canvas = createCanvas(canvasWidth, canvasHeight);
                   const context = canvas.getContext("2d");
 
-                  BRMap.src = readFileSync(`${cwd()}/images/maps/${mapData.battle_royale.current.code}.jpg`);
-                  rankedBRMap.src = readFileSync(`${cwd()}/images/maps/${mapData.ranked.current.code}.jpg`);
-                  LTMMap.src = readFileSync(`${cwd()}/images/maps/${mapData.ltm.current.code}.jpg`);
+                  BRMap.src = await readFile(`${cwd()}/images/maps/${mapData.battle_royale.current.code}.jpg`);
+                  rankedBRMap.src = await readFile(`${cwd()}/images/maps/${mapData.ranked.current.code}.jpg`);
+                  LTMMap.src = await readFile(`${cwd()}/images/maps/${mapData.ltm.current.code}.jpg`);
 
                   // Draw map images to the canvas
                   context.drawImage(BRMap, 0, 0, BRMap.width, BRMap.height, 0, 0, canvasWidth, canvasHeight);
@@ -47,37 +50,92 @@ module.exports = {
                   }
 
                   const currentTime = new Date().getTime();
-                  await writeFile(`./temp/map_${currentTime}.jpeg`, canvas.toBuffer("image/jpeg"), error => {
-                        if (error) throw error;
-                        logger.info(`Made temp file: map_${currentTime}.png`, { metadata: { discordId: interaction.user.id, serverId: interaction.guildId, file: filename(__filename) } });
-                  });
-
+                  await writeFile(`./temp/map_${currentTime}.jpeg`, canvas.toBuffer("image/jpeg"));
                   const mapFile = new AttachmentBuilder(`./temp/map_${currentTime}.jpeg`);
+
+                  const mapButtons = new ActionRowBuilder<ButtonBuilder>()
+                        .addComponents(
+                              new ButtonBuilder()
+                                    .setLabel("Remind next BR")
+                                    .setCustomId("remindNextBR")
+                                    .setStyle(ButtonStyle.Primary),
+                              new ButtonBuilder()
+                                    .setLabel("Remind next ranked")
+                                    .setCustomId("remindNextRanked")
+                                    .setStyle(ButtonStyle.Primary),
+                              new ButtonBuilder()
+                                    .setLabel("Remind next LTM")
+                                    .setCustomId("remindNextLTM")
+                                    .setStyle(ButtonStyle.Primary),
+                        );
+
                   const mapEmbed = new embed().defaultEmbed()
                         .setTitle("Map Rotation")
                         .addFields(
                               {
                                     name: "Battle Royale",
-                                    value: `${"```ansi"}\n\u001b[0;37mCurrent: \u001b[0;33m${mapData.battle_royale.current.map}\n\u001b[0;37mNext: \u001b[0;33m${mapData.battle_royale.next.map}\n\u001b[0;37mRemaining: \u001b[0;33m${mapData.battle_royale.current.remainingTimer}${"```"}`,
+                                    value: `**Current:**\n${mapData.battle_royale.current.map}\n**Next:**\n${mapData.battle_royale.next.map}\n**Remaining:**\n<t:${mapData.battle_royale.next.start}:R>`,
                                     inline: true,
                               },
                               {
                                     name: "Ranked",
-                                    value: `${"```ansi"}\n\u001b[0;37mCurrent: \u001b[0;33m${mapData.ranked.current.map}\n\u001b[0;37mNext: \u001b[0;33m${mapData.ranked.next.map}${"```"}`,
+                                    value: `**Current:**\n${mapData.ranked.current.map}\n**Next:**\n${mapData.ranked.next.map}\n**Remaining:**\n<t:${mapData.ranked.next.start}:R>`,
                                     inline: true,
                               },
                               {
-                                    name: mapData.ltm.current.eventName,
-                                    value: `${"```ansi"}\n\u001b[0;37mCurrent: \u001b[0;33m${mapData.ltm.current.map}\n\u001b[0;37mNext: \u001b[0;33m${mapData.ltm.next.map}\n\u001b[0;37mRemaining: \u001b[0;33m${mapData.ltm.current.remainingTimer}${"```"}`,
+                                    name: "LTM: " + mapData.ltm.current.eventName,
+                                    value: `**Current:**\n${mapData.ltm.current.map}\n**Next:**\n${mapData.ltm.next.map}\n**Remaining:**\n<t:${mapData.ltm.next.start}:R>`,
                                     inline: true,
                               },
                         )
                         .setImage(`attachment://${filename(`./temp/map_${currentTime}.jpeg`)}`);
 
-                  await interaction.editReply({ embeds: [mapEmbed], files: [mapFile] });
+                  const embedMessage = await interaction.editReply({ embeds: [mapEmbed], files: [mapFile], components: [mapButtons] });
+
+                  const userId = interaction.user.id;
+                  const collector = embedMessage.createMessageComponentCollector({
+                        filter: ({ user }) => user.id === userId,
+                        time: buttonTimeout,
+                  });
+                  collector.on("collect", async (interaction) => {
+                        if (interaction.customId == "remindNextBR") {
+                              const reminderEmbed = new embed().defaultEmbed()
+                                    .setTitle("Reminder BR");
+                              reminderEmbed.setDescription(`The next map starts <t:${mapData.battle_royale.next.start}:R>.\nThe next map is **${mapData.battle_royale.next.map}**.\nCurrent map is **${mapData.battle_royale.current.map}**.`);
+                              const nextDate = new Date(mapData.battle_royale.next.start * 1000);
+                              const job = scheduleJob(nextDate, async () => {
+                                    await interaction.user.send(`**${mapData.battle_royale.next.map}** has started now!`);
+                              });
+                              await interaction.user.send({ embeds: [reminderEmbed] });
+                              await interaction.reply({ content: "You will be reminded when the next BR map starts!", ephemeral: true });
+                        }
+                        if (interaction.customId == "remindNextRanked") {
+                              const reminderEmbed = new embed().defaultEmbed()
+                                    .setTitle("Reminder Ranked");
+                              reminderEmbed.setDescription(`The next map starts <t:${mapData.ranked.next.start}:R>.\nThe next map is **${mapData.ranked.next.map}**.\nCurrent map is **${mapData.ranked.current.map}**.`);
+                              const nextDate = new Date(mapData.ranked.next.start * 1000);
+                              const job = scheduleJob(nextDate, async () => {
+                                    await interaction.user.send(`**${mapData.ranked.next.map}** has started now!`);
+                              });
+                              await interaction.user.send({ embeds: [reminderEmbed] });
+                              await interaction.reply({ content: "You will be reminded when the next ranked map starts!", ephemeral: true });
+                        }
+                        if (interaction.customId == "remindNextLTM") {
+                              const reminderEmbed = new embed().defaultEmbed()
+                                    .setTitle("Reminder LTM");
+                              reminderEmbed.setDescription(`The next map starts <t:${mapData.ltm.next.start}:R>.\nThe next map is **${mapData.ltm.next.map}**.\nCurrent map is **${mapData.ltm.current.map}**.`);
+                              const nextDate = new Date(mapData.ltm.next.start * 1000);
+                              const job = scheduleJob(nextDate, async () => {
+                                    await interaction.user.send(`**${mapData.ltm.next.map}** has started now!`);
+                              });
+                              await interaction.user.send({ embeds: [reminderEmbed] });
+                              await interaction.reply({ content: "You will be reminded when the next LTM map starts!", ephemeral: true });
+                        }
+                  });
             }
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             catch (error: any) {
+                  console.log(error);
                   if (error.response) {
                         logger.error(error, { discordId: interaction.user.id, serverId: interaction.guildId, file: filename(__filename) });
                         return await interaction.editReply({ embeds: [new embed().errorEmbed().setTitle("An error accrued!").setDescription(error.response.request.res.statusMessage.toString())] });
