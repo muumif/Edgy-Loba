@@ -105,9 +105,11 @@ module.exports = {
                               const nextDate = new Date(mapData.battle_royale.next.start * 1000);
                               const job = scheduleJob(nextDate, async () => {
                                     await interaction.user.send(`**${mapData.battle_royale.next.map}** has started now!`);
+                                    await interaction.user.send({ embeds: [reminderEmbed] });
                               });
                               await interaction.user.send({ embeds: [reminderEmbed] });
                               await interaction.reply({ content: "You will be reminded when the next BR map starts!", ephemeral: true });
+                              logger.info(`User [${interaction.user.username}] (${interaction.user.id}) set a reminder for the next BR map.`, { metadata: { discordId: interaction.user.id, serverId: interaction.guild?.id, file: filename(__filename) } });
                         }
                         if (interaction.customId == "remindNextRanked") {
                               const reminderEmbed = new embed().defaultEmbed()
@@ -116,9 +118,11 @@ module.exports = {
                               const nextDate = new Date(mapData.ranked.next.start * 1000);
                               const job = scheduleJob(nextDate, async () => {
                                     await interaction.user.send(`**${mapData.ranked.next.map}** has started now!`);
+                                    logger.info(`User [${interaction.user.username}] (${interaction.user.id}) was reminded for the next ranked map.`, { metadata: { discordId: interaction.user.id, serverId: interaction.guild?.id, file: filename(__filename) } });
                               });
                               await interaction.user.send({ embeds: [reminderEmbed] });
                               await interaction.reply({ content: "You will be reminded when the next ranked map starts!", ephemeral: true });
+                              logger.info(`User [${interaction.user.username}] (${interaction.user.id}) set a reminder for the next ranked map.`, { metadata: { discordId: interaction.user.id, serverId: interaction.guild?.id, file: filename(__filename) } });
                         }
                         if (interaction.customId == "remindNextLTM") {
                               const reminderEmbed = new embed().defaultEmbed()
@@ -127,9 +131,11 @@ module.exports = {
                               const nextDate = new Date(mapData.ltm.next.start * 1000);
                               const job = scheduleJob(nextDate, async () => {
                                     await interaction.user.send(`**${mapData.ltm.next.map}** has started now!`);
+                                    logger.info(`User [${interaction.user.username}] (${interaction.user.id}) was reminded for the next LTM map.`, { metadata: { discordId: interaction.user.id, serverId: interaction.guild?.id, file: filename(__filename) } });
                               });
                               await interaction.user.send({ embeds: [reminderEmbed] });
                               await interaction.reply({ content: "You will be reminded when the next LTM map starts!", ephemeral: true });
+                              logger.info(`User [${interaction.user.username}] (${interaction.user.id}) set a reminder for the next LTM map.`, { metadata: { discordId: interaction.user.id, serverId: interaction.guild?.id, file: filename(__filename) } });
                         }
                   });
             }

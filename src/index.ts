@@ -30,12 +30,14 @@ client.once("ready", async () => {
       start_mongo().then(() => logger.info("Connected to MongoDB!", { metadata: { file: filename(__filename) } }));
 
       const GlobalDB = new DBGlobal();
-      const [statistics, serverResult] = await Promise.all([
-            GlobalDB.statistics(),
-            GlobalDB.verifyServers(client),
-      ]);
-
-      client.user?.setPresence({ activities: [{ name: presences(statistics).name, type: ActivityType.Listening }], status: "online" });
+      setInterval(async () => {
+            const [statistics, serverResult] = await Promise.all([
+                  GlobalDB.statistics(),
+                  GlobalDB.verifyServers(client),
+            ]);
+            const presence = presences(statistics);
+            client.user?.setPresence({ activities: [{ name:presence.name, type: presence.type }], status: "online" });
+      }, 100000);
 
       checkTemp();
 });

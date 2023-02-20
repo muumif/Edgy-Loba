@@ -47,14 +47,14 @@ export const ansiColors = {
 
 export const presences = (statistics: {userCount: number, serverCount: number, historyCount: number, logCount: number}) => {
       const activities = [
-            { type: ActivityType.Watching, name: `${statistics.serverCount} servers!` },
-            { type: ActivityType.Listening, name: "/help" },
-            { type: ActivityType.Listening, name: "/about" },
-            { type: ActivityType.Playing, name: `version ${process.env.npm_package_version}` },
-            { type: ActivityType.Listening, name: `${statistics.userCount} users!` },
+            { type: 3, name: `${statistics.serverCount} servers!` },
+            { type: 2, name: "/help" },
+            { type: 2, name: "/about" },
+            { type: 0, name: `version ${process.env.npm_package_version}` },
+            { type: 2, name: `${statistics.userCount} users!` },
       ];
 
-      return activities[4];
+      return activities[Math.floor(Math.random() * activities.length)];
 };
 
 export const linksButtons = new ActionRowBuilder<ButtonBuilder>()
