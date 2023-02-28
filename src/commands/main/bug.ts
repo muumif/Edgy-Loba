@@ -1,5 +1,6 @@
 import { ActionRowBuilder, ModalActionRowComponentBuilder, TextInputBuilder } from "@discordjs/builders";
 import { CommandInteraction, ModalBuilder, SlashCommandBuilder, TextInputStyle } from "discord.js";
+import { client } from "../..";
 
 module.exports = {
       data: new SlashCommandBuilder()
@@ -39,6 +40,6 @@ module.exports = {
 
             bugModal.addComponents(firstActionRow, secondActionRow);
 
-            return await interaction.showModal(bugModal);
+            await interaction.showModal(bugModal);
       },
 };

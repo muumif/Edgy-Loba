@@ -8,6 +8,7 @@ import { AutoPoster } from "topgg-autoposter";
 import path from "path";
 import "./components/scheduler";
 import "./components/express";
+import { embed } from "./components/embeds";
 
 export const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -92,6 +93,12 @@ client.on("interactionCreate", async interaction => {
 
                   await new DBGlobal().addBug(interaction.user.id, interaction.guildId as string, commandInput, messageInput);
                   await interaction.reply({ content: "Bug reported!", ephemeral: true });
+                  const user = await client.users.fetch("438081715576242176");
+                  await user.send({ embeds: [new embed().defaultEmbed().setTitle("New bug reported!").addFields({
+                        name: commandInput,
+                        value: messageInput,
+                        inline: false
+                  })] })
             }
       }
 });
