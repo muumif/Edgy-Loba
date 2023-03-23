@@ -35,7 +35,7 @@ module.exports = {
                         .addFields(
                               getCommands("stats"),
                         );
-                  return await interaction.editReply({ embeds: [helpEmbed], components: [linksButtons] });
+                  await interaction.editReply({ embeds: [helpEmbed], components: [linksButtons] });
             }
             }
       },

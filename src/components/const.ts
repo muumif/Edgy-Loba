@@ -91,10 +91,12 @@ export function getCommands(cmdFolder:string) {
             commands.push(command.data.toJSON());
       }
       const fields: APIEmbedField[] = [];
+
       commands.map((ob) => fields.push({
             name : `${"```"}${ob.name}${"```"}`,
             value : ob.description,
             inline: false,
       }));
+
       return fields;
 }

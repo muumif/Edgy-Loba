@@ -22,10 +22,10 @@ module.exports = {
                         await dbUser.addServer(interaction.guildId as string);
                   }
                   if (dbUserData == "User not found!") {
-                        const meEmbed = new embed().errorEmbed()
+                        await interaction.editReply({ embeds: [new embed().errorEmbed()
                               .setTitle("User not linked!")
-                              .setDescription("Use the `/link` command to link and use this db!");
-                        await interaction.editReply({ embeds: [meEmbed] });
+                              .setDescription("Use the `/link` command to link and use this command!")],
+                        });
                         return;
                   }
 

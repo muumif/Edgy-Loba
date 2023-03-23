@@ -1,4 +1,4 @@
-import { ActivityType, Client, Collection, Command, GatewayIntentBits, InteractionType } from "discord.js";
+import { Client, Collection, Command, GatewayIntentBits, InteractionType } from "discord.js";
 import { existsSync, mkdirSync, readdirSync, rmSync } from "fs";
 import { logger } from "./components/logger";
 import { hostname, type, version } from "os";
@@ -38,7 +38,7 @@ client.once("ready", async () => {
             ]);
             const presence = presences(statistics);
             client.user?.setPresence({ activities: [{ name:presence.name, type: presence.type }], status: "online" });
-      }, 100000);
+      }, 600000);
 
       checkTemp();
 });
@@ -80,9 +80,9 @@ client.on("interactionCreate", async interaction => {
                   logger.info(`[${interaction.user.username}] used [/${interaction.commandName}] in [${interaction.guild?.name}]. Bot response time: ${dateAfter - dateBefore}ms`, { metadata: { command: interaction.commandName, discordId: interaction.user.id, serverId: interaction.guild?.id, file: filename(__filename), responseTime: dateAfter - dateBefore } });
             }
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            catch (error:any) {
+            catch (error: any) {
                   logger.error(error, { metadata: { file: filename(__filename) } });
-                  await interaction.editReply({ content: "There was an error while executing this command!\nIf this happens more than once, please report it as a bug!\n\n" + error });
+                  await interaction.editReply("Something went very wrong! Please report this as a bug!");
             }
       }
 
@@ -97,8 +97,8 @@ client.on("interactionCreate", async interaction => {
                   await user.send({ embeds: [new embed().defaultEmbed().setTitle("New bug reported!").addFields({
                         name: commandInput,
                         value: messageInput,
-                        inline: false
-                  })] })
+                        inline: false,
+                  })] });
             }
       }
 });

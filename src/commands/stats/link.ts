@@ -73,26 +73,27 @@ module.exports = {
                   }
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   catch (error: any) {
-                        if (error.isGetUidError) {
-                              logger.error(error, { metadata: { discordId: interaction.user.id, serverId: interaction.guildId, file: filename(__filename) } });
-                              return Promise.reject(error.message);
+                        if (error.includes("0101")) {
+                              logger.error(error, { metadata: { serverId: interaction.guild?.id, discordId: interaction.user.id, platform: platform(), file: filename(__filename) } });
+                              await interaction.editReply({ embeds: [new embed().errorEmbed()
+                                    .setTitle("User not found!")
+                                    .setDescription(error.split("Error")[1].replace(`${"\""}`, "").replace(`${"\""}`, "").replace(`${":"}`, "").replace(`${"\""}`, "").replace(`${"}"}`, "") + "\nYou may only use latin characters due to limitation on Apex side."),
+                              ] });
                         }
-                        if (error.response) {
-                              logger.error(error, { metadata: { discordId: interaction.user.id, serverId: interaction.guildId, file: filename(__filename) } });
-                              return Promise.reject(error.response.request.res.statusMessage.toString());
-                        }
-                        if (error) {
-                              logger.error(error, { metadata: { discordId: interaction.user.id, serverId: interaction.guildId, file: filename(__filename) } });
-                              return Promise.reject(error.response.request.res.statusMessage.toString());
+                        else {
+                              await interaction.editReply({ embeds: [new embed().errorEmbed()
+                                    .setTitle("An error accured!")
+                                    .setDescription("An unkown error accured. If this happens more than once report it as a bug."),
+                              ] });
                         }
                   }
 
             }
             else {
-                  const linkEmbed = new embed().errorEmbed()
-                        .setTitle("User is already been linked!")
-                        .setDescription("Use command `/unlink` to unlink your account!");
-                  await interaction.editReply({ embeds: [linkEmbed] });
+                  await interaction.editReply({ embeds: [new embed().errorEmbed()
+                        .setTitle("User has already been linked!")
+                        .setDescription("Use command `/unlink` to unlink your account!"),
+                  ] });
             }
       },
 };
