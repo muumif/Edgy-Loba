@@ -4,6 +4,7 @@ import { embed } from "../../components/embeds";
 import { filename, linksButtons, profilePic } from "../../components/const";
 import moment from "moment";
 import { DBGlobal } from "../../components/mongo";
+import { logger } from "../../components/logger";
 
 const topAPIInstance = new Api(process.env.TOPGG_TOKEN);
 
@@ -65,7 +66,8 @@ module.exports = {
                   await interaction.editReply({ embeds: [aboutEmbed], components: [linksButtons] });
             }
             catch (error: any) {
-                  return Promise.reject({ errorCode: "0000", errorMessage: error, errorOrigin: filename(__filename), errorCustom: true });
+                  logger.error(error, {metadata: {file: filename(__filename)}});
+                  await interaction.editReply({ content: "Something went wrong!" });
             }
       },
 };

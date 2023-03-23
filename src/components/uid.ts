@@ -9,7 +9,6 @@ const JSONBigInt = require("json-bigint")({ "storeAsString": true });
 export async function IGNToUID(IGN: string, platform: "PC" | "X1" | "PS4", guildId: Snowflake | undefined, discordId: Snowflake) {
       try {
             let response = await makeRequest(`${process.env.ALS_ENDPOINT}/nametouid?auth=${process.env.ALS_TOKEN}&player=${IGN}&platform=${platform}`);
-
             if (response.data.includes("Error")) {
                   if (response.data.includes("Slow down !")) {
                         await new Promise(resolve => setTimeout(resolve, 500));
@@ -21,7 +20,7 @@ export async function IGNToUID(IGN: string, platform: "PC" | "X1" | "PS4", guild
             }
 
             if (platform != "PC") {
-                  if (JSONBigInt.parse(response.data).uid == undefined) {
+                  if (JSONBigInt.parse(response.data).result == undefined) {
                         throw "0101: Unknown user! Please use Origin username! If you are on console please report this as a bug.";
                   }
                   logger.info("Fetched a console users UID!", { metadata: { serverId: guildId, discordId: discordId, IGN: IGN, platform: platform, file: filename(__filename) } });
