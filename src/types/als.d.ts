@@ -71,7 +71,9 @@ export interface ALSUserData { // Missing new legend
 					season11: number,
 					season12: number,
 					season13: number,
-					season14: number
+					season14: number,
+					season15: number,
+					season16: number,
 				}
 			},
 			badges: [
@@ -88,22 +90,22 @@ export interface ALSUserData { // Missing new legend
 			isInGame: number,
 			canJoin: number,
 			partyFull: number,
-			selectedLegend: "Revenant" | "Crypto" | "Horizon" | "Gibraltar" | "Wattson" | "Fuse" | "Bangalore" | "Wraith" | "Octane" | "Bloodhound" | "Caustic" | "Lifeline" | "Pathfinder" | "Loba" | "Mirage" | "Rampart" | "Valkyrie" | "Seer" | "Ash" | "Mad Maggie" | "Vantage",
+			selectedLegend: "Revenant" | "Crypto" | "Horizon" | "Gibraltar" | "Wattson" | "Fuse" | "Bangalore" | "Wraith" | "Octane" | "Bloodhound" | "Caustic" | "Lifeline" | "Pathfinder" | "Loba" | "Mirage" | "Rampart" | "Valkyrie" | "Seer" | "Ash" | "Mad Maggie" | "Vantage" | "Newcastle" | "Catalyst",
 			currentState: "offline" | "inLobby" | "inMatch",
 			currentStateSinceTimestamp: number,
 			currentStateAsText: string
 		},
 		legends: {
 			selected: {
-				LegendName: "Revenant" | "Crypto" | "Horizon" | "Gibraltar" | "Wattson" | "Fuse" | "Bangalore" | "Wraith" | "Octane" | "Bloodhound" | "Caustic" | "Lifeline" | "Pathfinder" | "Loba" | "Mirage" | "Rampart" | "Valkyrie" | "Seer" | "Ash" | "Mad Maggie" | "Vantage",
+				LegendName: "Revenant" | "Crypto" | "Horizon" | "Gibraltar" | "Wattson" | "Fuse" | "Bangalore" | "Wraith" | "Octane" | "Bloodhound" | "Caustic" | "Lifeline" | "Pathfinder" | "Loba" | "Mirage" | "Rampart" | "Valkyrie" | "Seer" | "Ash" | "Mad Maggie" | "Vantage" | "Newcastle" | "Catalyst",
 				data: [
 					Tracker
 				] | undefined,
 				gameInfo: {
 					skin: string,
-					skinRarity: "Common" | "Rare" | "Epic" | "Legendary",
+					skinRarity: "Common" | "Rare" | "Epic" | "Legendary" | "Heirloom",
 					frame: string,
-					frameRarity: "Common" | "Rare" | "Epic" | "Legendary",
+					frameRarity: "Common" | "Rare" | "Epic" | "Legendary" | "Heirloom",
 					pose: string,
 					poseRarity: "Common" | "Rare" | "Epic" | "Legendary" | "Heirloom",
 					intro: string,
@@ -112,7 +114,7 @@ export interface ALSUserData { // Missing new legend
 						{
 							name: string,
 							value: number,
-							category: "Account Badges" | "Revenant" | "Crypto" | "Horizon" | "Gibraltar" | "Wattson" | "Fuse" | "Bangalore" | "Wraith" | "Octane" | "Bloodhound" | "Caustic" | "Lifeline" | "Pathfinder" | "Loba" | "Mirage" | "Rampart" | "Valkyrie" | "Seer" | "Ash" | "Mad Maggie" | "Vantage"
+							category: "Account Badges" | "Revenant" | "Crypto" | "Horizon" | "Gibraltar" | "Wattson" | "Fuse" | "Bangalore" | "Wraith" | "Octane" | "Bloodhound" | "Caustic" | "Lifeline" | "Pathfinder" | "Loba" | "Mirage" | "Rampart" | "Valkyrie" | "Seer" | "Ash" | "Mad Maggie" | "Vantage" | "Newcastle" | "Catalyst"
 						},
 					] | undefined
 				},
@@ -524,6 +526,23 @@ Tracker
 					}
 				},
 				Vantage: {
+					data: [
+Tracker
+					] | undefined,
+					gameInfo: {
+						badges: [
+								{
+									name: string,
+									value: number,
+								},
+						]
+					} | undefined,
+					ImgAssets: {
+						icon: "https://api.mozambiquehe.re/assets/icons/vantage.png",
+						banner: "https://api.mozambiquehe.re/assets/banners/vantage.jpg"
+					}
+				}
+				Catalyst: {
 					data: [
 Tracker
 					] | undefined,
