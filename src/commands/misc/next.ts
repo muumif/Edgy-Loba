@@ -28,7 +28,7 @@ module.exports = {
                               },
                               {
                                     name: "Next Season",
-                                    value: `${"```ansi"}\n${ansiColors.White}${moment(nextSeasonEnd).format("Do MMMM YYYY")}\n${moment(nextSplitStart).fromNow()}${"```"}`,
+                                    value: `${"```ansi"}\n${ansiColors.White}${moment(nextSeasonEnd).format("Do MMMM YYYY")}\n${moment(nextSeasonEnd).fromNow()}${"```"}`,
                                     inline: true,
                               },
 
