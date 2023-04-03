@@ -14,7 +14,7 @@ import { logger } from "../../components/logger";
 import { UserDocument } from "../../types/mongo";
 import { setTimeout } from "node:timers/promises";
 
-module.exports = {
+module.exports = { 
       data: new SlashCommandBuilder()
             .setName("top")
             .setDescription("Shows the server leaderboard"),

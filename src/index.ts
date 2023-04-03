@@ -104,7 +104,11 @@ client.on("interactionCreate", async interaction => {
                   await user.send({ embeds: [new embed().defaultEmbed().setTitle("New bug reported!").addFields({
                         name: commandInput,
                         value: messageInput,
-                        inline: false,
+                        inline: true,
+                  }, {
+                        name: "User/Server",
+                        value: `User: ${interaction.user.username} (${interaction.user.id})\nServer: ${interaction.guild?.name} (${interaction.guildId})`,
+                        inline: true,
                   })] });
             }
       }
