@@ -10,13 +10,7 @@ export async function IGNToUID(IGN: string, platform: "PC" | "X1" | "PS4", guild
       try {
             let response = await makeRequest(`${process.env.ALS_ENDPOINT}/nametouid?auth=${process.env.ALS_TOKEN}&player=${IGN}&platform=${platform}`);
             if (response.data.includes("Error")) {
-                  if (response.data.includes("Slow down !")) {
-                        await new Promise(resolve => setTimeout(resolve, 500));
-                        response = await makeRequest(`${process.env.ALS_ENDPOINT}/nametouid?auth=${process.env.ALS_TOKEN}&player=${IGN}&platform=${platform}`);
-                  }
-                  else {
-                        throw `0101: ${response.data}`;
-                  }
+                  throw `0101: ${response.data}`;
             }
 
             if (platform != "PC") {

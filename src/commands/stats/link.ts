@@ -77,7 +77,7 @@ module.exports = {
                               logger.error(error, { metadata: { serverId: interaction.guild?.id, discordId: interaction.user.id, platform: platform(), file: filename(__filename) } });
                               await interaction.editReply({ embeds: [new embed().errorEmbed()
                                     .setTitle("User not found!")
-                                    .setDescription(error.split("Error")[1].replace(`${"\""}`, "").replace(`${"\""}`, "").replace(`${":"}`, "").replace(`${"\""}`, "").replace(`${"}"}`, "") + "\nYou may only use latin characters due to limitation on Apex side."),
+                                    .setDescription(error.split("Error")[1].replace(`${"\""}`, "").replace(`${"\""}`, "").replace(`${":"}`, "").replace(`${"\""}`, "").replace(`${"}"}`, "") + "\n**Please use Origin username linked to your account.**\n Steam accounts do not work at this time.\nYou may only use latin characters due to limitation on Apex side."),
                               ] });
                         }
                         else {

@@ -21,7 +21,7 @@ module.exports = {
       async execute(interaction: ChatInputCommandInteraction<CacheType>) {
             const buttonTimeout = 30000;
 
-            if (!await new DBUser(interaction.user).hasFeatureAccess()) {
+            if (!await new DBUser(interaction.user).hasFeatureAccess() || interaction.guildId != "684035492446339073") {
                   const voteButton = new ButtonBuilder()
                         .setLabel("Vote")
                         .setURL("https://top.gg/bot/719542118955090011/vote")
