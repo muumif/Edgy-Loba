@@ -20,16 +20,17 @@ module.exports = {
             .setDescription("Shows the server leaderboard"),
       async execute(interaction: ChatInputCommandInteraction<CacheType>) {
             const buttonTimeout = 30000;
-
-            if (!await new DBUser(interaction.user).hasFeatureAccess() || interaction.guildId != "684035492446339073") {
-                  const voteButton = new ButtonBuilder()
-                        .setLabel("Vote")
-                        .setURL("https://top.gg/bot/719542118955090011/vote")
-                        .setStyle(ButtonStyle.Link);
-                  const topEmbed = new embed().errorEmbed()
-                        .setTitle("No vote detected!")
-                        .setDescription("To use this command you need to have voted!\n\nThis is done to get the bot self running, so that the developer doesn't need to intervene as much.");
-                  return await interaction.editReply({ embeds: [topEmbed], components: [new ActionRowBuilder<ButtonBuilder>({ components: [voteButton] })] });
+            if (interaction.guildId != "684035492446339073") {
+                  if (!await new DBUser(interaction.user).hasFeatureAccess()) {
+                        const voteButton = new ButtonBuilder()
+                              .setLabel("Vote")
+                              .setURL("https://top.gg/bot/719542118955090011/vote")
+                              .setStyle(ButtonStyle.Link);
+                        const topEmbed = new embed().errorEmbed()
+                              .setTitle("No vote detected!")
+                              .setDescription("To use this command you need to have voted!\n\nThis is done to get the bot self running, so that the developer doesn't need to intervene as much.");
+                        return await interaction.editReply({ embeds: [topEmbed], components: [new ActionRowBuilder<ButtonBuilder>({ components: [voteButton] })] });
+                  }
             }
 
             const dbServer = new DBServer(interaction.guild as Guild);

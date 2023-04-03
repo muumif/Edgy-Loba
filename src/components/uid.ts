@@ -8,7 +8,7 @@ const JSONBigInt = require("json-bigint")({ "storeAsString": true });
 
 export async function IGNToUID(IGN: string, platform: "PC" | "X1" | "PS4", guildId: Snowflake | undefined, discordId: Snowflake) {
       try {
-            let response = await makeRequest(`${process.env.ALS_ENDPOINT}/nametouid?auth=${process.env.ALS_TOKEN}&player=${IGN}&platform=${platform}`);
+            const response = await makeRequest(`${process.env.ALS_ENDPOINT}/nametouid?auth=${process.env.ALS_TOKEN}&player=${IGN}&platform=${platform}`);
             if (response.data.includes("Error")) {
                   throw `0101: ${response.data}`;
             }

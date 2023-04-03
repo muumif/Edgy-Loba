@@ -146,7 +146,8 @@ module.exports = {
                   if (error.response) {
                         logger.error(error, { discordId: interaction.user.id, serverId: interaction.guildId, file: filename(__filename) });
                         await interaction.editReply({ embeds: [new embed().errorEmbed().setTitle("An error accrued!").setDescription(error.response.request.res.statusMessage.toString())] });
-                  } else {
+                  }
+                  else {
                         logger.error(error, { discordId: interaction.user.id, serverId: interaction.guildId, file: filename(__filename) });
                         await interaction.editReply({ embeds: [new embed().errorEmbed().setTitle("Please try again in a few seconds!").setDescription(error)] });
                   }

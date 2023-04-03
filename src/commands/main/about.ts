@@ -66,7 +66,7 @@ module.exports = {
                   await interaction.editReply({ embeds: [aboutEmbed], components: [linksButtons] });
             }
             catch (error: any) {
-                  logger.error(error, {metadata: {file: filename(__filename)}});
+                  logger.error(error, { metadata: { file: filename(__filename) } });
                   await interaction.editReply({ content: "Something went wrong!" });
             }
       },

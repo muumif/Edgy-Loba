@@ -74,7 +74,8 @@ client.on("interactionCreate", async interaction => {
                   if (interaction.commandName == "top") {
                         if (interaction.guildId == "684035492446339073") {
                               await interaction.deferReply();
-                        } else {
+                        }
+                        else {
                               await interaction.deferReply({ ephemeral: true });
                         }
                   }
