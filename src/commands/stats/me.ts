@@ -75,7 +75,8 @@ module.exports = {
                   const rankBR = ALSUser.global.rank.rankName == "Apex Predator" ? `\u001b[0;37m#${ALSUser.global.rank.ladderPosPlatform} \u001b[0;31mPredator` : `\u001b[0;37m${ALSUser.global.rank.rankName} \u001b[0;33m${ALSUser.global.rank.rankDiv}`;
                   const rankIMG = ALSUser.global.rank.rankImg;
                   const level = ALSUser.global.levelPrestige == 0 ? `${"```ansi"}\n\u001b[0;33m${ALSUser.global.level} \n${ALSUser.global.toNextLevelPercent}\u001b[0;37m% /\u001b[0;33m 100\u001b[0;37m%${"```"}` : `${"```ansi"}\n\u001b[0;33m${ALSUser.global.level}\n\u001b[0;37mPrestige \u001b[0;33m${ALSUser.global.levelPrestige} \n${ALSUser.global.toNextLevelPercent}\u001b[0;37m% /\u001b[0;33m 100\u001b[0;37m%${"```"}`;
-
+                  const dbRP = await dbUser.RP() as number;
+                  const rpDiff = ALSUser.global.rank.rankScore > dbRP ? "+" + (ALSUser.global.rank.rankScore - dbRP) : ALSUser.global.rank.rankScore == dbRP ? "0" : "-" + (dbRP - ALSUser.global.rank.rankScore);
                   const meEmbed = new embed().defaultEmbed()
                         .setTitle(`${platformEmoji}  ${ALSUser.global.name}`)
                         .setThumbnail(rankIMG)
@@ -87,7 +88,7 @@ module.exports = {
                               },
                               {
                                     name: "Ranked",
-                                    value: `${"```ansi"}\n\u001b[0;33m${rankBR} \n\u001b[0;37mRP: \u001b[0;33m${ALSUser.global.rank.rankScore}${"```"}`,
+                                    value: `${"```ansi"}\n\u001b[0;33m${rankBR} \n\u001b[0;37mRP: \u001b[0;33m${ALSUser.global.rank.rankScore} (${rpDiff})${"```"}`,
                                     inline: true,
                               },
                         );

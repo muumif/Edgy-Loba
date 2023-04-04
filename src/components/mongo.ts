@@ -192,6 +192,19 @@ export class DBUser {
             this.discordUser = discordUser;
       }
 
+      RP = async () => {
+            const dateBefore = new Date().getTime();
+
+            const user = await usersCollection.findOne({ discordId: this.discordUser.id.toString() }) as UserDocument | null;
+
+            if (user == null) return Promise.resolve("User not found!");
+
+            const dateAfter = new Date().getTime();
+            logger.info("Fetched a user from the DB!", { metadata: { discordId: this.discordUser.id, file: filename(__filename), actionDuration: dateAfter - dateBefore } });
+            return Promise.resolve(user.RP);
+
+      };
+
       public async getUser() {
             try {
                   const dateBefore = new Date().getTime();
