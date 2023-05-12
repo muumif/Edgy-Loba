@@ -58,7 +58,7 @@ export async function makeStatsChart(historyData: HistoryDocument[], todayRP: nu
                         labels: labels,
                         datasets: [
                               {
-                                    label: "Ranked Points",
+                                    label: "Ladder Points",
                                     borderColor: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
                                     data: data,
                               },
@@ -78,7 +78,7 @@ export async function makeStatsChart(historyData: HistoryDocument[], todayRP: nu
                                                 value: averageRP,
                                                 label: {
                                                       backgroundColor: "rgba(0,0,0,0.2)",
-                                                      content: "Average RP in bot: " + averageRP,
+                                                      content: "Average LP in bot: " + averageRP,
                                                       display: true,
                                                 },
                                           },

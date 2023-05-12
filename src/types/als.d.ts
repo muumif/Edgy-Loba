@@ -74,6 +74,7 @@ export interface ALSUserData { // Missing new legend
 					season14: number,
 					season15: number,
 					season16: number,
+					season17: number,
 				}
 			},
 			badges: [
@@ -90,14 +91,14 @@ export interface ALSUserData { // Missing new legend
 			isInGame: number,
 			canJoin: number,
 			partyFull: number,
-			selectedLegend: "Revenant" | "Crypto" | "Horizon" | "Gibraltar" | "Wattson" | "Fuse" | "Bangalore" | "Wraith" | "Octane" | "Bloodhound" | "Caustic" | "Lifeline" | "Pathfinder" | "Loba" | "Mirage" | "Rampart" | "Valkyrie" | "Seer" | "Ash" | "Mad Maggie" | "Vantage" | "Newcastle" | "Catalyst",
+			selectedLegend: "Revenant" | "Crypto" | "Horizon" | "Gibraltar" | "Wattson" | "Fuse" | "Bangalore" | "Wraith" | "Octane" | "Bloodhound" | "Caustic" | "Lifeline" | "Pathfinder" | "Loba" | "Mirage" | "Rampart" | "Valkyrie" | "Seer" | "Ash" | "Mad Maggie" | "Vantage" | "Newcastle" | "Catalyst" | "Ballistic",
 			currentState: "offline" | "inLobby" | "inMatch",
 			currentStateSinceTimestamp: number,
 			currentStateAsText: string
 		},
 		legends: {
 			selected: {
-				LegendName: "Revenant" | "Crypto" | "Horizon" | "Gibraltar" | "Wattson" | "Fuse" | "Bangalore" | "Wraith" | "Octane" | "Bloodhound" | "Caustic" | "Lifeline" | "Pathfinder" | "Loba" | "Mirage" | "Rampart" | "Valkyrie" | "Seer" | "Ash" | "Mad Maggie" | "Vantage" | "Newcastle" | "Catalyst",
+				LegendName: "Revenant" | "Crypto" | "Horizon" | "Gibraltar" | "Wattson" | "Fuse" | "Bangalore" | "Wraith" | "Octane" | "Bloodhound" | "Caustic" | "Lifeline" | "Pathfinder" | "Loba" | "Mirage" | "Rampart" | "Valkyrie" | "Seer" | "Ash" | "Mad Maggie" | "Vantage" | "Newcastle" | "Catalyst" | "Ballistic",
 				data: [
 					Tracker
 				] | undefined,
@@ -114,7 +115,7 @@ export interface ALSUserData { // Missing new legend
 						{
 							name: string,
 							value: number,
-							category: "Account Badges" | "Revenant" | "Crypto" | "Horizon" | "Gibraltar" | "Wattson" | "Fuse" | "Bangalore" | "Wraith" | "Octane" | "Bloodhound" | "Caustic" | "Lifeline" | "Pathfinder" | "Loba" | "Mirage" | "Rampart" | "Valkyrie" | "Seer" | "Ash" | "Mad Maggie" | "Vantage" | "Newcastle" | "Catalyst"
+							category: "Account Badges" | "Revenant" | "Crypto" | "Horizon" | "Gibraltar" | "Wattson" | "Fuse" | "Bangalore" | "Wraith" | "Octane" | "Bloodhound" | "Caustic" | "Lifeline" | "Pathfinder" | "Loba" | "Mirage" | "Rampart" | "Valkyrie" | "Seer" | "Ash" | "Mad Maggie" | "Vantage" | "Newcastle" | "Catalyst" | "Ballistic"
 						},
 					] | undefined
 				},
@@ -149,45 +150,7 @@ export interface ALSUserData { // Missing new legend
 				},
 				Crypto: {
 					data: [
-						{
-							name: string,
-							value: number,
-							key: string,
-							rank: {
-								rankPos: number,
-								topPercent: number
-							},
-							rankPlatformSpecific: {
-								rankPos: number,
-								topPercent: number
-							}
-						},
-						{
-							name: string,
-							value: number,
-							key: string,
-							rank: {
-								rankPos: number,
-								topPercent: number
-							},
-							rankPlatformSpecific: {
-								rankPos: number,
-								topPercent: number
-							}
-						},
-						{
-							name: string,
-							value: number,
-							key: string,
-							rank: {
-								rankPos: number,
-								topPercent: number
-							},
-							rankPlatformSpecific: {
-								rankPos: number,
-								topPercent: number
-							}
-						},
+						Tracker
 					] | undefined,
 					gameInfo: {
 						badges: [
@@ -204,7 +167,7 @@ export interface ALSUserData { // Missing new legend
 				},
 				Horizon: {
 					data: [
-Tracker
+						Tracker
 					] | undefined,
 					gameInfo: {
 						badges: [
@@ -557,6 +520,22 @@ Tracker
 					ImgAssets: {
 						icon: "https://api.mozambiquehe.re/assets/icons/vantage.png",
 						banner: "https://api.mozambiquehe.re/assets/banners/vantage.jpg"
+					}
+				},
+				Ballistic: {
+					data: [
+Tracker
+					] } | undefined,
+					gameInfo: {
+						badges: [
+								{
+									name: string,
+									value: number,
+								},
+						] | undefined,
+					ImgAssets: {
+						icon: "https://api.mozambiquehe.re/assets/icons/ballistic.png",
+						banner: "https://api.mozambiquehe.re/assets/banners/ballistic.jpg"
 					}
 				}
 			}

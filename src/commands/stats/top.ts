@@ -14,7 +14,7 @@ import { logger } from "../../components/logger";
 import { UserDocument } from "../../types/mongo";
 import { setTimeout } from "node:timers/promises";
 
-module.exports = { 
+module.exports = {
       data: new SlashCommandBuilder()
             .setName("top")
             .setDescription("Shows the server leaderboard"),
@@ -80,14 +80,14 @@ module.exports = {
                         if (interaction.user.id == current[i].discordId) {
                               generatedEmbed.addFields({
                                     name: `__${start + i + 1}. ${current[i].names.player} | ${current[i].names.discord}__`,
-                                    value: `RP: ${current[i].RP}`,
+                                    value: `LP: ${current[i].RP}`,
                                     inline: false,
                               });
                         }
                         else {
                               generatedEmbed.addFields({
                                     name: `${start + i + 1}. ${current[i].names.player} | ${current[i].names.discord}`,
-                                    value: `RP: ${current[i].RP}`,
+                                    value: `LP: ${current[i].RP}`,
                                     inline: false,
                               });
                         }

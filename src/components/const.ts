@@ -1,6 +1,6 @@
 //Constants that are required in multiple files and when changed need to be same everywhere
 
-import { ActionRowBuilder, ActivityType, APIEmbedField, ButtonBuilder, ButtonStyle, CommandInteraction, GuildEmoji } from "discord.js";
+import { ActionRowBuilder, APIEmbedField, ButtonBuilder, ButtonStyle, CommandInteraction, GuildEmoji } from "discord.js";
 import { readdirSync } from "fs";
 import { cwd } from "process";
 

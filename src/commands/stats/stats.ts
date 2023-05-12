@@ -107,12 +107,12 @@ module.exports = {
                               },
                               {
                                     name: "Ranked",
-                                    value: `${"```ansi"}\n\u001b[0;33m${rankBR} \n\u001b[0;37mRP: \u001b[0;33m${ALSUser.global.rank.rankScore}${"```"}`,
+                                    value: `${"```ansi"}\n\u001b[0;33m${rankBR} \n\u001b[0;37mLP: \u001b[0;33m${ALSUser.global.rank.rankScore}${"```"}`,
                                     inline: true,
                               },
                         );
 
-                  if (selectedLegend.data == undefined) {
+                  if (selectedLegend?.data == undefined) {
                         statsEmbed.addFields({
                               name: `Selected Legend: __${ALSUser.legends.selected.LegendName}__`,
                               value: "```ansi\n\u001b[0;37mNo trackers selected!```",
