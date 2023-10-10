@@ -1,3 +1,6 @@
+## !!! NOT MAINTAINED ANYMORE !!!
+There will be no futher updates or fixes to the bot. I will still keep it running, but no promises the bot works. If anyone wants to make pull request and understand my spaghetti ass code then go ahead i will review them and maybe commit it to the main.
+
 <p float="left">
   <a href="https://wakatime.com/badge/user/beebd855-1e84-427e-b984-e55c35b4fe3b/project/da9ebe09-78f6-423b-9990-594f8219901a"><img src="https://wakatime.com/badge/user/beebd855-1e84-427e-b984-e55c35b4fe3b/project/da9ebe09-78f6-423b-9990-594f8219901a.svg" alt="wakatime"></a>
   <br>
