@@ -5,6 +5,7 @@ import { filename, linksButtons, profilePic } from "../../components/const";
 import moment from "moment";
 import { DBGlobal } from "../../components/mongo";
 import { logger } from "../../components/logger";
+import { env } from "node:process";
 
 const topAPIInstance = new Api(process.env.TOPGG_TOKEN);
 
@@ -18,12 +19,11 @@ module.exports = {
                   await interaction.client.application?.fetch();
                   const author = interaction.client.application?.owner as User;
                   const uptime = moment.duration(Number(interaction.client.uptime));
-
                   const aboutEmbed = new embed().defaultEmbed()
                         .setAuthor({
                               name: `${author.username}#${author.discriminator}`,
                               url: "https://github.com/muumif/",
-                              iconURL: author.avatarURL()?.toString(),
+                              iconURL: env.NODE_ENV === "production" ? author.avatarURL() as string : "https://top.gg/_next/image?url=https%3A%2F%2Fimages.discordapp.net%2Favatars%2F719542118955090011%2F812d9cde81554928e2cd7bd92d032060.png%3Fsize%3D128&w=128&q=75",
                         })
                         .setDescription("This bot was created to give Apex Legends players their stats in an easy and convenient way inside of Discord.\n\n At first the bot was just developed for fun in a private server but now it is being actively worked on for everyone to use. \n\nAll of the data comes from https://apexlegendsstatus.com a great project definitely check them out as well. Thanks Hugo :)\n\n⠀")
                         .setThumbnail(profilePic(512))
@@ -62,7 +62,6 @@ module.exports = {
                               },
                         )
                         .setFooter({ text: `Running on version ${process.env.npm_package_version}`, iconURL: profilePic(128) });
-
                   await interaction.editReply({ embeds: [aboutEmbed], components: [linksButtons] });
             }
             catch (error: any) {

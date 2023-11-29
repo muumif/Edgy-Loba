@@ -16,7 +16,6 @@ module.exports = {
                   const craftingEmbed = new embed().defaultEmbed()
                         .setTitle("Crafting Rotation");
 
-
                   const timer = (endTime: number) => {
                         const milliSeconds = new Date(endTime * 1000).getTime() - new Date().getTime();
                         const days = Math.floor(milliSeconds / 86400000);

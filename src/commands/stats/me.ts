@@ -14,10 +14,11 @@ module.exports = {
             .setDescription("Shows your own stats if an account has been linked"),
       async execute(interaction: CommandInteraction) {
             try {
+                  console.time("me");
                   const dbUser = new DBUser(interaction.user);
-
                   // eslint-disable-next-line prefer-const
                   let [dbUserData, dbServerData] = await Promise.all([dbUser.getUser(), dbUser.getServer(interaction.guildId as string)]);
+                  console.timeLog("me", "Got data from database");
                   if (dbServerData == "No server found!") {
                         await dbUser.addServer(interaction.guildId as string);
                   }
@@ -28,7 +29,6 @@ module.exports = {
                         });
                         return;
                   }
-
                   dbUserData = dbUserData as UserDocument;
                   let selectedTrackers = "```ansi", platformEmoji: GuildEmoji, stateEmoji: GuildEmoji, currentState: string;
                   const ALSUser = (await axios.get(encodeURI(`${process.env.ALS_ENDPOINT}/bridge?auth=${process.env.ALS_TOKEN}&uid=${dbUserData.originId}&platform=${dbUserData.platform}&merge=true&removeMerged=true`))).data as ALSUserData;
@@ -118,8 +118,9 @@ module.exports = {
                         dbUser.updateRP(ALSUser.global.rank.rankScore),
                         dbUser.updateNames(ALSUser.global.name),
                   ]);
-
+                  console.timeLog("me", "Updated database");
                   let dbUserHistory = await dbUser.getHistory() as HistoryDocument[] | string;
+                  console.timeLog("me", "Got history from database");
                   if (dbUserHistory == "No history data was found!") {
                         const discordUser = await interaction.client.users.fetch(dbUser.discordUser.id);
                         meEmbed.setDescription(`${stateEmoji} ${currentState} \n Linked to **${discordUser.username}#${discordUser.discriminator}**`);
